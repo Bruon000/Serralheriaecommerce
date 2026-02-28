@@ -37,7 +37,7 @@ function New-AuthContext {
     } catch {
       try {
         $body = @{ email=$Email; password=$Password } | ConvertTo-Json
-        $res = Invoke-RestMethod -Method Post -Uri "$BaseUrl/admin/auth/token" -Body $body -Headers (New-JsonHeaders)
+        $res = Invoke-RestMethod -Method Post -Uri "$BaseUrl/admin/auth/user/emailpass" -Body $body -Headers (New-JsonHeaders)
         $jwt = $res.access_token
         if ($jwt) { $ctx.Headers["Authorization"]="Bearer $jwt"; return $ctx }
       } catch {}
@@ -125,3 +125,4 @@ foreach ($p in $targets) {
 }
 
 Write-Host "Promoção aplicada em $($targets.Count) produto(s)."
+

@@ -49,7 +49,7 @@ function New-AuthContext {
       # 2) fallback: token endpoint
       try {
         $body = @{ email=$Email; password=$Password } | ConvertTo-Json
-        $res = Invoke-RestMethod -Method Post -Uri "$BaseUrl/admin/auth/token" -Body $body -Headers (New-JsonHeaders)
+        $res = Invoke-RestMethod -Method Post -Uri "$BaseUrl/admin/auth/user/emailpass" -Body $body -Headers (New-JsonHeaders)
         $jwt = $res.access_token
         if ($jwt) {
           $ctx.Headers["Authorization"] = "Bearer $jwt"
@@ -177,3 +177,4 @@ foreach ($row in $rows) {
 }
 
 Write-Host "Import finalizado. created=$created updated=$updated skipped=$skipped regionId=$regionId"
+
