@@ -103,6 +103,28 @@ foreach ($row in $rows) {
   status = "published"
   thumbnail = $(if($thumb){$thumb}else{$null})
   metadata = $metadata
+  options = @(
+    @{
+      title  = "Padrão"
+      values = @("Padrão")
+    }
+  )
+  variants = @(
+    @{
+      title = "Padrão"
+      options = @{
+        "Padrão" = "Padrão"
+      }
+      prices = @(
+        @{
+          amount = $price
+          currency_code = "brl"
+          region_id = $regionId
+        }
+      )
+      manage_inventory = $false
+    }
+  )
 }
 if ($DryRun) {
       Write-Host "[DRYRUN] create $handle ($title) R$ $($price/100)"
@@ -118,6 +140,28 @@ if ($DryRun) {
   status = "published"
   thumbnail = $(if($thumb){$thumb}else{$null})
   metadata = $metadata
+  options = @(
+    @{
+      title  = "Padrão"
+      values = @("Padrão")
+    }
+  )
+  variants = @(
+    @{
+      title = "Padrão"
+      options = @{
+        "Padrão" = "Padrão"
+      }
+      prices = @(
+        @{
+          amount = $price
+          currency_code = "brl"
+          region_id = $regionId
+        }
+      )
+      manage_inventory = $false
+    }
+  )
 }
 if ($DryRun) {
       Write-Host "[DRYRUN] update $handle ($productId)"
@@ -129,4 +173,5 @@ if ($DryRun) {
 }
 
 Write-Host "Import finalizado. created=$created updated=$updated skipped=$skipped regionId=$regionId"
+
 
