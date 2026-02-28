@@ -27,9 +27,13 @@ export async function listProducts(): Promise<MedusaProduct[]> {
 export async function getPromocaoSemana(): Promise<MedusaProduct[]> {
   const products = await listProducts();
   return products.filter(
-    (p) => p?.metadata?.promocao === "semana" && p?.metadata?.tipo === "portao"
+    (p) =>
+      p?.metadata?.promocao === "semana" &&
+      p?.metadata?.tipo === "portao" &&
+      p?.metadata?.ipo === "AL-20"
   );
 }
+
 
 
 
