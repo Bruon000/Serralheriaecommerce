@@ -18,8 +18,8 @@ Stack:
 - `npm run dev`
 
 ## Estado atual (atualizado automaticamente)
-- Última atualização: 2026-02-28 14:52:26
-- Git commit: a41b758
+- Última atualização: 2026-02-28 15:25:27
+- Git commit: afabad6
 - Ports:
   - Frontend: http://localhost:3000
   - Admin Medusa: http://localhost:9000/app
@@ -27,18 +27,18 @@ Stack:
 
 ### Docker status
 `	ext
-serralheria-pgadmin Up 4 hours
-serralheria-postgres Up 4 hours (healthy)
+serralheria-pgadmin Up 5 hours
+serralheria-postgres Up 5 hours (healthy)
 medusa-postgres Up 5 hours
 medusa-redis Up 5 hours
-dolibarr Up 5 hours
-mariadb Up 5 hours
-frappe_docker-frontend-1 Up 5 hours
-frappe_docker-backend-1 Up 5 hours
-frappe_docker-websocket-1 Restarting (1) 49 seconds ago
-frappe_docker-queue-long-1 Up 21 seconds
-frappe_docker-scheduler-1 Up 5 hours
-frappe_docker-queue-short-1 Up 21 seconds
+dolibarr Up 6 hours
+mariadb Up 6 hours
+frappe_docker-frontend-1 Up 6 hours
+frappe_docker-backend-1 Up 6 hours
+frappe_docker-websocket-1 Restarting (1) 19 seconds ago
+frappe_docker-queue-long-1 Up 14 seconds
+frappe_docker-scheduler-1 Up 6 hours
+frappe_docker-queue-short-1 Up 14 seconds
 `
 ## Checklist do projeto (ordem ideal)
 
@@ -83,5 +83,6 @@ frappe_docker-queue-short-1 Up 21 seconds
 - [ ] Docker Compose no VPS
 - [ ] Nginx + SSL
 - [ ] Subdomínios e DNS (quando você decidir)
+
 
 
