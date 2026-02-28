@@ -1,25 +1,25 @@
 # CHECKLIST - Serralheria Ecommerce (Medusa + Next)
 
-> **Regra:** sempre atualizar este arquivo com 	ools\update-project.ps1 quando for parar.
-
+> **Regra:** sempre que for parar, rodar: `pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\update-project.ps1`
+J
 ## Resumo do Projeto
 Ecommerce de serralheria (portões, grades, corrimãos, estruturas metálicas).
-Stack:
-- **Backend:** Medusa (Admin em http://localhost:9000/app)
+
+Ctack:
+- **Backend:** Medusa (Admin: http://localhost:9000/app)
 - **DB:** Postgres + Redis via Docker Compose
 - **Frontend:** Next.js (http://localhost:3000)
 
 ## Como rodar (Windows / PowerShell)
 1) Subir containers:
-- docker compose up -d
+- `docker compose up -d`
 
 2) Subir back+front:
-- 
-pm run dev
+- `npm run dev`
 
 ## Estado atual (atualizado automaticamente)
-- Última atualização: 2026-02-28 13:52:54
-- Git commit: 93869a0
+- Última atualização: 2026-02-28 13:58:24
+- Git commit: b228912
 - Ports:
   - Frontend: http://localhost:3000
   - Admin Medusa: http://localhost:9000/app
@@ -35,30 +35,63 @@ dolibarr Up 4 hours
 mariadb Up 4 hours
 frappe_docker-frontend-1 Up 4 hours
 frappe_docker-backend-1 Up 4 hours
-frappe_docker-websocket-1 Restarting (1) 56 seconds ago
-frappe_docker-queue-long-1 Up 7 seconds
+frappe_docker-websocket-1 Restarting (1) 9 seconds ago
+frappe_docker-queue-long-1 Up 2 seconds
 frappe_docker-scheduler-1 Up 4 hours
-frappe_docker-queue-short-1 Up 7 seconds
+frappe_docker-queue-short-1 Up 2 seconds
 `
-## Funcionalidades prontas (MVP)
-- [x] Backend Medusa rodando
-- [x] Frontend Next rodando
-- [x] Catálogo (/catalogo) com filtro por tipo ?tipo=portao|grade|corrimao|estrutura
-- [x] Produto (/produto/[slug]) com add to cart + medidas/obs
-- [x] Carrinho (/carrinho) persistente (localStorage)
-- [x] Checkout via WhatsApp (gera mensagem)
-- [x] Cadastro construtor B2B com CNPJ (/construtor/cadastro)
-- [x] Regra B2B: só finaliza se cadastrado + mínimo 3 portões (por metadata.tipo = 'portao')
-- [x] Home com seção Promoção da Semana (metadata.promocao='semana')
+## Checklist do projeto (ordem ideal)
+
+### Fase 0 — Preparação
+- [ ] Instalar Node.js LTS (inclui npm)
+- [ ] Instalar Git
+- [ ] (Opcional) Instalar Docker Desktop (se quiser rodar Postgres/Redis local sem dor)J
+
+### Fase 1 — Base rodando local (MVP)
+- [ ] Subir Medusa backend (API + Admin)
+- [ ] Subir PostgreSQL + Redis (local)
+- [ ] Subir Next.js Storefront conectado no Medusa
+- [ ] Configurar categorias iniciais: Portões / Grades / Corrimãos / Estruturas / Sob medida
+- [ ] Criar 5 produtos "mock" pra validar fluxo (foto, preço, variações)
+
+### Fase 2 — Catálogo + Carrinho + Checkout (WhatsApp)
+- [ ] Listagem com filtros (categoria, acabamento, faixa preço)
+- [ ] Página produto com variações (cor/material/medidas como opções)
+- [ ] Carrinho funcionando
+- [ ] Botão Finalizar no WhatsApp:
+  - [ ] gerar mensagem com itens, quantidades, variações e total estimado
+  - [ ] número do vendedor configurável (varejo e B2B)
+
+### Fase 3 — Promoções e Ofertas
+- [ ] "Promoção da semana" (coleção/tag + banner automático)
+- [ ] "Ofertas para construtores" (área B2B)
+- [ ] Regras de desconto progressivo (opcional)
+
+### Fase 4 — B2B (Construtor)
+- [ ] Cadastro/Login
+- [ ] Status "pendente" → "aprovado"
+- [ ] Preço B2B diferente
+- [ ] Regra: mínimo 3 portões (bloqueia finalizar se não cumprir)
+- [ ] Pedido vai pro WhatsApp do vendedor B2B
+
+### Fase 5 — Temas sazonais automáticos
+- [ ] themes.json com calendário (Natal/Junino/Carnaval/Ano Novo…)
+- [ ] aplicação automática por data (CSS variables + banner + detalhes leves)
+- [ ] fallback tema padrão
+
+### Fase 6 – Deploy no VPS
+- [ ] Docker Compose no VPS
+- [ ] Nginx + SSL
+- [ ] Subdominios e DNS (quando você decidir)
 
 ## Pontos de atenção / bugs conhecidos
-- [ ] Script de criação de produtos via PowerShell: **NÃO usar $pid** (conflita com $PID do PowerShell)
+- [ ] Script de criação de produtos via PowerShell: **NÃO usar `$pid`** (conflita com `$PID` do PowerShell)
 - [ ] Produtos duplicados por handle em execuções antigas (limpar depois se quiser)
 
 ## Próximos passos (prioridade)
-- [ ] Ajustar estética/UI (shadcn/ui ou MUI) — depois
 - [ ] Importação em lote via CSV (tools/import-produtos.ps1)
-- [ ] Tema automático por data (natal/junino/carnaval) sem deploy
-- [ ] Subir pra produção (docker compose + nginx + SSL) quando fechar MVP
+- [ ] Marcar promoções (tools/mark-promocoes.ps1) — se criar
+- [ ] tema automático por data (themes.json) sem deploy
+- [ ] Subir pro produção (docker compose + nginx + SSL) quando fechar MVP
 
 
