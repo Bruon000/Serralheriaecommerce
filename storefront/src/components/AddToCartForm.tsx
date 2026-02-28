@@ -13,7 +13,7 @@ type Props = {
 };
 
 export default function AddToCartForm({ product }: Props) {
-  const tipo = String(product.metadata?.tipo ?? "");
+  const tipo = String(product.metadata?.tipo ?? "") || (product.handle?.startsWith("portao-") ? "portao" : "");
   const ipo = String(product.metadata?.ipo ?? "");
 
   const [qty, setQty] = useState<number>(1);
@@ -86,3 +86,4 @@ export default function AddToCartForm({ product }: Props) {
     </div>
   );
 }
+

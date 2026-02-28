@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { CartItem, loadCart, saveCart, countPortoes } from "../../lib/cart";
 
-const WHATSAPP_NUMBER = "5585999999999"; // TODO: trocar
+const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "5585999999999";
 
 export default function CarrinhoPage() {
   const [items, setItems] = useState<CartItem[]>([]);
@@ -111,3 +111,4 @@ export default function CarrinhoPage() {
     </main>
   );
 }
+
