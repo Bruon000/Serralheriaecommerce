@@ -1,0 +1,12 @@
+{
+  "name": "serralheria-ecommerce",
+  "private": true,
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  },
+  "scripts": {
+    "dev": "concurrently -n BACK,FRONT -c auto \"npm:dev:back\" \"npm:dev:front\"",
+    "dev:back": "cd backend && npm run dev",
+    "dev:front": "cd storefront && npm run dev"
+  }
+}
