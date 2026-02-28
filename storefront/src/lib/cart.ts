@@ -11,7 +11,7 @@ export type CartItem = {
   obs?: string;
 };
 
-const KEY = "serralheria_cart_v1";
+const KEY = "serralheria_cart_v2";
 
 export function loadCart(): CartItem[] {
   if (typeof window === "undefined") return [];
@@ -35,3 +35,4 @@ export function countPortoes(items: CartItem[]) {
     .filter((i) => i.tipo === "portao")
     .reduce((acc, i) => acc + (Number(i.qty) || 0), 0);
 }
+

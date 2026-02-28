@@ -1,9 +1,20 @@
 import AddToCartForm from "../../../components/AddToCartForm";
 import { MEDUSA_BACKEND_URL, MEDUSA_PUBLISHABLE_KEY } from "../../../lib/medusa";
 
-type Props = { params: { handle: string } };
+type Props = { params: { handle?: string } };
 
 export default async function ProdutoPage({ params }: Props) {
+  const handle = params?.handle || "";
+
+  if (!handle) {
+    return (
+      <main style={{ padding: 24 }}>
+        <h1>Produto não encontrado</h1>
+        <p>handle vazio (rota não resolveu params)</p>
+      </main>
+    );
+  }
+
   const res = await fetch(
     `${MEDUSA_BACKEND_URL}/store/products?limit=100&fields=id,title,handle,metadata,metadata.ipo,metadata.tipo`,
     {
@@ -14,23 +25,15 @@ export default async function ProdutoPage({ params }: Props) {
     }
   );
 
-  if (!res.ok) {
-    return (
-      <main style={{ padding: 24 }}>
-        <h1>Erro ao carregar produto</h1>
-        <p>Status: {res.status}</p>
-      </main>
-    );
-  }
-
   const json = await res.json();
-  const product = (json.products || []).find((p: any) => p.handle === params.handle);
+  const product = (json.products || []).find((p: any) => p.handle === handle);
 
   if (!product) {
     return (
       <main style={{ padding: 24 }}>
         <h1>Produto não encontrado</h1>
-        <p>handle: {params.handle}</p>
+        <p>handle: {handle}</p>
+        <p>Produtos carregados: {(json.products || []).length}</p>
       </main>
     );
   }
@@ -50,10 +53,6 @@ export default async function ProdutoPage({ params }: Props) {
       <div style={{ marginTop: 12 }}>
         <a href="/carrinho">Ir para o carrinho</a>
       </div>
-
-      <pre style={{ marginTop: 16, background: "#f6f6f6", padding: 12, borderRadius: 8, overflow: "auto" }}>
-        {JSON.stringify(product.metadata || {}, null, 2)}
-      </pre>
     </main>
   );
 }
