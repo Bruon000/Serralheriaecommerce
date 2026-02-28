@@ -34,7 +34,8 @@ pm run dev (roda backend + storefront)
 Leia e siga CHECKLIST.md do repositório.
 
 ---
-Última atualização automática: 2026-02-28 17:03:22 | commit: 836460e
+Última atualização automática: 2026-02-28 17:06:40 | commit: 9d4d0bb
+
 
 
 
