@@ -18,8 +18,8 @@ Stack:
 - `npm run dev`
 
 ## Estado atual (atualizado automaticamente)
-- Última atualização: 2026-02-28 14:34:31
-- Git commit: 8d6c5cf
+- Última atualização: 2026-02-28 14:35:38
+- Git commit: 8efa73f
 - Ports:
   - Frontend: http://localhost:3000
   - Admin Medusa: http://localhost:9000/app
@@ -35,10 +35,10 @@ dolibarr Up 5 hours
 mariadb Up 5 hours
 frappe_docker-frontend-1 Up 5 hours
 frappe_docker-backend-1 Up 5 hours
-frappe_docker-websocket-1 Restarting (1) 41 seconds ago
-frappe_docker-queue-long-1 Up 3 seconds
+frappe_docker-websocket-1 Restarting (1) 45 seconds ago
+frappe_docker-queue-long-1 Up 18 seconds
 frappe_docker-scheduler-1 Up 5 hours
-frappe_docker-queue-short-1 Up 3 seconds
+frappe_docker-queue-short-1 Up 18 seconds
 `
 ## Checklist do projeto (ordem ideal)
 
