@@ -1,6 +1,5 @@
 param(
   [string]$BackendUrl = "http://localhost:9000",
-  [string]$ApiToken = "",
   [string]$Jwt = "",
   [string]$Email = "",
   [string]$Password = "",
@@ -16,34 +15,46 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 function Headers-Json { @{ "Accept"="application/json"; "Content-Type"="application/json" } }
+function Headers-Accept { @{ "Accept"="application/json" } }
 
-function New-AuthHeaders {
-  param([string]$BaseUrl,[string]$ApiToken,[string]$Jwt,[string]$Email,[string]$Password,[string]$AuthRoute)
-
-  if ($ApiToken -and $ApiToken.Trim()) {
-    return @{ "Accept"="application/json"; "Authorization"="Basic $($ApiToken.Trim())" }
-  }
-
-  if ($Jwt -and $Jwt.Trim()) {
-    return @{ "Accept"="application/json"; "Authorization"="Bearer $($Jwt.Trim())" }
-  }
-
+function Get-Jwt {
+  param([string]$BaseUrl,[string]$Jwt,[string]$Email,[string]$Password,[string]$AuthRoute)
+  if ($Jwt -and $Jwt.Trim()) { return $Jwt.Trim() }
   if ($Email -and $Password) {
     $body = @{ email=$Email; password=$Password } | ConvertTo-Json
-    $res = Invoke-RestMethod -Method Post -Uri "$BaseUrl$AuthRoute" -Body $body -Headers (Headers-Json)
-    $t = $res.token
-    if (!$t) { throw "Login ok mas token vazio em $AuthRoute" }
-    return @{ "Accept"="application/json"; "Authorization"="Bearer $t" }
+    $res = Invoke-RestMethod -Method Post -Uri "$BaseUrl$AuthRoute" -Body $body -ContentType "application/json"
+    if ($res.token) { return $res.token }
+    throw "Login respondeu sem token em $AuthRoute"
   }
+  throw "Informe -Jwt OU -Email/-Password"
+}
 
-  throw "Informe -ApiToken OU -Jwt OU -Email/-Password."
+function New-Session {
+  param([string]$BaseUrl,[string]$Jwt)
+  $sess = New-Object Microsoft.PowerShell.Commands.WebRequestSession
+  Invoke-WebRequest -Method Post -Uri "$BaseUrl/auth/session" -Headers @{
+    "Accept"="application/json"
+    "Authorization"="Bearer $Jwt"
+  } -WebSession $sess | Out-Null
+  return $sess
+}
+
+function Admin-Get {
+  param([string]$BaseUrl,$Session,[string]$Path)
+  return Invoke-RestMethod -Method Get -Uri "$BaseUrl$Path" -WebSession $Session -Headers (Headers-Accept)
+}
+
+function Admin-Post {
+  param([string]$BaseUrl,$Session,[string]$Path,$BodyObj)
+  $json = $BodyObj | ConvertTo-Json -Depth 20
+  return Invoke-RestMethod -Method Post -Uri "$BaseUrl$Path" -WebSession $Session -Headers (Headers-Json) -Body $json
 }
 
 function Get-AllProducts {
-  param([string]$BaseUrl,[hashtable]$Headers)
+  param([string]$BaseUrl,$Session)
   $all = @(); $offset = 0
   do {
-    $r = Invoke-RestMethod -Method Get -Uri "$BaseUrl/admin/products?limit=50&offset=$offset" -Headers $Headers
+    $r = Admin-Get -BaseUrl $BaseUrl -Session $Session -Path "/admin/products?limit=50&offset=$offset"
     $batch = ($r.products ?? @())
     $all += $batch
     $offset += 50
@@ -51,33 +62,45 @@ function Get-AllProducts {
   return $all
 }
 
-$headers = New-AuthHeaders -BaseUrl $BackendUrl -ApiToken $ApiToken -Jwt $Jwt -Email $Email -Password $Password -AuthRoute $AuthRoute
+function Get-MetadataValue {
+  param($meta,[string]$key)
+  if ($null -eq $meta) { return $null }
+  $prop = $meta.PSObject.Properties | Where-Object { $_.Name -eq $key } | Select-Object -First 1
+  if ($prop) { return $prop.Value }
+  return $null
+}
+
+$jwt = Get-Jwt -BaseUrl $BackendUrl -Jwt $Jwt -Email $Email -Password $Password -AuthRoute $AuthRoute
+$sess = New-Session -BaseUrl $BackendUrl -Jwt $jwt
 
 $targets = @()
+
 if ($Handles.Count -gt 0) {
   foreach ($h in $Handles) {
-    $r = Invoke-RestMethod -Method Get -Uri "$BackendUrl/admin/products?handle=$h&limit=1" -Headers $headers
+    $r = Admin-Get -BaseUrl $BackendUrl -Session $sess -Path "/admin/products?handle=$h&limit=1"
     if ($r.products -and $r.products.Count -gt 0) { $targets += $r.products[0] }
   }
 } elseif ($Ipo) {
-  $all = Get-AllProducts -BaseUrl $BackendUrl -Headers $headers
-  $targets = $all | Where-Object { $_.metadata -and $_.metadata.ipo -eq $Ipo }
+  $all = Get-AllProducts -BaseUrl $BackendUrl -Session $sess
+  $targets = $all | Where-Object { (Get-MetadataValue $_.metadata "ipo") -eq $Ipo }
 } else {
   throw "Informe -Ipo ou -Handles."
 }
 
 if ($ClearOthers) {
-  $all = Get-AllProducts -BaseUrl $BackendUrl -Headers $headers
-  $others = $all | Where-Object { $_.metadata -and $_.metadata.promocao -eq $Promocao }
+  $all = Get-AllProducts -BaseUrl $BackendUrl -Session $sess
+  $others = $all | Where-Object { (Get-MetadataValue $_.metadata "promocao") -eq $Promocao }
   foreach ($p in $others) {
     $md = @{}
-    foreach ($k in ($p.metadata.PSObject.Properties.Name)) {
-      if ($k -ne "promocao") { $md[$k] = $p.metadata.$k }
+    if ($p.metadata) {
+      foreach ($pr in $p.metadata.PSObject.Properties) {
+        if ($pr.Name -ne "promocao") { $md[$pr.Name] = $pr.Value }
+      }
     }
     if ($DryRun) {
       Write-Host "[DRYRUN] clear promocao $($p.handle)"
     } else {
-      Invoke-RestMethod -Method Post -Uri "$BackendUrl/admin/products/$($p.id)" -Headers (Headers-Json + $headers) -Body (@{ metadata=$md } | ConvertTo-Json -Depth 20) | Out-Null
+      Admin-Post -BaseUrl $BackendUrl -Session $sess -Path "/admin/products/$($p.id)" -BodyObj @{ metadata=$md } | Out-Null
     }
   }
 }
@@ -85,14 +108,14 @@ if ($ClearOthers) {
 foreach ($p in $targets) {
   $md = @{}
   if ($p.metadata) {
-    foreach ($k in ($p.metadata.PSObject.Properties.Name)) { $md[$k] = $p.metadata.$k }
+    foreach ($pr in $p.metadata.PSObject.Properties) { $md[$pr.Name] = $pr.Value }
   }
   $md["promocao"] = $Promocao
 
   if ($DryRun) {
     Write-Host "[DRYRUN] set promocao=$Promocao -> $($p.handle)"
   } else {
-    Invoke-RestMethod -Method Post -Uri "$BackendUrl/admin/products/$($p.id)" -Headers (Headers-Json + $headers) -Body (@{ metadata=$md } | ConvertTo-Json -Depth 20) | Out-Null
+    Admin-Post -BaseUrl $BackendUrl -Session $sess -Path "/admin/products/$($p.id)" -BodyObj @{ metadata=$md } | Out-Null
     Write-Host "OK -> $($p.handle)"
   }
 }

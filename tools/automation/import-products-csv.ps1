@@ -1,7 +1,6 @@
 param(
   [Parameter(Mandatory=$true)][string]$CsvPath,
   [string]$BackendUrl = "http://localhost:9000",
-  [string]$ApiToken = "",
   [string]$Jwt = "",
   [string]$Email = "",
   [string]$Password = "",
@@ -14,33 +13,47 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 function Headers-Json { @{ "Accept"="application/json"; "Content-Type"="application/json" } }
+function Headers-Accept { @{ "Accept"="application/json" } }
 
-function New-AuthHeaders {
-  param([string]$BaseUrl,[string]$ApiToken,[string]$Jwt,[string]$Email,[string]$Password,[string]$AuthRoute)
-
-  if ($ApiToken -and $ApiToken.Trim()) {
-    return @{ "Accept"="application/json"; "Authorization"="Basic $($ApiToken.Trim())" }
-  }
-
-  if ($Jwt -and $Jwt.Trim()) {
-    return @{ "Accept"="application/json"; "Authorization"="Bearer $($Jwt.Trim())" }
-  }
-
+function Get-Jwt {
+  param([string]$BaseUrl,[string]$Jwt,[string]$Email,[string]$Password,[string]$AuthRoute)
+  if ($Jwt -and $Jwt.Trim()) { return $Jwt.Trim() }
   if ($Email -and $Password) {
     $body = @{ email=$Email; password=$Password } | ConvertTo-Json
-    $res = Invoke-RestMethod -Method Post -Uri "$BaseUrl$AuthRoute" -Body $body -Headers (Headers-Json)
-    $t = $res.token
-    if (!$t) { throw "Login ok mas token vazio em $AuthRoute" }
-    return @{ "Accept"="application/json"; "Authorization"="Bearer $t" }
+    $res = Invoke-RestMethod -Method Post -Uri "$BaseUrl$AuthRoute" -Body $body -ContentType "application/json"
+    if ($res.token) { return $res.token }
+    throw "Login respondeu sem token em $AuthRoute"
   }
+  throw "Informe -Jwt OU -Email/-Password"
+}
 
-  throw "Informe -ApiToken OU -Jwt OU -Email/-Password."
+function New-Session {
+  param([string]$BaseUrl,[string]$Jwt)
+  $sess = New-Object Microsoft.PowerShell.Commands.WebRequestSession
+  # troca Bearer por cookie de sessão
+  Invoke-WebRequest -Method Post -Uri "$BaseUrl/auth/session" -Headers @{
+    "Accept"="application/json"
+    "Authorization"="Bearer $Jwt"
+  } -WebSession $sess | Out-Null
+
+  return $sess
+}
+
+function Admin-Get {
+  param([string]$BaseUrl,$Session,[string]$Path)
+  return Invoke-RestMethod -Method Get -Uri "$BaseUrl$Path" -WebSession $Session -Headers (Headers-Accept)
+}
+
+function Admin-Post {
+  param([string]$BaseUrl,$Session,[string]$Path,$BodyObj)
+  $json = $BodyObj | ConvertTo-Json -Depth 20
+  return Invoke-RestMethod -Method Post -Uri "$BaseUrl$Path" -WebSession $Session -Headers (Headers-Json) -Body $json
 }
 
 function Ensure-RegionId {
-  param([string]$BaseUrl,[hashtable]$Headers,[string]$Preferred)
+  param([string]$BaseUrl,$Session,[string]$Preferred)
   if ($Preferred -and $Preferred.Trim()) { return $Preferred.Trim() }
-  $r = Invoke-RestMethod -Method Get -Uri "$BaseUrl/admin/regions?limit=1" -Headers $Headers
+  $r = Admin-Get -BaseUrl $BaseUrl -Session $Session -Path "/admin/regions?limit=1"
   if ($r.regions -and $r.regions.Count -gt 0) { return $r.regions[0].id }
   throw "Nenhuma region encontrada. Informe -RegionId."
 }
@@ -49,8 +62,10 @@ function Slugify([string]$s) { return ($s.ToLower() -replace "[^a-z0-9]+","-" -r
 
 if (!(Test-Path $CsvPath)) { throw "CSV não encontrado: $CsvPath" }
 
-$headers = New-AuthHeaders -BaseUrl $BackendUrl -ApiToken $ApiToken -Jwt $Jwt -Email $Email -Password $Password -AuthRoute $AuthRoute
-$regionId = Ensure-RegionId -BaseUrl $BackendUrl -Headers $headers -Preferred $RegionId
+$jwt = Get-Jwt -BaseUrl $BackendUrl -Jwt $Jwt -Email $Email -Password $Password -AuthRoute $AuthRoute
+$sess = New-Session -BaseUrl $BackendUrl -Jwt $jwt
+
+$regionId = Ensure-RegionId -BaseUrl $BackendUrl -Session $sess -Preferred $RegionId
 
 $rows = Import-Csv -Path $CsvPath
 if (!$rows -or $rows.Count -eq 0) { throw "CSV vazio." }
@@ -76,7 +91,7 @@ foreach ($row in $rows) {
 
   $thumb = ($row.thumbnail ?? "").Trim()
 
-  $existing = Invoke-RestMethod -Method Get -Uri "$BackendUrl/admin/products?handle=$handle&limit=1" -Headers $headers
+  $existing = Admin-Get -BaseUrl $BackendUrl -Session $sess -Path "/admin/products?handle=$handle&limit=1"
   $productId = $null
   if ($existing.products -and $existing.products.Count -gt 0) { $productId = $existing.products[0].id }
 
@@ -103,7 +118,7 @@ foreach ($row in $rows) {
     if ($DryRun) {
       Write-Host "[DRYRUN] create $handle ($title) R$ $($price/100)"
     } else {
-      Invoke-RestMethod -Method Post -Uri "$BackendUrl/admin/products" -Headers (Headers-Json + $headers) -Body ($payloadObj | ConvertTo-Json -Depth 20) | Out-Null
+      Admin-Post -BaseUrl $BackendUrl -Session $sess -Path "/admin/products" -BodyObj $payloadObj | Out-Null
     }
     $created++
   } else {
@@ -117,7 +132,7 @@ foreach ($row in $rows) {
     if ($DryRun) {
       Write-Host "[DRYRUN] update $handle ($productId)"
     } else {
-      Invoke-RestMethod -Method Post -Uri "$BackendUrl/admin/products/$productId" -Headers (Headers-Json + $headers) -Body ($payloadObj | ConvertTo-Json -Depth 20) | Out-Null
+      Admin-Post -BaseUrl $BackendUrl -Session $sess -Path "/admin/products/$productId" -BodyObj $payloadObj | Out-Null
     }
     $updated++
   }
