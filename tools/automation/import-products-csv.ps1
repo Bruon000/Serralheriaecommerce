@@ -11,49 +11,102 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-function New-Headers {
-  param([string]$Token)
-  $h = @{ "Content-Type"="application/json"; "Accept"="application/json" }
-  if ($Token -and $Token.Trim()) { $h["x-medusa-access-token"] = $Token.Trim() }
+function New-BaseHeaders {
+  $h = @{ "Accept"="application/json" }
   return $h
 }
 
-function Login-Jwt {
-  param([string]$BaseUrl,[string]$Email,[string]$Password)
-  if (!$Email -or !$Password) { return $null }
-  $body = @{ email=$Email; password=$Password } | ConvertTo-Json
-  $res = Invoke-RestMethod -Method Post -Uri "$BaseUrl/admin/auth/token" -Body $body -ContentType "application/json"
-  return $res.access_token
+function New-JsonHeaders {
+  $h = New-BaseHeaders
+  $h["Content-Type"]="application/json"
+  return $h
+}
+
+function New-AuthContext {
+  param([string]$BaseUrl,[string]$ApiToken,[string]$Email,[string]$Password)
+
+  $ctx = [ordered]@{
+    BaseUrl = $BaseUrl
+    Headers = (New-JsonHeaders)
+    WebSession = $null
+  }
+
+  if ($ApiToken -and $ApiToken.Trim()) {
+    $ctx.Headers["x-medusa-access-token"] = $ApiToken.Trim()
+    return $ctx
+  }
+
+  if ($Email -and $Password) {
+    # 1) Tenta auth por sessão/cookie (mais compatível)
+    try {
+      $sess = New-Object Microsoft.PowerShell.Commands.WebRequestSession
+      $body = @{ email=$Email; password=$Password } | ConvertTo-Json
+      Invoke-WebRequest -Method Post -Uri "$BaseUrl/admin/auth" -Body $body -Headers (New-JsonHeaders) -WebSession $sess | Out-Null
+      $ctx.WebSession = $sess
+      $ctx.Headers = (New-BaseHeaders) # sem Content-Type pra GETs
+      return $ctx
+    } catch {
+      # 2) fallback: token endpoint
+      try {
+        $body = @{ email=$Email; password=$Password } | ConvertTo-Json
+        $res = Invoke-RestMethod -Method Post -Uri "$BaseUrl/admin/auth/token" -Body $body -Headers (New-JsonHeaders)
+        $jwt = $res.access_token
+        if ($jwt) {
+          $ctx.Headers["Authorization"] = "Bearer $jwt"
+          return $ctx
+        }
+      } catch {}
+      throw "Unauthorized (401). Verifique usuário/senha do admin ou gere um Admin API token."
+    }
+  }
+
+  throw "Informe -ApiToken OU -Email/-Password."
+}
+
+function Invoke-Admin {
+  param(
+    [Parameter(Mandatory=$true)]$Ctx,
+    [Parameter(Mandatory=$true)][ValidateSet("GET","POST")][string]$Method,
+    [Parameter(Mandatory=$true)][string]$Path,
+    $BodyObj = $null
+  )
+
+  $uri = "$($Ctx.BaseUrl)$Path"
+
+  if ($Ctx.WebSession -ne $null) {
+    if ($BodyObj -ne $null) {
+      $json = $BodyObj | ConvertTo-Json -Depth 20
+      return Invoke-RestMethod -Method $Method -Uri $uri -WebSession $Ctx.WebSession -Headers (New-JsonHeaders) -Body $json
+    }
+    return Invoke-RestMethod -Method $Method -Uri $uri -WebSession $Ctx.WebSession -Headers $Ctx.Headers
+  } else {
+    if ($BodyObj -ne $null) {
+      $json = $BodyObj | ConvertTo-Json -Depth 20
+      return Invoke-RestMethod -Method $Method -Uri $uri -Headers (New-JsonHeaders + $Ctx.Headers) -Body $json
+    }
+    return Invoke-RestMethod -Method $Method -Uri $uri -Headers $Ctx.Headers
+  }
 }
 
 function Ensure-RegionId {
-  param([string]$BaseUrl,[hashtable]$Headers,[string]$Preferred)
+  param($Ctx,[string]$Preferred)
   if ($Preferred -and $Preferred.Trim()) { return $Preferred.Trim() }
-  $r = Invoke-RestMethod -Method Get -Uri "$BaseUrl/admin/regions?limit=1" -Headers $Headers
+  $r = Invoke-Admin -Ctx $Ctx -Method GET -Path "/admin/regions?limit=1"
   if ($r.regions -and $r.regions.Count -gt 0) { return $r.regions[0].id }
   throw "Nenhuma region encontrada. Informe -RegionId."
 }
 
-if (!(Test-Path $CsvPath)) { throw "CSV não encontrado: $CsvPath" }
-
-$headers = New-Headers -Token $ApiToken
-
-if ((!$ApiToken -or !$ApiToken.Trim()) -and $Email -and $Password) {
-  $jwt = Login-Jwt -BaseUrl $BackendUrl -Email $Email -Password $Password
-  if ($jwt) {
-    $headers.Remove("x-medusa-access-token") | Out-Null
-    $headers["Authorization"] = "Bearer $jwt"
-  }
-}
-
-$regionId = Ensure-RegionId -BaseUrl $BackendUrl -Headers $headers -Preferred $RegionId
-
-$rows = Import-Csv -Path $CsvPath
-if (!$rows -or $rows.Count -eq 0) { throw "CSV vazio." }
-
 function Slugify([string]$s) {
   return ($s.ToLower() -replace "[^a-z0-9]+","-" -replace "^-|-$","")
 }
+
+if (!(Test-Path $CsvPath)) { throw "CSV não encontrado: $CsvPath" }
+
+$ctx = New-AuthContext -BaseUrl $BackendUrl -ApiToken $ApiToken -Email $Email -Password $Password
+$regionId = Ensure-RegionId -Ctx $ctx -Preferred $RegionId
+
+$rows = Import-Csv -Path $CsvPath
+if (!$rows -or $rows.Count -eq 0) { throw "CSV vazio." }
 
 $created = 0; $updated = 0; $skipped = 0
 
@@ -76,7 +129,7 @@ foreach ($row in $rows) {
 
   $thumb = ($row.thumbnail ?? "").Trim()
 
-  $existing = Invoke-RestMethod -Method Get -Uri "$BackendUrl/admin/products?handle=$handle&limit=1" -Headers $headers
+  $existing = Invoke-Admin -Ctx $ctx -Method GET -Path "/admin/products?handle=$handle&limit=1"
   $productId = $null
   if ($existing.products -and $existing.products.Count -gt 0) { $productId = $existing.products[0].id }
 
@@ -99,24 +152,25 @@ foreach ($row in $rows) {
         }
       )
     }
+
     if ($DryRun) {
       Write-Host "[DRYRUN] create $handle ($title) R$ $($price/100)"
     } else {
-      Invoke-RestMethod -Method Post -Uri "$BackendUrl/admin/products" -Headers $headers -Body ($payloadObj | ConvertTo-Json -Depth 20) | Out-Null
+      Invoke-Admin -Ctx $ctx -Method POST -Path "/admin/products" -BodyObj $payloadObj | Out-Null
     }
     $created++
-  }
-  else {
+  } else {
     $payloadObj = @{
       title = $title
       description = ($row.description ?? "").Trim()
       thumbnail = $(if($thumb){$thumb}else{$null})
       metadata = $metadata
     }
+
     if ($DryRun) {
       Write-Host "[DRYRUN] update $handle ($productId)"
     } else {
-      Invoke-RestMethod -Method Post -Uri "$BackendUrl/admin/products/$productId" -Headers $headers -Body ($payloadObj | ConvertTo-Json -Depth 20) | Out-Null
+      Invoke-Admin -Ctx $ctx -Method POST -Path "/admin/products/$productId" -BodyObj $payloadObj | Out-Null
     }
     $updated++
   }
