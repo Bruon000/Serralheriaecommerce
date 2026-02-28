@@ -97,25 +97,14 @@ foreach ($row in $rows) {
 
   if (-not $productId) {
     $payloadObj = @{
-      title = $title
-      handle = $handle
-      description = ($row.description ?? "").Trim()
-      status = "published"
-      thumbnail = $(if($thumb){$thumb}else{$null})
-      metadata = $metadata
-      options = @(@{ title = "Padrão" })
-      variants = @(
-        @{
-          title = "Padrão"
-          prices = @(@{ amount = $price; currency_code = "brl"; region_id = $regionId })
-          manage_inventory = $false
-          inventory_quantity = 0
-          options = @(@{ value = "Padrão" })
-        }
-      )
-    }
-
-    if ($DryRun) {
+  title = $title
+  handle = $handle
+  description = ($row.description ?? "").Trim()
+  status = "published"
+  thumbnail = $(if($thumb){$thumb}else{$null})
+  metadata = $metadata
+}
+if ($DryRun) {
       Write-Host "[DRYRUN] create $handle ($title) R$ $($price/100)"
     } else {
       Admin-Post -BaseUrl $BackendUrl -Session $sess -Path "/admin/products" -BodyObj $payloadObj | Out-Null
@@ -123,13 +112,14 @@ foreach ($row in $rows) {
     $created++
   } else {
     $payloadObj = @{
-      title = $title
-      description = ($row.description ?? "").Trim()
-      thumbnail = $(if($thumb){$thumb}else{$null})
-      metadata = $metadata
-    }
-
-    if ($DryRun) {
+  title = $title
+  handle = $handle
+  description = ($row.description ?? "").Trim()
+  status = "published"
+  thumbnail = $(if($thumb){$thumb}else{$null})
+  metadata = $metadata
+}
+if ($DryRun) {
       Write-Host "[DRYRUN] update $handle ($productId)"
     } else {
       Admin-Post -BaseUrl $BackendUrl -Session $sess -Path "/admin/products/$productId" -BodyObj $payloadObj | Out-Null
@@ -139,3 +129,4 @@ foreach ($row in $rows) {
 }
 
 Write-Host "Import finalizado. created=$created updated=$updated skipped=$skipped regionId=$regionId"
+

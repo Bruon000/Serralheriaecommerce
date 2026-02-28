@@ -120,4 +120,5 @@ foreach ($p in $targets) {
   }
 }
 
-Write-Host "Promoção aplicada em $($targets.Count) produto(s)."
+Write-Host ("Promoção aplicada em " + (@($targets).Count) + " produto(s).")
+
