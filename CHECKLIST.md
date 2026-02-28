@@ -18,8 +18,8 @@ Stack:
 - `npm run dev`
 
 ## Estado atual (atualizado automaticamente)
-- Última atualização: 2026-02-28 14:35:38
-- Git commit: 8efa73f
+- Última atualização: 2026-02-28 14:52:26
+- Git commit: a41b758
 - Ports:
   - Frontend: http://localhost:3000
   - Admin Medusa: http://localhost:9000/app
@@ -35,10 +35,10 @@ dolibarr Up 5 hours
 mariadb Up 5 hours
 frappe_docker-frontend-1 Up 5 hours
 frappe_docker-backend-1 Up 5 hours
-frappe_docker-websocket-1 Restarting (1) 45 seconds ago
-frappe_docker-queue-long-1 Up 18 seconds
+frappe_docker-websocket-1 Restarting (1) 49 seconds ago
+frappe_docker-queue-long-1 Up 21 seconds
 frappe_docker-scheduler-1 Up 5 hours
-frappe_docker-queue-short-1 Up 18 seconds
+frappe_docker-queue-short-1 Up 21 seconds
 `
 ## Checklist do projeto (ordem ideal)
 
@@ -83,4 +83,5 @@ frappe_docker-queue-short-1 Up 18 seconds
 - [ ] Docker Compose no VPS
 - [ ] Nginx + SSL
 - [ ] Subdomínios e DNS (quando você decidir)
+
 

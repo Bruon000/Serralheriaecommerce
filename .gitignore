@@ -23,3 +23,6 @@ Thumbs.db
 # Medusa
 backend/.medusa/
 backend/.cache/
+**/.next/
+**/dist/
+**/.turbo/
