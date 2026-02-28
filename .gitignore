@@ -1,0 +1,25 @@
+# Node / Next
+node_modules/
+**/node_modules/
+.next/
+.turbo/
+dist/
+build/
+out/
+coverage/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Medusa
+backend/.medusa/
+backend/.cache/
