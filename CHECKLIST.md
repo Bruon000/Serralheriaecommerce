@@ -1,11 +1,11 @@
 # CHECKLIST - Serralheria Ecommerce (Medusa + Next)
 
-> **Regra:** sempre que for parar, rodar: `pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\update-project.ps1`
-J
+> **Regra:** sempre que for parar, rodar: `pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\stop.ps1`
+
 ## Resumo do Projeto
 Ecommerce de serralheria (portões, grades, corrimãos, estruturas metálicas).
 
-Ctack:
+Stack:
 - **Backend:** Medusa (Admin: http://localhost:9000/app)
 - **DB:** Postgres + Redis via Docker Compose
 - **Frontend:** Next.js (http://localhost:3000)
@@ -18,8 +18,8 @@ Ctack:
 - `npm run dev`
 
 ## Estado atual (atualizado automaticamente)
-- Última atualização: 2026-02-28 13:58:24
-- Git commit: b228912
+- Última atualização: 2026-02-28 14:34:31
+- Git commit: 8d6c5cf
 - Ports:
   - Frontend: http://localhost:3000
   - Admin Medusa: http://localhost:9000/app
@@ -27,25 +27,25 @@ Ctack:
 
 ### Docker status
 `	ext
-serralheria-pgadmin Up 3 hours
-serralheria-postgres Up 3 hours (healthy)
-medusa-postgres Up 4 hours
-medusa-redis Up 4 hours
-dolibarr Up 4 hours
-mariadb Up 4 hours
-frappe_docker-frontend-1 Up 4 hours
-frappe_docker-backend-1 Up 4 hours
-frappe_docker-websocket-1 Restarting (1) 9 seconds ago
-frappe_docker-queue-long-1 Up 2 seconds
-frappe_docker-scheduler-1 Up 4 hours
-frappe_docker-queue-short-1 Up 2 seconds
+serralheria-pgadmin Up 4 hours
+serralheria-postgres Up 4 hours (healthy)
+medusa-postgres Up 5 hours
+medusa-redis Up 5 hours
+dolibarr Up 5 hours
+mariadb Up 5 hours
+frappe_docker-frontend-1 Up 5 hours
+frappe_docker-backend-1 Up 5 hours
+frappe_docker-websocket-1 Restarting (1) 41 seconds ago
+frappe_docker-queue-long-1 Up 3 seconds
+frappe_docker-scheduler-1 Up 5 hours
+frappe_docker-queue-short-1 Up 3 seconds
 `
 ## Checklist do projeto (ordem ideal)
 
 ### Fase 0 — Preparação
 - [ ] Instalar Node.js LTS (inclui npm)
 - [ ] Instalar Git
-- [ ] (Opcional) Instalar Docker Desktop (se quiser rodar Postgres/Redis local sem dor)J
+- [ ] (Opcional) Instalar Docker Desktop (se quiser rodar Postgres/Redis local sem dor)
 
 ### Fase 1 — Base rodando local (MVP)
 - [ ] Subir Medusa backend (API + Admin)
@@ -75,23 +75,12 @@ frappe_docker-queue-short-1 Up 2 seconds
 - [ ] Pedido vai pro WhatsApp do vendedor B2B
 
 ### Fase 5 — Temas sazonais automáticos
-- [ ] themes.json com calendário (Natal/Junino/Carnaval/Ano Novo…)
-- [ ] aplicação automática por data (CSS variables + banner + detalhes leves)
-- [ ] fallback tema padrão
+- [ ] themes.json com calendário (Natal/Junino/Carnaval/Ano Novo...)
+- [ ] Aplicação automática por data (CSS variables + banner + detalhes leves)
+- [ ] Fallback tema padrão
 
-### Fase 6 – Deploy no VPS
+### Fase 6 — Deploy no VPS
 - [ ] Docker Compose no VPS
 - [ ] Nginx + SSL
-- [ ] Subdominios e DNS (quando você decidir)
-
-## Pontos de atenção / bugs conhecidos
-- [ ] Script de criação de produtos via PowerShell: **NÃO usar `$pid`** (conflita com `$PID` do PowerShell)
-- [ ] Produtos duplicados por handle em execuções antigas (limpar depois se quiser)
-
-## Próximos passos (prioridade)
-- [ ] Importação em lote via CSV (tools/import-produtos.ps1)
-- [ ] Marcar promoções (tools/mark-promocoes.ps1) — se criar
-- [ ] tema automático por data (themes.json) sem deploy
-- [ ] Subir pro produção (docker compose + nginx + SSL) quando fechar MVP
-
+- [ ] Subdomínios e DNS (quando você decidir)
 
