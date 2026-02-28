@@ -37,3 +37,4 @@ export async function getPromocaoSemana(): Promise<MedusaProduct[]> {
 
 
 
+
