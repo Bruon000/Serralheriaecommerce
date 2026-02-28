@@ -2,8 +2,10 @@ param(
   [Parameter(Mandatory=$true)][string]$CsvPath,
   [string]$BackendUrl = "http://localhost:9000",
   [string]$ApiToken = "",
+  [string]$Jwt = "",
   [string]$Email = "",
   [string]$Password = "",
+  [string]$AuthRoute = "/auth/user/emailpass",
   [string]$RegionId = "",
   [switch]$DryRun
 )
@@ -11,99 +13,44 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-function New-BaseHeaders {
-  $h = @{ "Accept"="application/json" }
-  return $h
-}
+function Headers-Json { @{ "Accept"="application/json"; "Content-Type"="application/json" } }
 
-function New-JsonHeaders {
-  $h = New-BaseHeaders
-  $h["Content-Type"]="application/json"
-  return $h
-}
-
-function New-AuthContext {
-  param([string]$BaseUrl,[string]$ApiToken,[string]$Email,[string]$Password)
-
-  $ctx = [ordered]@{
-    BaseUrl = $BaseUrl
-    Headers = (New-JsonHeaders)
-    WebSession = $null
-  }
+function New-AuthHeaders {
+  param([string]$BaseUrl,[string]$ApiToken,[string]$Jwt,[string]$Email,[string]$Password,[string]$AuthRoute)
 
   if ($ApiToken -and $ApiToken.Trim()) {
-    $ctx.Headers["x-medusa-access-token"] = $ApiToken.Trim()
-    return $ctx
+    return @{ "Accept"="application/json"; "Authorization"="Basic $($ApiToken.Trim())" }
+  }
+
+  if ($Jwt -and $Jwt.Trim()) {
+    return @{ "Accept"="application/json"; "Authorization"="Bearer $($Jwt.Trim())" }
   }
 
   if ($Email -and $Password) {
-    # 1) Tenta auth por sessão/cookie (mais compatível)
-    try {
-      $sess = New-Object Microsoft.PowerShell.Commands.WebRequestSession
-      $body = @{ email=$Email; password=$Password } | ConvertTo-Json
-      Invoke-WebRequest -Method Post -Uri "$BaseUrl/admin/auth" -Body $body -Headers (New-JsonHeaders) -WebSession $sess | Out-Null
-      $ctx.WebSession = $sess
-      $ctx.Headers = (New-BaseHeaders) # sem Content-Type pra GETs
-      return $ctx
-    } catch {
-      # 2) fallback: token endpoint
-      try {
-        $body = @{ email=$Email; password=$Password } | ConvertTo-Json
-        $res = Invoke-RestMethod -Method Post -Uri "$BaseUrl/admin/auth/user/emailpass" -Body $body -Headers (New-JsonHeaders)
-        $jwt = $res.access_token
-        if ($jwt) {
-          $ctx.Headers["Authorization"] = "Bearer $jwt"
-          return $ctx
-        }
-      } catch {}
-      throw "Unauthorized (401). Verifique usuário/senha do admin ou gere um Admin API token."
-    }
+    $body = @{ email=$Email; password=$Password } | ConvertTo-Json
+    $res = Invoke-RestMethod -Method Post -Uri "$BaseUrl$AuthRoute" -Body $body -Headers (Headers-Json)
+    $t = $res.token
+    if (!$t) { throw "Login ok mas token vazio em $AuthRoute" }
+    return @{ "Accept"="application/json"; "Authorization"="Bearer $t" }
   }
 
-  throw "Informe -ApiToken OU -Email/-Password."
-}
-
-function Invoke-Admin {
-  param(
-    [Parameter(Mandatory=$true)]$Ctx,
-    [Parameter(Mandatory=$true)][ValidateSet("GET","POST")][string]$Method,
-    [Parameter(Mandatory=$true)][string]$Path,
-    $BodyObj = $null
-  )
-
-  $uri = "$($Ctx.BaseUrl)$Path"
-
-  if ($Ctx.WebSession -ne $null) {
-    if ($BodyObj -ne $null) {
-      $json = $BodyObj | ConvertTo-Json -Depth 20
-      return Invoke-RestMethod -Method $Method -Uri $uri -WebSession $Ctx.WebSession -Headers (New-JsonHeaders) -Body $json
-    }
-    return Invoke-RestMethod -Method $Method -Uri $uri -WebSession $Ctx.WebSession -Headers $Ctx.Headers
-  } else {
-    if ($BodyObj -ne $null) {
-      $json = $BodyObj | ConvertTo-Json -Depth 20
-      return Invoke-RestMethod -Method $Method -Uri $uri -Headers (New-JsonHeaders + $Ctx.Headers) -Body $json
-    }
-    return Invoke-RestMethod -Method $Method -Uri $uri -Headers $Ctx.Headers
-  }
+  throw "Informe -ApiToken OU -Jwt OU -Email/-Password."
 }
 
 function Ensure-RegionId {
-  param($Ctx,[string]$Preferred)
+  param([string]$BaseUrl,[hashtable]$Headers,[string]$Preferred)
   if ($Preferred -and $Preferred.Trim()) { return $Preferred.Trim() }
-  $r = Invoke-Admin -Ctx $Ctx -Method GET -Path "/admin/regions?limit=1"
+  $r = Invoke-RestMethod -Method Get -Uri "$BaseUrl/admin/regions?limit=1" -Headers $Headers
   if ($r.regions -and $r.regions.Count -gt 0) { return $r.regions[0].id }
   throw "Nenhuma region encontrada. Informe -RegionId."
 }
 
-function Slugify([string]$s) {
-  return ($s.ToLower() -replace "[^a-z0-9]+","-" -replace "^-|-$","")
-}
+function Slugify([string]$s) { return ($s.ToLower() -replace "[^a-z0-9]+","-" -replace "^-|-$","") }
 
 if (!(Test-Path $CsvPath)) { throw "CSV não encontrado: $CsvPath" }
 
-$ctx = New-AuthContext -BaseUrl $BackendUrl -ApiToken $ApiToken -Email $Email -Password $Password
-$regionId = Ensure-RegionId -Ctx $ctx -Preferred $RegionId
+$headers = New-AuthHeaders -BaseUrl $BackendUrl -ApiToken $ApiToken -Jwt $Jwt -Email $Email -Password $Password -AuthRoute $AuthRoute
+$regionId = Ensure-RegionId -BaseUrl $BackendUrl -Headers $headers -Preferred $RegionId
 
 $rows = Import-Csv -Path $CsvPath
 if (!$rows -or $rows.Count -eq 0) { throw "CSV vazio." }
@@ -129,7 +76,7 @@ foreach ($row in $rows) {
 
   $thumb = ($row.thumbnail ?? "").Trim()
 
-  $existing = Invoke-Admin -Ctx $ctx -Method GET -Path "/admin/products?handle=$handle&limit=1"
+  $existing = Invoke-RestMethod -Method Get -Uri "$BackendUrl/admin/products?handle=$handle&limit=1" -Headers $headers
   $productId = $null
   if ($existing.products -and $existing.products.Count -gt 0) { $productId = $existing.products[0].id }
 
@@ -156,7 +103,7 @@ foreach ($row in $rows) {
     if ($DryRun) {
       Write-Host "[DRYRUN] create $handle ($title) R$ $($price/100)"
     } else {
-      Invoke-Admin -Ctx $ctx -Method POST -Path "/admin/products" -BodyObj $payloadObj | Out-Null
+      Invoke-RestMethod -Method Post -Uri "$BackendUrl/admin/products" -Headers (Headers-Json + $headers) -Body ($payloadObj | ConvertTo-Json -Depth 20) | Out-Null
     }
     $created++
   } else {
@@ -170,11 +117,10 @@ foreach ($row in $rows) {
     if ($DryRun) {
       Write-Host "[DRYRUN] update $handle ($productId)"
     } else {
-      Invoke-Admin -Ctx $ctx -Method POST -Path "/admin/products/$productId" -BodyObj $payloadObj | Out-Null
+      Invoke-RestMethod -Method Post -Uri "$BackendUrl/admin/products/$productId" -Headers (Headers-Json + $headers) -Body ($payloadObj | ConvertTo-Json -Depth 20) | Out-Null
     }
     $updated++
   }
 }
 
 Write-Host "Import finalizado. created=$created updated=$updated skipped=$skipped regionId=$regionId"
-

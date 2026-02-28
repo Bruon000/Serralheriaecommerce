@@ -1,8 +1,10 @@
 param(
   [string]$BackendUrl = "http://localhost:9000",
   [string]$ApiToken = "",
+  [string]$Jwt = "",
   [string]$Email = "",
   [string]$Password = "",
+  [string]$AuthRoute = "/auth/user/emailpass",
   [string]$Ipo = "",
   [string[]]$Handles = @(),
   [ValidateSet("semana")][string]$Promocao = "semana",
@@ -13,64 +15,35 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-function New-BaseHeaders { @{ "Accept"="application/json" } }
-function New-JsonHeaders { @{ "Accept"="application/json"; "Content-Type"="application/json" } }
+function Headers-Json { @{ "Accept"="application/json"; "Content-Type"="application/json" } }
 
-function New-AuthContext {
-  param([string]$BaseUrl,[string]$ApiToken,[string]$Email,[string]$Password)
-
-  $ctx = [ordered]@{ BaseUrl=$BaseUrl; Headers=(New-JsonHeaders); WebSession=$null }
+function New-AuthHeaders {
+  param([string]$BaseUrl,[string]$ApiToken,[string]$Jwt,[string]$Email,[string]$Password,[string]$AuthRoute)
 
   if ($ApiToken -and $ApiToken.Trim()) {
-    $ctx.Headers["x-medusa-access-token"] = $ApiToken.Trim()
-    return $ctx
+    return @{ "Accept"="application/json"; "Authorization"="Basic $($ApiToken.Trim())" }
+  }
+
+  if ($Jwt -and $Jwt.Trim()) {
+    return @{ "Accept"="application/json"; "Authorization"="Bearer $($Jwt.Trim())" }
   }
 
   if ($Email -and $Password) {
-    try {
-      $sess = New-Object Microsoft.PowerShell.Commands.WebRequestSession
-      $body = @{ email=$Email; password=$Password } | ConvertTo-Json
-      Invoke-WebRequest -Method Post -Uri "$BaseUrl/admin/auth" -Body $body -Headers (New-JsonHeaders) -WebSession $sess | Out-Null
-      $ctx.WebSession = $sess
-      $ctx.Headers = (New-BaseHeaders)
-      return $ctx
-    } catch {
-      try {
-        $body = @{ email=$Email; password=$Password } | ConvertTo-Json
-        $res = Invoke-RestMethod -Method Post -Uri "$BaseUrl/admin/auth/user/emailpass" -Body $body -Headers (New-JsonHeaders)
-        $jwt = $res.access_token
-        if ($jwt) { $ctx.Headers["Authorization"]="Bearer $jwt"; return $ctx }
-      } catch {}
-      throw "Unauthorized (401). Verifique usuário/senha do admin ou gere um Admin API token."
-    }
+    $body = @{ email=$Email; password=$Password } | ConvertTo-Json
+    $res = Invoke-RestMethod -Method Post -Uri "$BaseUrl$AuthRoute" -Body $body -Headers (Headers-Json)
+    $t = $res.token
+    if (!$t) { throw "Login ok mas token vazio em $AuthRoute" }
+    return @{ "Accept"="application/json"; "Authorization"="Bearer $t" }
   }
 
-  throw "Informe -ApiToken OU -Email/-Password."
-}
-
-function Invoke-Admin {
-  param($Ctx,[ValidateSet("GET","POST")][string]$Method,[string]$Path,$BodyObj=$null)
-  $uri = "$($Ctx.BaseUrl)$Path"
-  if ($Ctx.WebSession) {
-    if ($BodyObj -ne $null) {
-      $json = $BodyObj | ConvertTo-Json -Depth 20
-      return Invoke-RestMethod -Method $Method -Uri $uri -WebSession $Ctx.WebSession -Headers (New-JsonHeaders) -Body $json
-    }
-    return Invoke-RestMethod -Method $Method -Uri $uri -WebSession $Ctx.WebSession -Headers $Ctx.Headers
-  } else {
-    if ($BodyObj -ne $null) {
-      $json = $BodyObj | ConvertTo-Json -Depth 20
-      return Invoke-RestMethod -Method $Method -Uri $uri -Headers (New-JsonHeaders + $Ctx.Headers) -Body $json
-    }
-    return Invoke-RestMethod -Method $Method -Uri $uri -Headers $Ctx.Headers
-  }
+  throw "Informe -ApiToken OU -Jwt OU -Email/-Password."
 }
 
 function Get-AllProducts {
-  param($Ctx)
+  param([string]$BaseUrl,[hashtable]$Headers)
   $all = @(); $offset = 0
   do {
-    $r = Invoke-Admin -Ctx $Ctx -Method GET -Path "/admin/products?limit=50&offset=$offset"
+    $r = Invoke-RestMethod -Method Get -Uri "$BaseUrl/admin/products?limit=50&offset=$offset" -Headers $Headers
     $batch = ($r.products ?? @())
     $all += $batch
     $offset += 50
@@ -78,23 +51,23 @@ function Get-AllProducts {
   return $all
 }
 
-$ctx = New-AuthContext -BaseUrl $BackendUrl -ApiToken $ApiToken -Email $Email -Password $Password
+$headers = New-AuthHeaders -BaseUrl $BackendUrl -ApiToken $ApiToken -Jwt $Jwt -Email $Email -Password $Password -AuthRoute $AuthRoute
 
 $targets = @()
 if ($Handles.Count -gt 0) {
   foreach ($h in $Handles) {
-    $r = Invoke-Admin -Ctx $ctx -Method GET -Path "/admin/products?handle=$h&limit=1"
+    $r = Invoke-RestMethod -Method Get -Uri "$BackendUrl/admin/products?handle=$h&limit=1" -Headers $headers
     if ($r.products -and $r.products.Count -gt 0) { $targets += $r.products[0] }
   }
 } elseif ($Ipo) {
-  $all = Get-AllProducts -Ctx $ctx
+  $all = Get-AllProducts -BaseUrl $BackendUrl -Headers $headers
   $targets = $all | Where-Object { $_.metadata -and $_.metadata.ipo -eq $Ipo }
 } else {
   throw "Informe -Ipo ou -Handles."
 }
 
 if ($ClearOthers) {
-  $all = Get-AllProducts -Ctx $ctx
+  $all = Get-AllProducts -BaseUrl $BackendUrl -Headers $headers
   $others = $all | Where-Object { $_.metadata -and $_.metadata.promocao -eq $Promocao }
   foreach ($p in $others) {
     $md = @{}
@@ -104,7 +77,7 @@ if ($ClearOthers) {
     if ($DryRun) {
       Write-Host "[DRYRUN] clear promocao $($p.handle)"
     } else {
-      Invoke-Admin -Ctx $ctx -Method POST -Path "/admin/products/$($p.id)" -BodyObj @{ metadata=$md } | Out-Null
+      Invoke-RestMethod -Method Post -Uri "$BackendUrl/admin/products/$($p.id)" -Headers (Headers-Json + $headers) -Body (@{ metadata=$md } | ConvertTo-Json -Depth 20) | Out-Null
     }
   }
 }
@@ -119,10 +92,9 @@ foreach ($p in $targets) {
   if ($DryRun) {
     Write-Host "[DRYRUN] set promocao=$Promocao -> $($p.handle)"
   } else {
-    Invoke-Admin -Ctx $ctx -Method POST -Path "/admin/products/$($p.id)" -BodyObj @{ metadata=$md } | Out-Null
+    Invoke-RestMethod -Method Post -Uri "$BackendUrl/admin/products/$($p.id)" -Headers (Headers-Json + $headers) -Body (@{ metadata=$md } | ConvertTo-Json -Depth 20) | Out-Null
     Write-Host "OK -> $($p.handle)"
   }
 }
 
 Write-Host "Promoção aplicada em $($targets.Count) produto(s)."
-
