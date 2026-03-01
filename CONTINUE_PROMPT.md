@@ -28,15 +28,17 @@ Você é minha IA assistente de dev. Continue o projeto **Serralheria Ecommerce*
 - Home com Promoção da Semana (metadata.promocao='semana')
 
 ## Onde paramos / próximo passo
-1) WhatsApp concluído no carrinho: mensagem com itens + número configurável por env (varejo/B2B) e regra mínimo 3 apenas para B2B.
-2) Ofertas para construtores (B2B) implementado: /construtor/ofertas (público) filtrando metadata.oferta='construtor' + script tools\ofertas-construtor.ps1 para marcar em lote.
-3) Próximo: iniciar Fase 4 (Cadastro/Login real + status pendente/aprovado + preços B2B diferentes).
+1) Cadastro/Login B2B real implementado (pendente/aprovado/rejeitado) via rotas custom do Medusa: /store/custom/b2b (com x-publishable-api-key) e aprovação via /admin/custom/b2b.
+2) Storefront: /construtor/cadastro, /construtor/login, /construtor/status consumindo a API e setando construtor_cadastrado_v1 apenas quando aprovado.
+3) Próximo: implementar preço B2B diferente quando aprovado.
 
 ## Fonte da verdade
 CHECKLIST.md = lista de tarefas. AGENTS.md = como a IA deve trabalhar e onde atualizar.
 
 ---
-Última atualização automática: 2026-03-01 13:07:12 | commit: f7b838e
+Última atualização automática: 2026-03-01 13:11:01 | commit: 4955024
+
+
 
 
 
