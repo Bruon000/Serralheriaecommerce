@@ -142,3 +142,30 @@ a{ color:inherit; }
   opacity:.75;
   font-size:13px;
 }
+
+.floatCart{
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 50;
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--theme-accent) 10%, #fff 90%);
+  box-shadow: var(--shadowHover);
+  text-decoration: none;
+}
+
+.floatCartBadge{
+  min-width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #fff;
+  font-weight: 950;
+}
