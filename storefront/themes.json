@@ -1,0 +1,61 @@
+{
+  "default": {
+    "name": "Padrão",
+    "bannerText": "",
+    "vars": {
+      "--theme-accent": "#111111",
+      "--theme-bg": "#ffffff",
+      "--theme-fg": "#111111"
+    }
+  },
+  "themes": [
+    {
+      "key": "ano-novo",
+      "name": "Ano Novo",
+      "start": "12-26",
+      "end": "01-07",
+      "bannerText": "Feliz Ano Novo! Aproveite condições especiais.",
+      "vars": {
+        "--theme-accent": "#0b6bcb",
+        "--theme-bg": "#ffffff",
+        "--theme-fg": "#0b1b2b"
+      }
+    },
+    {
+      "key": "carnaval",
+      "name": "Carnaval",
+      "start": "02-01",
+      "end": "03-15",
+      "bannerText": "Carnaval de ofertas: metal na medida do seu projeto!",
+      "vars": {
+        "--theme-accent": "#8a2be2",
+        "--theme-bg": "#ffffff",
+        "--theme-fg": "#2a0b3d"
+      }
+    },
+    {
+      "key": "junino",
+      "name": "São João",
+      "start": "06-01",
+      "end": "06-30",
+      "bannerText": "Arraiá da Serralheria: promoções juninas!",
+      "vars": {
+        "--theme-accent": "#d35400",
+        "--theme-bg": "#fffaf0",
+        "--theme-fg": "#3d1f00"
+      }
+    },
+    {
+      "key": "natal",
+      "name": "Natal",
+      "start": "12-01",
+      "end": "12-25",
+      "bannerText": "Natal com mais segurança e estilo: confira as ofertas!",
+      "vars": {
+        "--theme-accent": "#c0392b",
+        "--theme-bg": "#fffafa",
+        "--theme-fg": "#2b0b0b"
+      }
+    }
+  ]
+}

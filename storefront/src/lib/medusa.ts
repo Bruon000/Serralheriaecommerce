@@ -24,6 +24,11 @@ export async function listProducts(): Promise<MedusaProduct[]> {
   return (json.products || []) as MedusaProduct[];
 }
 
+export async function getProductByHandle(handle: string): Promise<MedusaProduct | null> {
+  const products = await listProducts();
+  return products.find((p) => p.handle === handle) ?? null;
+}
+
 export async function getPromocaoSemana(): Promise<MedusaProduct[]> {
   const products = await listProducts();
   return products.filter(

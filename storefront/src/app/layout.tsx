@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
+import ThemeAutoStyle from "./components/ThemeAutoStyle";
+import ThemeBanner from "./components/ThemeBanner";
 import { Geist, Geist_Mono } from "next/font/google";
+import ThemeAutoStyle from "./components/ThemeAutoStyle";
+import ThemeBanner from "./components/ThemeBanner";
 import "./globals.css";
+import ThemeAutoStyle from "./components/ThemeAutoStyle";
+import ThemeBanner from "./components/ThemeBanner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,8 +31,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <ThemeAutoStyle />
+        <ThemeBanner />
         {children}
       </body>
     </html>
   );
 }
+
