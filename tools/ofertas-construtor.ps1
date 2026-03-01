@@ -55,15 +55,15 @@ foreach ($h in $Handles) {
   if ($p.metadata) { $p.metadata.psobject.Properties | ForEach-Object { $newMeta[$_.Name] = $_.Value } }
 
   if ($Clear) {
-    if ($newMeta.ContainsKey("promocao")) { $newMeta.Remove("promocao") }
-    Write-Host "Removendo promocao='semana' de $handle -> $productId"
+    if ($newMeta.ContainsKey("oferta")) { $newMeta.Remove("oferta") }
+    Write-Host "Removendo oferta='construtor' de $handle -> $productId"
   } else {
-    $newMeta["promocao"] = "semana"
-    Write-Host "Marcando promocao='semana' em $handle -> $productId"
+    $newMeta["oferta"] = "construtor"
+    Write-Host "Marcando oferta='construtor' em $handle -> $productId"
   }
 
   $patch = @{ metadata = $newMeta } | ConvertTo-Json -Depth 20
   Invoke-RestMethod -Method Post -Uri "$BaseUrlResolved/admin/products/$productId" -Headers $headers -ContentType "application/json" -Body $patch -ErrorAction Stop | Out-Null
 }
 
-Write-Host "OK: promoção da semana atualizada."
+Write-Host "OK: ofertas para construtor atualizadas."

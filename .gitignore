@@ -26,3 +26,6 @@ backend/.cache/
 **/.next/
 **/dist/
 **/.turbo/
+
+CHECKLIST.big.bak.md
+

@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { buildWhatsappLink } from "../../lib/whatsapp";
 import { CartItem, loadCart, saveCart, countPortoes } from "../../lib/cart";
-
-const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "5585999999999";
-
 export default function CarrinhoPage() {
   const [items, setItems] = useState<CartItem[]>([]);
   const [b2bOk, setB2bOk] = useState<boolean>(false); // TODO: plugar no cadastro real
@@ -38,20 +36,14 @@ export default function CarrinhoPage() {
     const next = items.filter((_, i) => i !== idx);
     update(next);
   }
-
-  const canWhatsapp = b2bOk && portoes >= 3;
-
-  const waText = encodeURIComponent(
-    [
+  const isB2B = b2bOk; const canWhatsapp = isB2B ? portoes >= 3 : true;
+  const waMessage = [
       "Olá! Quero finalizar meu orçamento:",
       "",
       ...items.map((i) => `- ${i.title} (qtd: ${i.qty}) | ${i.largura ?? "-"} x ${i.altura ?? "-"} | cor: ${i.cor ?? "-"} | obs: ${i.obs ?? "-"}`),
       "",
       `Total de portões no carrinho: ${portoes}`,
-    ].join("\n")
-  );
-
-  const waLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${waText}`;
+    ].join("\n"); const waLink = buildWhatsappLink(waMessage, { b2b: isB2B });
 
   return (
     <main style={{ padding: 24, maxWidth: 960, margin: "0 auto" }}>
@@ -104,11 +96,14 @@ export default function CarrinhoPage() {
 
         {!canWhatsapp && (
           <div style={{ marginTop: 8, color: "#a00" }}>
-            Para liberar WhatsApp: precisa estar cadastrado (B2B) e ter pelo menos 3 portões no carrinho.
+            Para B2B: precisa estar cadastrado e ter pelo menos 3 portões no carrinho. No varejo, o WhatsApp fica liberado.
           </div>
         )}
       </div>
     </main>
   );
 }
+
+
+
 

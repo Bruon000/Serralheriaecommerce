@@ -28,15 +28,17 @@ Você é minha IA assistente de dev. Continue o projeto **Serralheria Ecommerce*
 - Home com Promoção da Semana (metadata.promocao='semana')
 
 ## Onde paramos / próximo passo
-1) Cadastro/Login B2B real implementado (pendente/aprovado/rejeitado) via rotas custom do Medusa: /store/custom/b2b (com x-publishable-api-key) e aprovação via /admin/custom/b2b.
-2) Storefront: /construtor/cadastro, /construtor/login, /construtor/status consumindo a API e setando construtor_cadastrado_v1 apenas quando aprovado.
-3) Próximo: implementar preço B2B diferente quando aprovado.
+1) B2B real funcionando: /construtor/cadastro/login/status com aprovação via tools\b2b-approve.ps1 (admin/custom/b2b) e consumo via proxy Next /api/b2b (resolve CORS).
+2) Preço B2B diferente: metadata.preco_b2b + tools\preco-b2b.ps1; Home mostra preço normal e produto mostra preço B2B quando construtor_cadastrado_v1=1 (PriceBlock).
+3) Próximo: reduzir CHECKLIST.md gigante (63MB) para evitar problemas no GitHub e seguir próximos itens do checklist.
 
 ## Fonte da verdade
 CHECKLIST.md = lista de tarefas. AGENTS.md = como a IA deve trabalhar e onde atualizar.
 
 ---
-Última atualização automática: 2026-03-01 13:11:01 | commit: 4955024
+Última atualização automática: 2026-03-01 13:43:56 | commit: eda3910
+
+
 
 
 

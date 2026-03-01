@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { getProductByHandle } from "../../../lib/medusa";
 import AddToCartForm from "../../../components/AddToCartForm";
-
+import PriceBlock from "../../../components/PriceBlock";
 type Props = { params: Promise<{ handle: string }> };
 
 export default async function ProdutoPage({ params }: Props) {
@@ -14,8 +14,8 @@ export default async function ProdutoPage({ params }: Props) {
     <main style={{ padding: 24, maxWidth: 720, margin: "0 auto" }}>
       <a href="/">← Home</a>
       <a href="/catalogo" style={{ marginLeft: 12 }}>Catálogo</a>
-
       <h1 style={{ fontSize: 28, marginTop: 16 }}>{product.title}</h1>
+      <PriceBlock product={product} />
       <div style={{ opacity: 0.8, fontSize: 14, marginTop: 8 }}>
         IPO: {String(product.metadata?.ipo ?? "-")} | Tipo: {String(product.metadata?.tipo ?? "-")}
       </div>
@@ -35,3 +35,4 @@ export default async function ProdutoPage({ params }: Props) {
     </main>
   );
 }
+

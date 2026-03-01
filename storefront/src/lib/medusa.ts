@@ -13,7 +13,7 @@ export type MedusaProduct = {
 };
 
 export async function listProducts(): Promise<MedusaProduct[]> {
-  const res = await fetch(`${MEDUSA_BACKEND_URL}/store/products?limit=100&fields=id,title,handle,thumbnail,metadata,metadata\.promocao,metadata\.ipo,metadata\.tipo`, {
+  const res = await fetch(`${MEDUSA_BACKEND_URL}/store/products?limit=100&fields=id,title,handle,thumbnail,metadata,metadata\.promocao,metadata\.oferta,metadata\.preco_b2b,metadata\.ipo,metadata\.tipo,variants,variants.prices,variants.prices.amount,variants.prices.currency_code`, {
     cache: "no-store",
     headers: MEDUSA_PUBLISHABLE_KEY
       ? { "x-publishable-api-key": MEDUSA_PUBLISHABLE_KEY }
@@ -38,8 +38,8 @@ export async function getPromocaoSemana(): Promise<MedusaProduct[]> {
       p?.metadata?.ipo === "AL-20"
   );
 }
-
-
-
-
+export async function getOfertasConstrutor(): Promise<MedusaProduct[]> {
+  const products = await listProducts();
+  return products.filter((p) => p?.metadata?.oferta === "construtor");
+}
 
