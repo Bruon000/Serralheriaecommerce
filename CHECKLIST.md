@@ -1,91 +1,823 @@
 # CHECKLIST — Serralheria Ecommerce (Medusa + Next)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 > Este checklist foi reconstruído em formato compacto para caber no GitHub (o antigo inflou e passou do limite).  
+
+
+
+
+
+
+
+
 > Fonte da verdade continua sendo este arquivo + CONTINUE_PROMPT.md (seção **Onde paramos / próximo passo**).
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Fase 0 — Infra / Rodar local
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 - [x] Backend Medusa (medusa develop) rodando (http://localhost:9000)
+
+
+
+
+
+
+
+
 - [x] Storefront Next rodando (http://localhost:3000)
+
+
+
+
+
+
+
+
 - [x] Docker Postgres/Redis (docker compose up -d)
+
+
+
+
+
+
+
+
 - [ ] Documentar comandos rápidos no README (subir backend/storefront e seed)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Fase 1 — Página do produto / Produto individual
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 - [x] Página do produto por handle: /produto/[handle]
+
+
+
+
+
+
+
+
 - [x] AddToCartForm funcionando (adiciona e vai pro carrinho)
+
+
+
+
+
+
+
+
 - [x] Exibir preço normal na página do produto
+
+
+
+
+
+
+
+
 - [x] Preço B2B diferente quando aprovado (metadata.preco_b2b + PriceBlock)
+
+
+
+
+
+
+
+
 - [ ] Melhorar UI do produto (descrição, opções, imagens)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Fase 2 — Catálogo + Carrinho + Checkout (WhatsApp)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 - [x] Carrinho funcionando
+
+
+
+
+
+
+
+
 - [x] Botão Finalizar no WhatsApp
+
+
+
+
+
+
+
+
 - [x] gerar mensagem com itens (WhatsApp)
+
+
+
+
+
+
+
+
 - [x] número do vendedor configurável (varejo e B2B)
+
+
+
+
+
+
+
+
 - [x] Pedido vai pro WhatsApp do vendedor B2B
+
+
+
+
+
+
+
+
 - [x] Regra: mínimo 3 portões (bloqueia finalizar se < 3) **somente B2B**
-- [ ] Exibir preços no carrinho (normal vs B2B)
-- [ ] Ajustar mensagem do WhatsApp com preço total e observações
+
+
+
+
+
+
+
+
+- [x] Exibir preços no carrinho (normal vs B2B)
+
+
+
+
+
+
+
+
+- [x] Ajustar mensagem do WhatsApp com preço total e observações
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Fase 3 — Promoções / Conteúdo
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 - [x] "Promoção da semana" via metadata.promocao='semana' (Home)
+
+
+
+
+
+
+
+
 - [x] Script tools\promocao-semana.ps1 para marcar/desmarcar por handle
+
+
+
+
+
+
+
+
 - [x] Temas sazonais automáticos: themes.json com calendário
+
+
+
+
+
+
+
+
 - [x] Aplicação automática por data (ThemeAutoStyle + ThemeBanner)
+
+
+
+
+
+
+
+
 - [x] Fallback tema padrão
+
+
+
+
+
+
+
+
 - [ ] Melhorar Home com seções: Promoção da semana / B2B / Destaques
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Fase 4 — Cadastro/Login B2B (Construtor)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 - [x] "Ofertas para construtores" (área B2B) — /construtor/ofertas filtrando metadata.oferta='construtor'
+
+
+
+
+
+
+
+
 - [x] Script tools\ofertas-construtor.ps1 (marcar oferta='construtor')
+
+
+
+
+
+
+
+
 - [x] Cadastro/Login real + status pendente/aprovado/rejeitado
+
+
+
+
+
+
+
+
 - [x] Aprovação via Admin: tools\b2b-approve.ps1 (admin/custom/b2b)
+
+
+
+
+
+
+
+
 - [x] Proxy Next /api/b2b para resolver CORS do publishable key
+
+
+
+
+
+
+
+
 - [x] Publishable key configurada no storefront (.env.local)
+
+
+
+
+
+
+
+
 - [ ] Mostrar "Preço Construtor" também no catálogo/carrinho quando aprovado
+
+
+
+
+
+
+
+
 - [ ] Criar página /construtor/cadastro (form completo) com validações
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Fase 5 — Preços B2B / Regras comerciais
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 - [x] Script tools\preco-b2b.ps1 (metadata.preco_b2b)
+
+
+
+
+
+
+
+
 - [x] Exibir preço B2B no produto quando construtor aprovado
+
+
+
+
+
+
+
+
 - [ ] Definir estratégia final de preço (metadata vs price list Medusa)
+
+
+
+
+
+
+
+
 - [ ] (Opcional) Implementar price list B2B no Medusa (mais “correto”)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Fase 6 — Admin / Operação
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 - [ ] Documentar no README:
+
+
+
+
+
+
+
+
   - como marcar promoções (metadata.promocao)
+
+
+
+
+
+
+
+
   - como marcar ofertas construtor (metadata.oferta)
+
+
+
+
+
+
+
+
   - como setar preço B2B (metadata.preco_b2b)
+
+
+
+
+
+
+
+
   - como aprovar B2B (tools\b2b-approve.ps1)
+
+
+
+
+
+
+
+
 - [ ] Ajustar tools\update-project.ps1 para falhar se git push falhar (não imprimir OK enganoso)
+
+
+
+
+
+
+
+
 - [ ] Revisar seeds/import-produtos (consistência handles/metadata tipo/ipo)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ---
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Para o site ficar interessante (backlog)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 - [ ] Catálogo (rota /catalogo) com filtros (tipo, ipo, promoção, construtor)
+
+
+
+
+
+
+
+
 - [ ] Busca por nome/handle
+
+
+
+
+
+
+
+
 - [ ] Página “Contato / WhatsApp”
+
+
+
+
+
+
+
+
 - [ ] Banners e copy (marketing)
+
+
+
+
+
+
+
+
 - [ ] SEO básico (title/description/og)
+
+
+
+
+
+
+
+
+
+
+
+

@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { CartItem, loadCart, saveCart } from "../lib/cart";
-
+import { getPriceValueBRL } from "../lib/pricing";
 type Props = {
   product: {
     id: string;
@@ -28,6 +28,9 @@ export default function AddToCartForm({ product }: Props) {
     const items = loadCart();
 
     const item: CartItem = {
+      unit_price: getPriceValueBRL(product as any, { b2b: false }).value ?? undefined,
+      unit_price_b2b: getPriceValueBRL(product as any, { b2b: true }).value ?? undefined,
+
       id: product.id,
       handle: product.handle,
       title: product.title,
@@ -86,4 +89,5 @@ export default function AddToCartForm({ product }: Props) {
     </div>
   );
 }
+
 

@@ -1,5 +1,5 @@
 "use client";
-
+import { formatBRL } from "../../lib/pricing";
 import { useEffect, useMemo, useState } from "react";
 import { buildWhatsappLink } from "../../lib/whatsapp";
 import { CartItem, loadCart, saveCart, countPortoes } from "../../lib/cart";
@@ -15,7 +15,19 @@ export default function CarrinhoPage() {
 
   const portoes = useMemo(() => countPortoes(items), [items]);
 
-  function update(itemsNext: CartItem[]) {
+  
+  function getUnitPrice(it: any, isB2B: boolean): number {
+    const b2b = Number(it?.unit_price_b2b);
+    const normal = Number(it?.unit_price);
+    if (isB2B && Number.isFinite(b2b) && b2b > 0) return b2b;
+    if (Number.isFinite(normal) && normal > 0) return normal;
+    return 0;
+  }
+
+  const total = useMemo(() => {
+    const isB2B = b2bOk;
+    return (items || []).reduce((acc: number, it: any) => acc + getUnitPrice(it, isB2B) * Number(it?.qty || 1), 0);
+  }, [items, b2bOk]);function update(itemsNext: CartItem[]) {
     setItems(itemsNext);
     saveCart(itemsNext);
   }
@@ -38,12 +50,14 @@ export default function CarrinhoPage() {
   }
   const isB2B = b2bOk; const canWhatsapp = isB2B ? portoes >= 3 : true;
   const waMessage = [
-      "Olá! Quero finalizar meu orçamento:",
+            ...(items || []).map((it: any) => {
+        const unit = getUnitPrice(it, b2bOk);
+        const qty = Number(it?.qty || 1);
+        const name = String(it?.title || it?.product?.title || it?.handle || "Item");
+        return `- ${name} | qtd: ${qty} | unit: ${formatBRL(unit)} | subtotal: ${formatBRL(unit * qty)}`;
+      }),
       "",
-      ...items.map((i) => `- ${i.title} (qtd: ${i.qty}) | ${i.largura ?? "-"} x ${i.altura ?? "-"} | cor: ${i.cor ?? "-"} | obs: ${i.obs ?? "-"}`),
-      "",
-      `Total de portões no carrinho: ${portoes}`,
-    ].join("\n"); const waLink = buildWhatsappLink(waMessage, { b2b: isB2B });
+      `TOTAL: ${formatBRL(total)}`,].join("\n"); const waLink = buildWhatsappLink(waMessage, { b2b: isB2B });
 
   return (
     <main style={{ padding: 24, maxWidth: 960, margin: "0 auto" }}>
@@ -69,6 +83,7 @@ export default function CarrinhoPage() {
                 <button onClick={() => dec(idx)}>-</button>
                 <b>{it.qty}</b>
                 <button onClick={() => inc(idx)}>+</button>
+                <div className="unitPriceLabel_v1" style={{ marginTop: 6, fontWeight: 700 }}>{formatBRL(getUnitPrice(it as any, b2bOk))} x {it.qty ?? 1} = {formatBRL(getUnitPrice(it as any, b2bOk) * Number(it.qty ?? 1))}</div>
                 <button onClick={() => remove(idx)} style={{ marginLeft: "auto" }}>Remover</button>
               </div>
             </div>
@@ -77,7 +92,9 @@ export default function CarrinhoPage() {
       )}
 
       <div style={{ marginTop: 20 }}>
-        <a
+        <div style={{ marginTop: 12, padding: 12, border: "1px solid #ddd", borderRadius: 8 }}><b>Total:</b> {formatBRL(total)}</div>
+
+<a
           href={canWhatsapp ? waLink : "#"}
           onClick={(e) => { if (!canWhatsapp) e.preventDefault(); }}
           style={{
@@ -103,6 +120,12 @@ export default function CarrinhoPage() {
     </main>
   );
 }
+
+
+
+
+
+
 
 
 

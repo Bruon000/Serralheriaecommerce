@@ -1,4 +1,8 @@
+import { getPriceValueBRL } from "./pricing";
 export type CartItem = {
+  unit_price?: number;
+  unit_price_b2b?: number;
+
   id: string;          // product id
   handle: string;
   title: string;
@@ -35,4 +39,5 @@ export function countPortoes(items: CartItem[]) {
     .filter((i) => i.tipo === "portao")
     .reduce((acc, i) => acc + (Number(i.qty) || 0), 0);
 }
+
 
