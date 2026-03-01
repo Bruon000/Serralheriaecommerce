@@ -28,15 +28,18 @@ Você é minha IA assistente de dev. Continue o projeto **Serralheria Ecommerce*
 - Home com Promoção da Semana (metadata.promocao='semana')
 
 ## Onde paramos / próximo passo
-1) Promoção da Semana concluída e script tools\promocao-semana.ps1 criado (marcar/desmarcar metadata.promocao='semana' por handle).
-2) Temas sazonais automáticos implementados: storefront\themes.json + ThemeAutoStyle (CSS vars por data) + ThemeBanner plugado no layout/_app.
-3) Próximo: garantir "número do vendedor configurável (varejo e B2B)" via env no storefront + gerar link WhatsApp.
+1) Promoção da Semana concluída + script tools\promocao-semana.ps1 (marcar/desmarcar metadata.promocao='semana').
+2) Temas sazonais automáticos concluídos: storefront\themes.json + ThemeAutoStyle/ThemeBanner (CSS vars por data).
+3) Checkout WhatsApp concluído no carrinho: mensagem com itens + número configurável por env (varejo/B2B) e regra mínimo 3 apenas no B2B.
+4) Próximo: "Ofertas para construtores" (área B2B) e/ou iniciar Cadastro/Login (Fase 4).
 
 ## Fonte da verdade
 CHECKLIST.md = lista de tarefas. AGENTS.md = como a IA deve trabalhar e onde atualizar.
 
 ---
-Última atualização automática: 2026-03-01 11:37:37 | commit: 0ef2313
+Última atualização automática: 2026-03-01 11:45:02 | commit: e90e685
+
+
 
 
 
