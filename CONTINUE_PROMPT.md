@@ -28,15 +28,16 @@ Você é minha IA assistente de dev. Continue o projeto **Serralheria Ecommerce*
 - Home com Promoção da Semana (metadata.promocao='semana')
 
 ## Onde paramos / próximo passo
-1) UI do produto melhorada (badges PROMO/B2B, infos, preço em destaque, CTA carrinho/B2B).
-2) /catalogo agora mostra preço e, se B2B aprovado, mostra preço B2B (client component CatalogPrice).
-3) Próximo: melhorar UI geral (imagens/descrição) e revisar scripts/tools (update-project falhar em push).
+1) Home agora tem banners grandes (Promo/B2B) + cards com imagem (thumbnail) e tema altera textos do Hero via themes.json.
+2) /catalogo com chips de filtro (PROMO/B2B) + cards com thumb e preço B2B quando aprovado.
+3) Próximo: galeria de imagens na página do produto (se API expor images[]) + melhorar conteúdo (depoimentos/FAQ) e banners com imagens reais.
 
 ## Fonte da verdade
 CHECKLIST.md = lista de tarefas. AGENTS.md = como a IA deve trabalhar e onde atualizar.
 
 ---
 Última atualização automática: 2026-03-01 | commit: 813601e
+
 
 
 

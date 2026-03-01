@@ -166,6 +166,32 @@ const promo = await getPromocaoSemana();
 
         </div>
 
+      <div className="bannerRow">
+        <div className="bannerCard">
+          <div className="bannerTitle">🔥 Promoções da Semana</div>
+          <div className="bannerText">
+            {promo.length ? `Temos ${promo.length} item(ns) em promoção.` : "Nenhuma promoção marcada no momento."}
+            {" "}Marque no Admin: <code>metadata.promocao="semana"</code>.
+          </div>
+          <div className="bannerActions">
+            <a className="pill pillPrimary" href="/catalogo?promo=1">Ver promo no catálogo</a>
+            <a className="pill" href="#promocoes">Ir para a seção</a>
+          </div>
+        </div>
+
+        <div className="bannerCard">
+          <div className="bannerTitle">🏗️ Área Construtor (B2B)</div>
+          <div className="bannerText">
+            {ofertasB2B.length ? `Ofertas B2B ativas: ${ofertasB2B.length}.` : "Marque produtos B2B no Admin para aparecerem aqui."}
+            {" "}Use <code>metadata.oferta="construtor"</code> e (opcional) <code>metadata.preco_b2b</code>.
+          </div>
+          <div className="bannerActions">
+            <a className="pill pillPrimary" href="/construtor/status">Meu status</a>
+            <a className="pill" href="/construtor/ofertas">Ver ofertas B2B</a>
+          </div>
+        </div>
+      </div>
+
 
       </div>
 
@@ -176,7 +202,7 @@ const promo = await getPromocaoSemana();
       <section className="sectionTitle">
 
 
-        <h2>Promoção da Semana</h2>
+        <h2 id="promocoes">Promoção da Semana</h2>
 
 
         <span>metadata.promocao = "semana"</span>
@@ -372,6 +398,7 @@ const promo = await getPromocaoSemana();
 
 
 }
+
 
 
 

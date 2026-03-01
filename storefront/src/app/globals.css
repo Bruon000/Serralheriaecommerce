@@ -169,3 +169,62 @@ a{ color:inherit; }
   background: #fff;
   font-weight: 950;
 }
+
+.bannerRow{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+@media (max-width: 900px){
+  .bannerRow{ grid-template-columns: 1fr; }
+}
+
+.bannerCard{
+  border:1px solid var(--border);
+  border-radius: calc(var(--radius) + 6px);
+  padding: 16px;
+  background:
+    radial-gradient(600px 220px at 18% 20%, color-mix(in oklab, var(--theme-accent) 22%, transparent 78%), transparent 60%),
+    radial-gradient(600px 220px at 85% 25%, color-mix(in oklab, var(--theme-accent) 16%, transparent 84%), transparent 65%),
+    #fff;
+  box-shadow: var(--shadow);
+}
+
+.bannerTitle{ font-weight: 950; font-size: 18px; margin:0; }
+.bannerText{ margin-top: 6px; opacity: .82; }
+.bannerActions{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 12px; }
+
+.chips{
+  display:flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 12px 0 14px 0;
+}
+
+.chip{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding: 8px 12px;
+  border:1px solid var(--border);
+  border-radius: 999px;
+  text-decoration:none;
+  font-weight: 900;
+  font-size: 12px;
+  background:#fff;
+}
+
+.chipOn{
+  border:1px solid color-mix(in oklab, var(--theme-accent) 45%, var(--border) 55%);
+  background: color-mix(in oklab, var(--theme-accent) 12%, #fff 88%);
+}
+
+.chipDot{
+  width:10px;
+  height:10px;
+  border-radius:999px;
+  background: color-mix(in oklab, var(--theme-accent) 55%, #999 45%);
+  display:inline-block;
+}
