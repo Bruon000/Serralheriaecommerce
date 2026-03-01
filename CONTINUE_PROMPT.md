@@ -28,15 +28,17 @@ Você é minha IA assistente de dev. Continue o projeto **Serralheria Ecommerce*
 - Home com Promoção da Semana (metadata.promocao='semana')
 
 ## Onde paramos / próximo passo
-1) B2B real funcionando: /construtor/cadastro/login/status com aprovação via tools\b2b-approve.ps1 (admin/custom/b2b) e consumo via proxy Next /api/b2b (resolve CORS).
-2) Preço B2B diferente: metadata.preco_b2b + tools\preco-b2b.ps1; Home mostra preço normal e produto mostra preço B2B quando construtor_cadastrado_v1=1 (PriceBlock).
-3) Próximo: reduzir CHECKLIST.md gigante (63MB) para evitar problemas no GitHub e seguir próximos itens do checklist.
+1) CHECKLIST foi reconstruído e está leve no GitHub (sem estourar limite).
+2) B2B real funcionando: /construtor/cadastro/login/status com aprovação via tools\b2b-approve.ps1 e consumo via proxy Next /api/b2b (sem CORS).
+3) Preço B2B diferente: metadata.preco_b2b + tools\preco-b2b.ps1; Home mostra preço normal e produto mostra preço B2B quando construtor_cadastrado_v1=1 (PriceBlock).
+4) Próximo: Exibir preços no carrinho (normal vs B2B) e melhorar mensagem do WhatsApp com total.
 
 ## Fonte da verdade
 CHECKLIST.md = lista de tarefas. AGENTS.md = como a IA deve trabalhar e onde atualizar.
 
 ---
-Última atualização automática: 2026-03-01 13:43:56 | commit: eda3910
+Última atualização automática: 2026-03-01 | commit: 813601e
+
 
 
 
