@@ -28,15 +28,15 @@ Você é minha IA assistente de dev. Continue o projeto **Serralheria Ecommerce*
 - Home com Promoção da Semana (metadata.promocao='semana')
 
 ## Onde paramos / próximo passo
-1) Carrinho agora exibe preço por item (normal vs B2B), subtotal e Total.
-2) Mensagem do WhatsApp inclui itens + subtotais + TOTAL (mantém regra mínimo 3 portões apenas para B2B).
-3) Próximo: melhorar Home com seções (Promoção/B2B/Destaques) e revisar UI do produto.
+1) Home melhorada com seções: Promoção da Semana, Ofertas Construtor (B2B) e Destaques (cards com preço + CTA).
+2) Próximo: revisar UI do produto (descrição, opções, imagens) e exibir preço B2B também no /catalogo quando aprovado.
 
 ## Fonte da verdade
 CHECKLIST.md = lista de tarefas. AGENTS.md = como a IA deve trabalhar e onde atualizar.
 
 ---
 Última atualização automática: 2026-03-01 | commit: 813601e
+
 
 
 
