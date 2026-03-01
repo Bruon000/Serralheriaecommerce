@@ -1,71 +1,91 @@
-# CHECKLIST
+# CHECKLIST — Serralheria Ecommerce (Medusa + Next)
 
-> Arquivo enxugado automaticamente para caber no GitHub. Backup local: CHECKLIST.big.bak.md (ignorado no git).
+> Este checklist foi reconstruído em formato compacto para caber no GitHub (o antigo inflou e passou do limite).  
+> Fonte da verdade continua sendo este arquivo + CONTINUE_PROMPT.md (seção **Onde paramos / próximo passo**).
 
-# CHECKLIST - Serralheria Ecommerce (Medusa + Next)
-## Resumo do Projeto
-## Como rodar (Windows / PowerShell)
-## Estado atual (atualizado automaticamente)
-### Docker status
-## Checklist do projeto (ordem ideal)
-### Fase 0 — Preparação
-### Fase 1 — Base rodando local (MVP)
-### Fase 2 — Catálogo + Carrinho + Checkout (WhatsApp)
-### Fase 3 — Promoções e Ofertas
-### Fase 4 — B2B (Construtor)
-### Fase 5 — Temas sazonais automáticos
-### Fase 6 — Deploy no VPS
-## Checklist — Para o site ficar interessante (prioridade visual e conversão)
-### Identidade e primeira impressão
-### Navegação e conteúdo
-### Catálogo e produto
-### Carrinho e WhatsApp
-### Confiança e B2B
-### Extras que fazem diferença
-- [ ] Instalar Node.js LTS (inclui npm)
-- [ ] Instalar Git
-- [ ] (Opcional) Instalar Docker Desktop (se quiser rodar Postgres/Redis local sem dor)
-- [ ] Subir Medusa backend (API + Admin)
-- [ ] Subir PostgreSQL + Redis (local)
-- [ ] Subir Next.js Storefront conectado no Medusa
-- [ ] Configurar categorias iniciais: Portões / Grades / Corrimãos / Estruturas / Sob medida
-- [ ] Criar 5 produtos "mock" pra validar fluxo (foto, preço, variações)
-- [ ] Listagem com filtros (categoria, acabamento, faixa preço)
-- [ ] Página produto com variações (cor/material/medidas como opções)
+---
+
+## Fase 0 — Infra / Rodar local
+
+- [x] Backend Medusa (medusa develop) rodando (http://localhost:9000)
+- [x] Storefront Next rodando (http://localhost:3000)
+- [x] Docker Postgres/Redis (docker compose up -d)
+- [ ] Documentar comandos rápidos no README (subir backend/storefront e seed)
+
+---
+
+## Fase 1 — Página do produto / Produto individual
+
+- [x] Página do produto por handle: /produto/[handle]
+- [x] AddToCartForm funcionando (adiciona e vai pro carrinho)
+- [x] Exibir preço normal na página do produto
+- [x] Preço B2B diferente quando aprovado (metadata.preco_b2b + PriceBlock)
+- [ ] Melhorar UI do produto (descrição, opções, imagens)
+
+---
+
+## Fase 2 — Catálogo + Carrinho + Checkout (WhatsApp)
+
 - [x] Carrinho funcionando
-- [x] Botão Finalizar no WhatsApp:
-- [x] gerar mensagem com itens, quantidades, variações e total estimado
+- [x] Botão Finalizar no WhatsApp
+- [x] gerar mensagem com itens (WhatsApp)
 - [x] número do vendedor configurável (varejo e B2B)
-- [x] "Promoção da semana" (coleção/tag + banner automático)
-- [x] "Ofertas para construtores" (área B2B)
-- [ ] Regras de desconto progressivo (opcional)
-- [ ] Cadastro/Login
-- [ ] Status "pendente" → "aprovado"
-- [x] Preço B2B diferente
-- [ ] Regra: mínimo 3 portões (bloqueia finalizar se não cumprir)
 - [x] Pedido vai pro WhatsApp do vendedor B2B
-- [x] themes.json com calendário (Natal/Junino/Carnaval/Ano Novo...)
-- [x] Aplicação automática por data (CSS variables + banner + detalhes leves)
+- [x] Regra: mínimo 3 portões (bloqueia finalizar se < 3) **somente B2B**
+- [ ] Exibir preços no carrinho (normal vs B2B)
+- [ ] Ajustar mensagem do WhatsApp com preço total e observações
+
+---
+
+## Fase 3 — Promoções / Conteúdo
+
+- [x] "Promoção da semana" via metadata.promocao='semana' (Home)
+- [x] Script tools\promocao-semana.ps1 para marcar/desmarcar por handle
+- [x] Temas sazonais automáticos: themes.json com calendário
+- [x] Aplicação automática por data (ThemeAutoStyle + ThemeBanner)
 - [x] Fallback tema padrão
-- [ ] Docker Compose no VPS
-- [ ] Nginx + SSL
-- [ ] Subdomínios e DNS (quando você decidir)
-- [ ] **SEO e meta:** Trocar `title` e `description` do layout para nome da serralheria + "Portões, grades e estruturas metálicas" (ou similar). `lang="pt-BR"` no `<html>`.
-- [ ] **Logo/marca:** Incluir logo no topo (ou nome da empresa em destaque). Link para home.
-- [ ] **Cores e fonte:** Definir paleta (ex.: cinza escuro + laranja/amarelo industrial) e aplicar em botões, links e destaques. Evitar "Create Next App" genérico.
-- [ ] **Header fixo:** Barra superior com: Logo | Catálogo | Construtor (B2B) | Carrinho (com contador). Funciona em mobile (menu hamburger se precisar).
-- [ ] **Home com hero:** Texto de impacto ("Portões e grades sob medida") + CTA "Ver catálogo" + opcionalmente uma imagem de referência.
-- [ ] **Link para Catálogo:** Na home e no header. Garantir que /catalogo está sempre acessível.
-- [ ] **Footer:** Endereço, telefone, WhatsApp, horário. Ajuda em confiança e SEO local.
-- [ ] **Fotos nos cards:** Exibir `thumbnail` do produto nos cards do catálogo e na home (promo). Placeholder se não tiver imagem.
-- [ ] **Preço visível:** Mostrar preço (ou "Sob consulta") nos cards e na página do produto, se o Medusa tiver.
-- [ ] **Página produto:** Título, foto, descrição breve, opções (medidas, cor) e botão "Adicionar ao carrinho" bem visíveis. (A rota /produto/[handle] já existe e foi corrigida.)
-- [ ] **Filtros úteis:** Além de IPO, considerar filtro por tipo (portão, grade, corrimão) e faixa de preço, se fizer sentido.
-- [ ] **Resumo antes do WhatsApp:** Mostrar total estimado e resumo dos itens no botão "Finalizar no WhatsApp".
-- [ ] **Número configurável:** Garantir `NEXT_PUBLIC_WHATSAPP_NUMBER` no .env do storefront (e número diferente para B2B se quiser).
-- [ ] **Mensagem clara:** O texto que vai pro WhatsApp já está bom (itens, medidas, cor). Revisar uma vez com um pedido real.
-- [ ] **Área Construtor:** Link visível no header para /construtor/cadastro. Texto explicando benefício (preço especial, mínimo 3 portões).
-- [ ] **Cadastro B2B:** Manter validação de CNPJ; no futuro conectar com backend (login, status aprovado).
-- [ ] **Galeria ou casos de uso:** Uma seção "Onde instalamos" ou fotos de obras (mesmo estáticas) aumenta credibilidade.
-- [ ] **WhatsApp flutuante:** Botão fixo "Fale conosco" no canto da tela (mobile principalmente).
-- [ ] **Temas sazonais:** Usar o themes.json (Fase 5) para datas festivas sem poluir o layout.
+- [ ] Melhorar Home com seções: Promoção da semana / B2B / Destaques
+
+---
+
+## Fase 4 — Cadastro/Login B2B (Construtor)
+
+- [x] "Ofertas para construtores" (área B2B) — /construtor/ofertas filtrando metadata.oferta='construtor'
+- [x] Script tools\ofertas-construtor.ps1 (marcar oferta='construtor')
+- [x] Cadastro/Login real + status pendente/aprovado/rejeitado
+- [x] Aprovação via Admin: tools\b2b-approve.ps1 (admin/custom/b2b)
+- [x] Proxy Next /api/b2b para resolver CORS do publishable key
+- [x] Publishable key configurada no storefront (.env.local)
+- [ ] Mostrar "Preço Construtor" também no catálogo/carrinho quando aprovado
+- [ ] Criar página /construtor/cadastro (form completo) com validações
+
+---
+
+## Fase 5 — Preços B2B / Regras comerciais
+
+- [x] Script tools\preco-b2b.ps1 (metadata.preco_b2b)
+- [x] Exibir preço B2B no produto quando construtor aprovado
+- [ ] Definir estratégia final de preço (metadata vs price list Medusa)
+- [ ] (Opcional) Implementar price list B2B no Medusa (mais “correto”)
+
+---
+
+## Fase 6 — Admin / Operação
+
+- [ ] Documentar no README:
+  - como marcar promoções (metadata.promocao)
+  - como marcar ofertas construtor (metadata.oferta)
+  - como setar preço B2B (metadata.preco_b2b)
+  - como aprovar B2B (tools\b2b-approve.ps1)
+- [ ] Ajustar tools\update-project.ps1 para falhar se git push falhar (não imprimir OK enganoso)
+- [ ] Revisar seeds/import-produtos (consistência handles/metadata tipo/ipo)
+
+---
+
+## Para o site ficar interessante (backlog)
+
+- [ ] Catálogo (rota /catalogo) com filtros (tipo, ipo, promoção, construtor)
+- [ ] Busca por nome/handle
+- [ ] Página “Contato / WhatsApp”
+- [ ] Banners e copy (marketing)
+- [ ] SEO básico (title/description/og)
