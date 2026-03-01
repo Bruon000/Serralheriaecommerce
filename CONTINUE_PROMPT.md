@@ -28,16 +28,17 @@ Você é minha IA assistente de dev. Continue o projeto **Serralheria Ecommerce*
 - Home com Promoção da Semana (metadata.promocao='semana')
 
 ## Onde paramos / próximo passo
-1) Promoção da Semana concluída + script tools\promocao-semana.ps1.
-2) Temas sazonais automáticos concluídos (themes.json + ThemeAutoStyle/ThemeBanner).
-3) Checkout WhatsApp concluído no carrinho: mensagem com itens + número configurável por env (varejo/B2B) e regra mínimo 3 apenas para B2B.
-4) Próximo: implementar "Ofertas para construtores" (área B2B) e depois iniciar Cadastro/Login (Fase 4).
+1) WhatsApp concluído no carrinho: mensagem com itens + número configurável por env (varejo/B2B) e regra mínimo 3 apenas para B2B.
+2) Ofertas para construtores (B2B) implementado: /construtor/ofertas (público) filtrando metadata.oferta='construtor' + script tools\ofertas-construtor.ps1 para marcar em lote.
+3) Próximo: iniciar Fase 4 (Cadastro/Login real + status pendente/aprovado + preços B2B diferentes).
 
 ## Fonte da verdade
 CHECKLIST.md = lista de tarefas. AGENTS.md = como a IA deve trabalhar e onde atualizar.
 
 ---
-Última atualização automática: 2026-03-01 11:57:09 | commit: 325e50f
+Última atualização automática: 2026-03-01 12:11:58 | commit: bc4945e
+
+
 
 
 
