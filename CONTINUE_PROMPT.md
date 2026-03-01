@@ -36,7 +36,8 @@ Você é minha IA assistente de dev. Continue o projeto **Serralheria Ecommerce*
 CHECKLIST.md = lista de tarefas. AGENTS.md = como a IA deve trabalhar e onde atualizar.
 
 ---
-Última atualização automática: 2026-03-01 11:35:01 | commit: 11e8317
+Última atualização automática: 2026-03-01 11:35:40 | commit: 782927b
+
 
 
 

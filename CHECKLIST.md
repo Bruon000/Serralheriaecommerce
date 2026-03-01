@@ -62,8 +62,8 @@ Stack:
 
 
 ## Estado atual (atualizado automaticamente)
-- Última atualização: 2026-03-01 11:35:01
-- Git commit: 11e8317
+- Última atualização: 2026-03-01 11:35:40
+- Git commit: 782927b
 - Ports:
   - Frontend: http://localhost:3000
   - Admin Medusa: http://localhost:9000/app
@@ -79,10 +79,10 @@ dolibarr Up 26 hours
 mariadb Up 26 hours
 frappe_docker-frontend-1 Up 26 hours
 frappe_docker-backend-1 Up 26 hours
-frappe_docker-websocket-1 Restarting (1) 1 second ago
-frappe_docker-queue-long-1 Up 22 seconds
+frappe_docker-websocket-1 Restarting (1) 40 seconds ago
+frappe_docker-queue-long-1 Up 9 seconds
 frappe_docker-scheduler-1 Up 26 hours
-frappe_docker-queue-short-1 Up 22 seconds
+frappe_docker-queue-short-1 Up 9 seconds
 `
 ## Checklist do projeto (ordem ideal)
 
@@ -322,6 +322,7 @@ Use este bloco para deixar o site com cara de serralheria profissional e aumenta
 
 
 - [ ] **Temas sazonais:** Usar o themes.json (Fase 5) para datas festivas sem poluir o layout.
+
 
 
 
