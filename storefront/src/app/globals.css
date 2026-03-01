@@ -228,3 +228,145 @@ a{ color:inherit; }
   background: color-mix(in oklab, var(--theme-accent) 55%, #999 45%);
   display:inline-block;
 }
+
+/* ===== STEEL_THEME_V1 (Delima) ===== */
+:root{
+  --steel-bg: url("/brand/bg-steel.png");
+  --steel-overlay: radial-gradient(1200px 500px at 20% 0%, rgba(255,140,0,.35), transparent 60%),
+                   radial-gradient(900px 400px at 80% 10%, rgba(255,60,0,.22), transparent 55%),
+                   radial-gradient(1100px 700px at 50% 90%, rgba(255,210,120,.10), transparent 65%);
+  --steel-surface: rgba(20,20,22,.72);
+  --steel-border: rgba(255,160,40,.16);
+  --steel-glow: 0 0 0 1px rgba(255,160,40,.12), 0 12px 30px rgba(0,0,0,.35), 0 0 40px rgba(255,120,0,.12);
+  --steel-glow-strong: 0 0 0 1px rgba(255,160,40,.22), 0 16px 44px rgba(0,0,0,.45), 0 0 60px rgba(255,120,0,.18);
+  --spark1: #ffcc66;
+  --spark2: #ff7a00;
+  --spark3: #ff2a00;
+}
+
+body{
+  background-image: var(--steel-overlay), var(--steel-bg);
+  background-size: cover, cover;
+  background-repeat: no-repeat, no-repeat;
+  background-attachment: fixed, fixed;
+}
+
+/* cards/sections */
+.steelCard{
+  background: color-mix(in oklab, var(--steel-surface) 92%, rgba(255,255,255,.06) 8%);
+  border: 1px solid var(--steel-border);
+  border-radius: 16px;
+  box-shadow: var(--steel-glow);
+  backdrop-filter: blur(10px);
+}
+
+/* botões tech */
+.steelBtn{
+  border-radius: 999px;
+  border: 1px solid rgba(255,160,40,.35);
+  padding: 10px 14px;
+  font-weight: 850;
+  background: linear-gradient(180deg, rgba(255,130,0,.22), rgba(0,0,0,.0));
+  box-shadow: 0 10px 22px rgba(0,0,0,.32), 0 0 26px rgba(255,120,0,.16);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.steelBtn:hover{ transform: translateY(-1px); box-shadow: var(--steel-glow-strong); }
+.steelBtn:active{ transform: translateY(0px) scale(.98); }
+
+/* canvas por cima para faíscas */
+#spark-canvas{
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+/* ===== /STEEL_THEME_V1 ===== */
+
+/* ===== STEEL_FORGE_THEME_V2 (Oficina escura) ===== */
+:root{
+  --steel-bg: url("/brand/bg-steel.png");
+  --steel-overlay:
+    radial-gradient(1100px 520px at 18% 0%, rgba(255,120,0,.28), transparent 60%),
+    radial-gradient(900px 460px at 82% 8%, rgba(255,40,0,.18), transparent 62%),
+    radial-gradient(1200px 900px at 50% 92%, rgba(255,210,120,.08), transparent 68%),
+    linear-gradient(180deg, rgba(0,0,0,.68), rgba(0,0,0,.85));
+  --steel-surface: rgba(10,10,12,.72);
+  --steel-surface-2: rgba(16,16,18,.78);
+  --steel-border: rgba(255,140,40,.18);
+
+  --spark1: #ffd27a;
+  --spark2: #ff8a00;
+  --spark3: #ff2a00;
+
+  --shadow: 0 14px 40px rgba(0,0,0,.55);
+  --glow: 0 0 0 1px rgba(255,150,60,.14), 0 18px 50px rgba(0,0,0,.6), 0 0 60px rgba(255,120,0,.14);
+  --glow-strong: 0 0 0 1px rgba(255,150,60,.25), 0 22px 70px rgba(0,0,0,.75), 0 0 90px rgba(255,120,0,.18);
+
+  --text: rgba(255,255,255,.92);
+  --muted: rgba(255,255,255,.68);
+  --link: rgba(255,190,110,.92);
+  --accent: rgba(255,120,0,.95);
+}
+
+html, body { color: var(--text); }
+
+body{
+  background-image: var(--steel-overlay), var(--steel-bg);
+  background-size: cover, cover;
+  background-repeat: no-repeat, no-repeat;
+  background-attachment: fixed, fixed;
+}
+
+a{ color: var(--link); }
+a:hover{ opacity: .95; }
+
+.steelCard{
+  background: color-mix(in oklab, var(--steel-surface) 92%, rgba(255,255,255,.06) 8%);
+  border: 1px solid var(--steel-border);
+  border-radius: 16px;
+  box-shadow: var(--glow);
+  backdrop-filter: blur(10px);
+}
+
+.steelCard2{
+  background: color-mix(in oklab, var(--steel-surface-2) 94%, rgba(255,255,255,.05) 6%);
+  border: 1px solid rgba(255,140,40,.14);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+}
+
+.steelBtn{
+  border-radius: 999px;
+  border: 1px solid rgba(255,160,40,.35);
+  padding: 10px 14px;
+  font-weight: 900;
+  color: var(--text);
+  background: linear-gradient(180deg, rgba(255,120,0,.22), rgba(0,0,0,.0));
+  box-shadow: 0 10px 26px rgba(0,0,0,.55), 0 0 28px rgba(255,120,0,.16);
+  transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+}
+.steelBtn:hover{ transform: translateY(-1px); box-shadow: var(--glow-strong); filter: brightness(1.05); }
+.steelBtn:active{ transform: translateY(0px) scale(.98); }
+
+.badgeHot{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,160,40,.28);
+  background: rgba(0,0,0,.35);
+  color: var(--text);
+  font-weight: 900;
+  font-size: 12px;
+  box-shadow: 0 0 24px rgba(255,120,0,.12);
+}
+
+#spark-canvas{
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+/* ===== /STEEL_FORGE_THEME_V2 ===== */

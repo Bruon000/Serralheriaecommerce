@@ -26,7 +26,7 @@ function ProductCard({ p, badge }: { p: any; badge?: string }) {
   return (
 
 
-    <a className="card" href={`/produto/${p.handle}`}>
+    <a className="card steelCard" href={`/produto/${p.handle}`}>
 
 
       {p.thumbnail ? (
@@ -108,15 +108,20 @@ export default async function Home() {
 
 
     const theme = getTheme(new Date());
-
-
 const promo = await getPromocaoSemana();
 
 
   const ofertasB2B = await getOfertasConstrutor();
 
 
-  const all = await listProducts();
+  
+  function getImg(p: any): string {
+    return String(p?.thumbnail || p?.images?.[0]?.url || "");
+  }
+
+  const promoImg = promo?.length ? getImg(promo[0] as any) : "";
+  const b2bImg = ofertasB2B?.length ? getImg(ofertasB2B[0] as any) : "";
+const all = await listProducts();
 
 
 
@@ -140,7 +145,7 @@ const promo = await getPromocaoSemana();
     <main className="container">
 
 
-      <div className="hero">
+      <div className="hero steelCard2">
 
 
         <h1>{theme.heroTitle || "Seu projeto em metal, do jeito certo."}</h1>
@@ -167,30 +172,52 @@ const promo = await getPromocaoSemana();
         </div>
 
       <div className="bannerRow">
-        <div className="bannerCard">
-          <div className="bannerTitle">🔥 Promoções da Semana</div>
-          <div className="bannerText">
-            {promo.length ? `Temos ${promo.length} item(ns) em promoção.` : "Nenhuma promoção marcada no momento."}
-            {" "}Marque no Admin: <code>metadata.promocao="semana"</code>.
-          </div>
-          <div className="bannerActions">
-            <a className="pill pillPrimary" href="/catalogo?promo=1">Ver promo no catálogo</a>
-            <a className="pill" href="#promocoes">Ir para a seção</a>
-          </div>
-        </div>
-
-        <div className="bannerCard">
-          <div className="bannerTitle">🏗️ Área Construtor (B2B)</div>
-          <div className="bannerText">
-            {ofertasB2B.length ? `Ofertas B2B ativas: ${ofertasB2B.length}.` : "Marque produtos B2B no Admin para aparecerem aqui."}
-            {" "}Use <code>metadata.oferta="construtor"</code> e (opcional) <code>metadata.preco_b2b</code>.
-          </div>
-          <div className="bannerActions">
-            <a className="pill pillPrimary" href="/construtor/status">Meu status</a>
-            <a className="pill" href="/construtor/ofertas">Ver ofertas B2B</a>
-          </div>
-        </div>
+  <div className="bannerCard steelCard" style={{ display: "grid", gridTemplateColumns: "1fr 180px", gap: 14, alignItems: "center" }}>
+    <div>
+      <div className="bannerTitle">🔥 Promoções da Semana</div>
+      <div className="bannerText">
+        {promo.length ? `Temos ${promo.length} item(ns) em promoção.` : "Nenhuma promoção marcada no momento."}{" "}
+        Marque no Admin: <code>metadata.promocao="semana"</code>.
       </div>
+      <div className="bannerActions">
+        <a className="pill pillPrimary" href="/catalogo?promo=1">Ver promo no catálogo</a>
+        <a className="pill" href="#promocoes">Ir para a seção</a>
+      </div>
+    </div>
+
+    {promoImg ? (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img className="bannerImg" src={promoImg} alt="Promoção" style={{ width: "100%", height: 120, objectFit: "cover", borderRadius: 12, border: "1px solid var(--border)" }} />
+    ) : (
+      <div style={{ width: "100%", height: 120, borderRadius: 12, border: "1px dashed var(--border)", display: "grid", placeItems: "center", opacity: .7 }}>
+        sem imagem
+      </div>
+    )}
+  </div>
+
+  <div className="bannerCard steelCard" style={{ display: "grid", gridTemplateColumns: "1fr 180px", gap: 14, alignItems: "center" }}>
+    <div>
+      <div className="bannerTitle">🏗️ Área Construtor (B2B)</div>
+      <div className="bannerText">
+        {ofertasB2B.length ? `Ofertas B2B ativas: ${ofertasB2B.length}.` : "Marque produtos B2B no Admin para aparecerem aqui."}{" "}
+        Use <code>metadata.oferta="construtor"</code> e (opcional) <code>metadata.preco_b2b</code>.
+      </div>
+      <div className="bannerActions">
+        <a className="pill pillPrimary" href="/construtor/status">Meu status</a>
+        <a className="pill" href="/construtor/ofertas">Ver ofertas B2B</a>
+      </div>
+    </div>
+
+    {b2bImg ? (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img className="bannerImg" src={b2bImg} alt="B2B" style={{ width: "100%", height: 120, objectFit: "cover", borderRadius: 12, border: "1px solid var(--border)" }} />
+    ) : (
+      <div style={{ width: "100%", height: 120, borderRadius: 12, border: "1px dashed var(--border)", display: "grid", placeItems: "center", opacity: .7 }}>
+        sem imagem
+      </div>
+    )}
+  </div>
+</div>
 
 
       </div>
@@ -389,15 +416,51 @@ const promo = await getPromocaoSemana();
 
 
       </div>
+      <div style={{ marginTop: 34, display: "grid", gap: 16 }}>
+        <h2 style={{ fontSize: 22, fontWeight: 950 }}>Depoimentos</h2>
 
+        <div className="grid">
+          <div className="card steelCard">
+            <div className="cardTitle">“Ficou perfeito e rápido.”</div>
+            <div className="meta" style={{ marginTop: 8 }}>Portão sob medida, atendimento excelente. — Cliente</div>
+          </div>
+          <div className="card steelCard">
+            <div className="cardTitle">“Preço de construtor ajudou muito.”</div>
+            <div className="meta" style={{ marginTop: 8 }}>Compras recorrentes com condição B2B. — Construtor</div>
+          </div>
+          <div className="card steelCard">
+            <div className="cardTitle">“Qualidade top.”</div>
+            <div className="meta" style={{ marginTop: 8 }}>Material forte e acabamento bonito. — Cliente</div>
+          </div>
+        </div>
 
+        <h2 style={{ fontSize: 22, fontWeight: 950, marginTop: 10 }}>Perguntas frequentes</h2>
+        <div style={{ display: "grid", gap: 10 }}>
+          <div className="card steelCard">
+            <div className="cardTitle">Como eu finalizo o pedido?</div>
+            <div className="meta" style={{ marginTop: 8 }}>Você monta o carrinho e clica em “Finalizar no WhatsApp”. A mensagem já vai com itens e total.</div>
+          </div>
+          <div className="card steelCard">
+            <div className="cardTitle">O que é a Área Construtor (B2B)?</div>
+            <div className="meta" style={{ marginTop: 8 }}>É uma área para construtores com ofertas e preços especiais quando aprovado.</div>
+          </div>
+          <div className="card steelCard">
+            <div className="cardTitle">Consigo mudar imagens e promoções pelo painel?</div>
+            <div className="meta" style={{ marginTop: 8 }}>Sim. No Medusa Admin você altera imagens (Media) e marca metadados: promocao/oferta/preco_b2b.</div>
+          </div>
+        </div>
+      </div>
     </main>
-
 
   );
 
 
 }
+
+
+
+
+
 
 
 
