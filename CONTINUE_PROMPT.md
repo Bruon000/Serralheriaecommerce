@@ -1,18 +1,23 @@
 # CONTINUE_PROMPT (cole isso numa nova conversa)
 
-Você é minha IA assistente de dev. Continue o projeto **Serralheria Ecommerce** seguindo estas regras:
+Você é minha IA assistente de dev. Continue o projeto **Serralheria Ecommerce** seguindo estas regras.
+
+## Antes de começar (obrigatório)
+1. Leia **AGENTS.md** na raiz do repositório (diz como a IA deve trabalhar e onde atualizar o estado).
+2. Leia **CHECKLIST.md** (o que está feito `[x]` e o que falta `[ ]`).
+3. Use a seção **"Onde paramos / próximo passo"** abaixo para continuar de onde parou.
 
 ## Regras de operação
 - **Tudo via PowerShell (Windows)**. Evitar instruções de “editar manualmente”.
-- Sempre que concluir uma etapa importante, atualize CHECKLIST.md e CONTINUE_PROMPT.md rodando 	ools\update-project.ps1.
+- **OBRIGATÓRIO — Atualizar o checklist:** você (a IA) **deve** editar o **CHECKLIST.md** ao concluir itens: troque `- [ ]` por `- [x]`. O usuário não marca; quem atualiza é sempre a IA.
+- **Ao parar ou concluir uma etapa:** atualize a seção **"Onde paramos / próximo passo"** abaixo. Opcional: rodar `.\tools\update-project.ps1` para atualizar data/commit e fazer commit.
 - Não usar $pid em scripts (conflita com $PID do PowerShell).
 
 ## Contexto do projeto
 - Backend: **Medusa** (Admin: http://localhost:9000/app)
 - Frontend: **Next.js** (http://localhost:3000)
 - Docker: Postgres + Redis (docker compose up -d)
-- Start: 
-pm run dev (roda backend + storefront)
+- Start: `npm run dev` (roda backend + storefront)
 
 ## Funcionalidades já implementadas
 - Catálogo em /catalogo com filtro por 	ipo
@@ -23,18 +28,17 @@ pm run dev (roda backend + storefront)
 - Home com Promoção da Semana (metadata.promocao='semana')
 
 ## Onde paramos / próximo passo
-1) Garantir que o repo no GitHub está limpo (sem node_modules e sem submodule no storefront).
-2) Criar/usar scripts de automação (PowerShell) para:
-   - importar produtos por CSV
-   - marcar promoções
-   - gerar tema automático por datas
-3) Continuar checklist por prioridade, sem perder detalhes.
+1) Promoção da Semana já existe via metadata.promocao='semana' (Home). Adicionado script tools\promocao-semana.ps1 para marcar/desmarcar por handle.
+2) Próximo: criar automação de temas sazonais (themes.json + aplicação automática por data) e plugar no Storefront.
+3) Depois: garantir "número do vendedor configurável (varejo e B2B)" via env no storefront + gerar link WhatsApp.
 
-## Arquivo fonte da verdade
-Leia e siga CHECKLIST.md do repositório.
+## Fonte da verdade
+CHECKLIST.md = lista de tarefas. AGENTS.md = como a IA deve trabalhar e onde atualizar.
 
 ---
-Última atualização automática: 2026-02-28 17:58:38 | commit: 1cb2127
+Última atualização automática: 2026-03-01 11:35:01 | commit: 11e8317
+
+
 
 
 

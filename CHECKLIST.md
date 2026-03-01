@@ -1,25 +1,69 @@
 # CHECKLIST - Serralheria Ecommerce (Medusa + Next)
 
+
+
+
+
+> **Para IA:** Este arquivo é a **fonte da verdade** do que falta fazer. **Você (a IA) deve atualizar este arquivo** ao concluir itens: altere `- [ ]` para `- [x]`. O usuário não marca — quem marca é sempre a IA. Inclua CHECKLIST.md no commit e faça push para o GitHub. Instruções completas: leia **AGENTS.md** na raiz.
+
+
+
+
+
 > **Regra:** sempre que for parar, rodar: `pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\stop.ps1`
 
+
+
+
+
 ## Resumo do Projeto
+
+
 Ecommerce de serralheria (portões, grades, corrimãos, estruturas metálicas).
 
+
+
+
+
 Stack:
+
+
 - **Backend:** Medusa (Admin: http://localhost:9000/app)
+
+
 - **DB:** Postgres + Redis via Docker Compose
+
+
 - **Frontend:** Next.js (http://localhost:3000)
 
+
+
+
+
 ## Como rodar (Windows / PowerShell)
+
+
 1) Subir containers:
+
+
 - `docker compose up -d`
 
+
+
+
+
 2) Subir back+front:
+
+
 - `npm run dev`
 
+
+
+
+
 ## Estado atual (atualizado automaticamente)
-- Última atualização: 2026-02-28 17:58:38
-- Git commit: 1cb2127
+- Última atualização: 2026-03-01 11:35:01
+- Git commit: 11e8317
 - Ports:
   - Frontend: http://localhost:3000
   - Admin Medusa: http://localhost:9000/app
@@ -27,62 +71,307 @@ Stack:
 
 ### Docker status
 `	ext
-serralheria-pgadmin Up 7 hours
-serralheria-postgres Up 7 hours (healthy)
-medusa-postgres Up 8 hours
-medusa-redis Up 8 hours
-dolibarr Up 8 hours
-mariadb Up 8 hours
-frappe_docker-frontend-1 Up 8 hours
-frappe_docker-backend-1 Up 8 hours
-frappe_docker-websocket-1 Restarting (1) 40 seconds ago
-frappe_docker-queue-long-1 Up 15 seconds
-frappe_docker-scheduler-1 Up 8 hours
-frappe_docker-queue-short-1 Up 15 seconds
+serralheria-pgadmin Up 25 hours
+serralheria-postgres Up 25 hours (healthy)
+medusa-postgres Up 26 hours
+medusa-redis Up 26 hours
+dolibarr Up 26 hours
+mariadb Up 26 hours
+frappe_docker-frontend-1 Up 26 hours
+frappe_docker-backend-1 Up 26 hours
+frappe_docker-websocket-1 Restarting (1) 1 second ago
+frappe_docker-queue-long-1 Up 22 seconds
+frappe_docker-scheduler-1 Up 26 hours
+frappe_docker-queue-short-1 Up 22 seconds
 `
 ## Checklist do projeto (ordem ideal)
 
+
+
+
+
 ### Fase 0 — Preparação
+
+
 - [ ] Instalar Node.js LTS (inclui npm)
+
+
 - [ ] Instalar Git
+
+
 - [ ] (Opcional) Instalar Docker Desktop (se quiser rodar Postgres/Redis local sem dor)
 
+
+
+
+
 ### Fase 1 — Base rodando local (MVP)
+
+
 - [ ] Subir Medusa backend (API + Admin)
+
+
 - [ ] Subir PostgreSQL + Redis (local)
+
+
 - [ ] Subir Next.js Storefront conectado no Medusa
+
+
 - [ ] Configurar categorias iniciais: Portões / Grades / Corrimãos / Estruturas / Sob medida
+
+
 - [ ] Criar 5 produtos "mock" pra validar fluxo (foto, preço, variações)
 
+
+
+
+
 ### Fase 2 — Catálogo + Carrinho + Checkout (WhatsApp)
+
+
 - [ ] Listagem com filtros (categoria, acabamento, faixa preço)
+
+
 - [ ] Página produto com variações (cor/material/medidas como opções)
+
+
 - [ ] Carrinho funcionando
+
+
 - [ ] Botão Finalizar no WhatsApp:
+
+
   - [ ] gerar mensagem com itens, quantidades, variações e total estimado
+
+
   - [ ] número do vendedor configurável (varejo e B2B)
 
+
+
+
+
 ### Fase 3 — Promoções e Ofertas
-- [ ] "Promoção da semana" (coleção/tag + banner automático)
+
+
+- [x] "Promoção da semana" (coleção/tag + banner automático)
+
+
 - [ ] "Ofertas para construtores" (área B2B)
+
+
 - [ ] Regras de desconto progressivo (opcional)
 
+
+
+
+
 ### Fase 4 — B2B (Construtor)
+
+
 - [ ] Cadastro/Login
+
+
 - [ ] Status "pendente" → "aprovado"
+
+
 - [ ] Preço B2B diferente
+
+
 - [ ] Regra: mínimo 3 portões (bloqueia finalizar se não cumprir)
+
+
 - [ ] Pedido vai pro WhatsApp do vendedor B2B
 
+
+
+
+
 ### Fase 5 — Temas sazonais automáticos
+
+
 - [ ] themes.json com calendário (Natal/Junino/Carnaval/Ano Novo...)
+
+
 - [ ] Aplicação automática por data (CSS variables + banner + detalhes leves)
+
+
 - [ ] Fallback tema padrão
 
+
+
+
+
 ### Fase 6 — Deploy no VPS
+
+
 - [ ] Docker Compose no VPS
+
+
 - [ ] Nginx + SSL
+
+
 - [ ] Subdomínios e DNS (quando você decidir)
+
+
+
+
+
+---
+
+
+
+
+
+## Checklist — Para o site ficar interessante (prioridade visual e conversão)
+
+
+
+
+
+Use este bloco para deixar o site com cara de serralheria profissional e aumentar confiança/conversão. Ordem sugerida:
+
+
+
+
+
+### Identidade e primeira impressão
+
+
+- [ ] **SEO e meta:** Trocar `title` e `description` do layout para nome da serralheria + "Portões, grades e estruturas metálicas" (ou similar). `lang="pt-BR"` no `<html>`.
+
+
+- [ ] **Logo/marca:** Incluir logo no topo (ou nome da empresa em destaque). Link para home.
+
+
+- [ ] **Cores e fonte:** Definir paleta (ex.: cinza escuro + laranja/amarelo industrial) e aplicar em botões, links e destaques. Evitar "Create Next App" genérico.
+
+
+- [ ] **Header fixo:** Barra superior com: Logo | Catálogo | Construtor (B2B) | Carrinho (com contador). Funciona em mobile (menu hamburger se precisar).
+
+
+
+
+
+### Navegação e conteúdo
+
+
+- [ ] **Home com hero:** Texto de impacto ("Portões e grades sob medida") + CTA "Ver catálogo" + opcionalmente uma imagem de referência.
+
+
+- [ ] **Link para Catálogo:** Na home e no header. Garantir que /catalogo está sempre acessível.
+
+
+- [ ] **Footer:** Endereço, telefone, WhatsApp, horário. Ajuda em confiança e SEO local.
+
+
+
+
+
+### Catálogo e produto
+
+
+- [ ] **Fotos nos cards:** Exibir `thumbnail` do produto nos cards do catálogo e na home (promo). Placeholder se não tiver imagem.
+
+
+- [ ] **Preço visível:** Mostrar preço (ou "Sob consulta") nos cards e na página do produto, se o Medusa tiver.
+
+
+- [ ] **Página produto:** Título, foto, descrição breve, opções (medidas, cor) e botão "Adicionar ao carrinho" bem visíveis. (A rota /produto/[handle] já existe e foi corrigida.)
+
+
+- [ ] **Filtros úteis:** Além de IPO, considerar filtro por tipo (portão, grade, corrimão) e faixa de preço, se fizer sentido.
+
+
+
+
+
+### Carrinho e WhatsApp
+
+
+- [ ] **Resumo antes do WhatsApp:** Mostrar total estimado e resumo dos itens no botão "Finalizar no WhatsApp".
+
+
+- [ ] **Número configurável:** Garantir `NEXT_PUBLIC_WHATSAPP_NUMBER` no .env do storefront (e número diferente para B2B se quiser).
+
+
+- [ ] **Mensagem clara:** O texto que vai pro WhatsApp já está bom (itens, medidas, cor). Revisar uma vez com um pedido real.
+
+
+
+
+
+### Confiança e B2B
+
+
+- [ ] **Área Construtor:** Link visível no header para /construtor/cadastro. Texto explicando benefício (preço especial, mínimo 3 portões).
+
+
+- [ ] **Cadastro B2B:** Manter validação de CNPJ; no futuro conectar com backend (login, status aprovado).
+
+
+
+
+
+### Extras que fazem diferença
+
+
+- [ ] **Galeria ou casos de uso:** Uma seção "Onde instalamos" ou fotos de obras (mesmo estáticas) aumenta credibilidade.
+
+
+- [ ] **WhatsApp flutuante:** Botão fixo "Fale conosco" no canto da tela (mobile principalmente).
+
+
+- [ ] **Temas sazonais:** Usar o themes.json (Fase 5) para datas festivas sem poluir o layout.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
