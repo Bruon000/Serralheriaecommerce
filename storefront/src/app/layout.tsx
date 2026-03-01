@@ -1,3 +1,4 @@
+import SiteHeader from "../components/SiteHeader";
 import type { Metadata } from "next";
 
 
@@ -99,7 +100,9 @@ export default function RootLayout({
         <ThemeBanner />
 
 
-        {children}
+        
+        <SiteHeader />
+{children}
 
 
       </body>
@@ -112,6 +115,8 @@ export default function RootLayout({
 
 
 }
+
+
 
 
 
