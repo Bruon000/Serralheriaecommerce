@@ -165,7 +165,7 @@ export default async function CatalogoPage({
                     <div className="mt-2 text-sm text-muted-foreground">
                       ipo: {String(p.metadata?.ipo ?? "-")} | tipo: {String(p.metadata?.tipo ?? "-")}
                     </div>
-                    <div className="mt-3 text-sm font-bold text-primary">Ver detalhes →</div>
+                    <div className="mt-3 text-sm font-bold text-primary">Ver detalhes</div>
                   </div>
                 </a>
               );
@@ -176,3 +176,4 @@ export default async function CatalogoPage({
     </div>
   );
 }
+

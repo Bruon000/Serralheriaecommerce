@@ -1,117 +1,101 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Menu, X, ShoppingCart } from "lucide-react";
-import { loadCart } from "../lib/cart";
-
-function countQty(items: { qty?: number }[]): number {
-  return (items || []).reduce((acc, it) => acc + Number(it?.qty || 0), 0);
-}
 
 const navLinks = [
-  { label: "Início", href: "/" },
-  { label: "Catálogo", href: "/catalogo" },
-  { label: "Promoções", href: "/catalogo?promo=1" },
-  { label: "Depoimentos", href: "/#depoimentos" },
-  { label: "Contato", href: "/#contato" },
-  { label: "Cadastre-se", href: "/cadastro" },
-  { label: "Área Construtor", href: "/construtor/login" },
+  { href: "/", label: "Início" },
+  { href: "/catalogo", label: "Catálogo" },
+  { href: "/promocoes", label: "Promoções" },
+  { href: "/depoimentos", label: "Depoimentos" },
+  { href: "/contato", label: "Contato" },
+  { href: "/construtor/status", label: "Área Construtor" },
 ];
 
 export default function SiteHeader() {
   const [open, setOpen] = useState(false);
-  const [totalItems, setTotalItems] = useState(0);
 
   useEffect(() => {
-    const refresh = () => setTotalItems(countQty(loadCart()));
-    refresh();
-    const t = setInterval(refresh, 1500);
-    return () => clearInterval(t);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background">
-      <div className="container flex items-center justify-between py-3 flex items-center h-16 gap-6">
-        <Link href="/" className="flex items-center font-display text-xl font-bold text-foreground hover:opacity-90 transition-opacity whitespace-nowrap">
-          <span className="text-gradient-gold">Serralheria</span>
-          <span className="ml-1.5">Delima</span>
-        </Link>
-
-        <nav className="hidden md:flex flex-1 items-center justify-center gap-6 whitespace-nowrap">
-          {navLinks.map((link) => (
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 bg-black/65 backdrop-blur">
+      <div className="container h-[68px] flex items-center gap-6">
+        {/* Marca mínima (não compete com a logo grande do hero) */}
+{/* Nav desktop */}
+        <nav className="hidden lg:flex flex-1 items-center justify-center gap-7 whitespace-nowrap">
+          {navLinks.slice(0, 5).map((link) => (
             <Link
-              key={link.label}
+              key={link.href}
               href={link.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground whitespace-nowrap"
+              className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
             >
               {link.label}
             </Link>
           ))}
         </nav>
 
-        <div className="flex items-center gap-3 shrink-0 whitespace-nowrap">
+        {/* Ações */}
+        <div className="ml-auto flex items-center gap-3 shrink-0 whitespace-nowrap">
+          <Link
+            href="/construtor/status"
+            className="hidden lg:inline-flex text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Área Construtor
+          </Link>
+
           <Link
             href="/carrinho"
-            className="relative inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-4 py-2.5 text-sm font-bold text-secondary-foreground transition-all hover:border-primary/40 whitespace-nowrap"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-4 py-2 text-sm font-bold text-secondary-foreground hover:bg-secondary/80"
           >
             <ShoppingCart className="h-4 w-4" />
             <span className="hidden sm:inline">Carrinho</span>
-            {totalItems > 0 && (
-              <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-                {totalItems}
-              </span>
-            )}
           </Link>
 
-          <a
-            href="https://wa.me/5584987940211"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden sm:inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground transition-all hover:brightness-110 whitespace-nowrap"
+          <Link
+            href="/orcamento"
+            className="inline-flex items-center rounded-full bg-primary px-5 py-2 text-sm font-extrabold text-primary-foreground hover:brightness-110"
           >
             Orçamento
-          </a>
+          </Link>
 
+          {/* Mobile menu button */}
           <button
             type="button"
-            onClick={() => setOpen(!open)}
-            className="md:hidden p-2 text-foreground"
             aria-label="Menu"
+            className="lg:hidden inline-flex items-center justify-center rounded-full border border-border bg-secondary p-2 hover:bg-secondary/80"
+            onClick={() => setOpen((v) => !v)}
           >
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
       </div>
 
+      {/* Mobile menu */}
       {open && (
-        <div className="md:hidden border-t border-border/50 bg-background">
-          <nav className="container flex flex-col gap-1 py-4 flex items-center h-16 gap-6">
+        <div className="lg:hidden border-t border-border/40 bg-black/75 backdrop-blur">
+          <div className="container py-4 grid gap-2">
             {navLinks.map((link) => (
               <Link
-                key={link.label}
+                key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground whitespace-nowrap"
+                className="rounded-lg px-3 py-2 text-sm font-semibold text-foreground/90 hover:bg-secondary"
               >
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="/carrinho"
-              onClick={() => setOpen(false)}
-              className="mt-2 flex items-center justify-center gap-2 rounded-full border border-border bg-secondary px-5 py-3 text-sm font-bold text-secondary-foreground whitespace-nowrap"
-            >
-              <ShoppingCart className="h-4 w-4" />
-              Carrinho {totalItems > 0 && `(${totalItems})`}
-            </Link>
-          </nav>
+          </div>
         </div>
       )}
     </header>
   );
 }
-
-
 
 

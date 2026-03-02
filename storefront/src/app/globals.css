@@ -597,4 +597,45 @@ body {
   border-color: rgba(255,210,150,0.75);
 }
 
+/* ===== Brand palette: Serralheria Delima (ouro + vermelho) ===== */
+.dark {
+  --background: 0 0% 4%;
+  --foreground: 0 0% 96%;
+
+  --card: 0 0% 6%;
+  --card-foreground: 0 0% 96%;
+  --popover: 0 0% 6%;
+  --popover-foreground: 0 0% 96%;
+
+  /* Dourado (logo) */
+  --primary: 38 92% 50%;
+  --primary-foreground: 0 0% 8%;
+
+  /* Vermelho (logo) */
+  --accent: 0 74% 50%;
+  --accent-foreground: 0 0% 98%;
+
+  --secondary: 0 0% 10%;
+  --secondary-foreground: 0 0% 96%;
+
+  --muted: 0 0% 10%;
+  --muted-foreground: 0 0% 70%;
+
+  --border: 38 35% 18%;
+  --input: 38 35% 18%;
+  --ring: 38 92% 50%;
+
+  --destructive: 0 70% 45%;
+  --destructive-foreground: 0 0% 98%;
+}
+/* ============================================================= */
+
+/* ===== Background marca (sutil) ===== */
+body {
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(245, 158, 11, 0.12), transparent 48%),
+    radial-gradient(circle at 82% 62%, rgba(220, 38, 38, 0.08), transparent 52%);
+  background-attachment: fixed;
+}
+/* =================================== */
 

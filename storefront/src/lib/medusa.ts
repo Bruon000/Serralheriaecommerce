@@ -1,3 +1,4 @@
+let __medusaLastLogAt = 0;
 export type MedusaMoneyAmount = {
   amount: number;
   currency_code: string;
@@ -52,7 +53,7 @@ export async function listProducts(): Promise<MedusaProduct[]> {
     const data = (await res.json()) as { products?: MedusaProduct[] };
     return data.products ?? [];
   } catch (err) {
-    console.warn("[medusa] listProducts fetch failed:", err);
+    const now = Date.now(); if (now - __medusaLastLogAt > 15000) { __medusaLastLogAt = now; console.warn("[medusa] backend indisponível (ignorando):", err); }
     return [];
   }
 }
@@ -87,4 +88,5 @@ export async function getProductByHandle(handle: string): Promise<MedusaProduct 
   const products = await listProducts();
   return products.find((p) => p.handle === handle) ?? null;
 }
+
 

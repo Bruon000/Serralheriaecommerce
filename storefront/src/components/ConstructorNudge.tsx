@@ -25,6 +25,7 @@ function setHideForHours(hours: number) {
 export default function ConstructorNudge({ enabled = true }: Props) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [visible, setVisible] = useState(true);
 
   const canShow = useMemo(() => {
     if (!mounted) return false;
@@ -38,20 +39,7 @@ export default function ConstructorNudge({ enabled = true }: Props) {
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  useEffect(() => {
-    if (!enabled) return;
-    if (!mounted) return;
-    if (!canShow) return;
-
-    const t = setTimeout(() => {
-      setOpen(true);
-    }, 7000);
-
-    return () => clearTimeout(t);
-  }, [enabled, mounted, canShow]);
-
-  if (!enabled || !mounted || !canShow) return null;
+if (!enabled || !mounted || !canShow || !visible) return null;
 
   return (
     <div
@@ -71,7 +59,7 @@ export default function ConstructorNudge({ enabled = true }: Props) {
       {open && (
         <div
           style={{
-            width: "min(340px, calc(100vw - 32px))",
+            width: "min(320px, calc(100vw - 32px))",
             background: "rgba(20, 20, 20, 0.92)",
             border: "1px solid rgba(255, 255, 255, 0.12)",
             borderRadius: 14,
@@ -95,23 +83,15 @@ export default function ConstructorNudge({ enabled = true }: Props) {
               }}
               aria-hidden="true"
             >
-              👷
+              
             </div>
 
             <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 700, fontSize: 14, lineHeight: 1.2 }}>
+              <div style={{ fontWeight: 900, fontSize: 14, lineHeight: 1.2 }}>
                 Você é construtor?
               </div>
-              <div
-                style={{
-                  opacity: 0.9,
-                  fontSize: 13,
-                  marginTop: 6,
-                  lineHeight: 1.35,
-                }}
-              >
-                Temos ofertas e condições especiais para profissionais.
-                Cadastre-se e veja seu status.
+              <div style={{ opacity: 0.9, fontSize: 13, marginTop: 6, lineHeight: 1.35 }}>
+                Temos condições especiais para profissionais. Cadastre-se e veja seu status.
               </div>
 
               <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
@@ -122,13 +102,13 @@ export default function ConstructorNudge({ enabled = true }: Props) {
                     textDecoration: "none",
                     padding: "10px 12px",
                     borderRadius: 10,
-                    fontWeight: 700,
+                    fontWeight: 900,
                     fontSize: 13,
                     background: "rgb(245, 158, 11)",
                     color: "#111",
                   }}
                 >
-                  Quero me cadastrar →
+                  Quero me cadastrar
                 </Link>
 
                 <Link
@@ -138,7 +118,7 @@ export default function ConstructorNudge({ enabled = true }: Props) {
                     textDecoration: "none",
                     padding: "10px 12px",
                     borderRadius: 10,
-                    fontWeight: 700,
+                    fontWeight: 800,
                     fontSize: 13,
                     background: "rgba(255,255,255,0.08)",
                     border: "1px solid rgba(255,255,255,0.14)",
@@ -176,6 +156,7 @@ export default function ConstructorNudge({ enabled = true }: Props) {
         </div>
       )}
 
+      {/* bolha */}
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -196,10 +177,13 @@ export default function ConstructorNudge({ enabled = true }: Props) {
         aria-label="Área Construtor"
         title="Área Construtor"
       >
-        <span aria-hidden="true">👷</span>
-        <span style={{ fontWeight: 800, fontSize: 13 }}>Construtor</span>
+        <span aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 18v-2a8 8 0 1 1 16 0v2" stroke="rgba(245,158,11,0.95)" strokeWidth="2" strokeLinejoin="round"/><path d="M12 8v4" stroke="rgba(245,158,11,0.65)" strokeWidth="2" strokeLinecap="round"/><path d="M6 18h12" stroke="rgba(245,158,11,0.65)" strokeWidth="2" strokeLinecap="round"/></svg></span>
+        <span style={{ fontWeight: 900, fontSize: 13 }}>Construtor</span>
         <span style={{ opacity: 0.9, fontSize: 12 }}>ofertas</span>
       </button>
     </div>
   );
 }
+
+
+

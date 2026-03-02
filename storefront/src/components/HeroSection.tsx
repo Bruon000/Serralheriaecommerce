@@ -1,73 +1,121 @@
 import Link from "next/link";
-import { ArrowRight, Flame } from "lucide-react";
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-      <div className="absolute inset-0">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/hero-forge.webp"
-          alt="Oficina de serralheria com faíscas"
-          className="h-full w-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/40" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30" />
-      </div>
+    <section className="relative overflow-hidden" style={{ backgroundImage: "url(/hero-forge.webp)", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
+      {/* overlay (vinheta) */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/65 via-black/25 to-black/70" />
 
-      <div className="container relative z-10 py-32">
+      <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(900px 420px at 30% 20%, rgba(245,158,11,0.16), transparent 60%)" }} />
+<div className="container relative pt-[300px] pb-12">
         <div className="max-w-2xl">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-4 py-2 text-sm font-medium text-gold-light animate-glow-pulse">
-            <Flame className="h-4 w-4" />
-            Sob medida para seu projeto
+                    <div className="h-[96px]" aria-hidden="true" />
+{/* Logo acima do texto (grande e inclinada) */}
+          <div className="mb-10">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/brand/hero-logo.png"
+              alt="Serralheria Delima"
+              className="select-none"
+              style={{
+                height: "min(440px, 36vh)",
+                width: "auto",
+                maxWidth: "min(98vw, 1400px)",
+                objectFit: "contain",
+                transform: "rotate(-16deg)",
+                filter: "drop-shadow(0 26px 44px rgba(245,158,11,0.30))",
+              }}
+            />
           </div>
 
-          <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight">
-            Seu projeto em{" "}
-            <span className="text-gradient-gold">metal</span>
-            ,<br />do jeito certo.
+          <div className="inline-flex items-center gap-2 rounded-full border border-border/30 bg-black/35 px-3 py-1.5 text-xs font-semibold text-foreground/90">
+            <span aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" stroke="rgba(245,158,11,0.95)" strokeWidth="2"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.2-2-3.4-2.3.9a7 7 0 0 0-1.7-1L14.6 3h-5.2L9.1 6.3a7 7 0 0 0-1.7 1L5.1 6.4l-2 3.4 2 1.2a7 7 0 0 0 0 2l-2 1.2 2 3.4 2.3-.9a7 7 0 0 0 1.7 1L9.4 21h5.2l.3-3.3a7 7 0 0 0 1.7-1l2.3.9 2-3.4-2-1.2c.07-.33.1-.66.1-1z" stroke="rgba(245,158,11,0.45)" strokeWidth="1.6" strokeLinejoin="round"/></svg></span>
+            <span>Portões, grades e estruturas sob medida</span>
+          </div>
+<div
+  className="mt-5 w-full sm:w-fit rounded-2xl border border-[rgba(245,158,11,0.70)] bg-black/85 px-5 py-4 backdrop-blur"
+  style={{ boxShadow: "0 14px 42px rgba(0,0,0,0.45), 0 0 0 1px rgba(245,158,11,0.18), 0 0 40px rgba(245,158,11,0.22)" }}
+>
+  <div className="flex items-center gap-2">
+    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[rgba(245,158,11,0.55)] bg-[rgba(245,158,11,0.14)]">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+  <path d="M12 2l2.2 5.6L20 10l-5.8 2.4L12 18l-2.2-5.6L4 10l5.8-2.4L12 2z" stroke="rgba(245,158,11,0.98)" strokeWidth="2" strokeLinejoin="round"/>
+  <path d="M7.5 16.5l-1 4 3-2 2.5 1.5 2.5-1.5 3 2-1-4" stroke="rgba(245,158,11,0.55)" strokeWidth="1.6" strokeLinejoin="round"/>
+</svg>
+    </span>
+    <span className="inline-flex items-center rounded-full bg-[rgba(245,158,11,0.18)] border border-[rgba(245,158,11,0.65)] px-3 py-1 text-[11px] font-extrabold tracking-widest text-[rgba(245,158,11,0.98)]">
+      EXTRA • NOVIDADES
+    </span>
+  </div>
+  <div className="mt-2 text-base md:text-lg font-extrabold text-foreground">
+    Em breve mais novidades e ofertas especiais.
+  </div>
+</div>
+<h1 className="mt-6 font-display text-5xl md:text-6xl font-extrabold leading-[1.05]">
+            Seu projeto em <span className="text-gradient-gold">metal</span>,<br />
+            do jeito certo.
           </h1>
 
-          <p className="mt-6 text-lg text-muted-foreground leading-relaxed max-w-lg">
-            Portões de qualidade, entregues no prazo e com garantia. Trabalhamos com confiança e compromisso do orçamento até a instalação. Escolha o modelo, configure as medidas e feche pelo WhatsApp. <span className="text-foreground/90">Em breve: móveis industriais.</span>
-          </p>
+          <p className="mt-5 text-sm md:text-base text-muted-foreground leading-relaxed max-w-xl">
+  <span className="text-foreground font-extrabold">Preço justo e resposta rápida.</span>{" "}
+  Faça seu orçamento em minutos no WhatsApp. Produção sob medida com materiais de primeira e entrega no prazo.
+  Transparência do início ao fim, sem surpresa no valor.
+</p>
 
-          <div className="mt-10 flex flex-wrap gap-4">
+          <div className="mt-7 flex flex-wrap gap-3">
             <Link
               href="/catalogo"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-bold text-primary-foreground transition-all hover:brightness-110 hover:scale-105 glow-gold"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-extrabold text-primary-foreground hover:brightness-110"
             >
               Ver catálogo
-              <ArrowRight className="h-5 w-5" />
             </Link>
             <a
-              href="https://wa.me/5584987940211"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-8 py-4 text-base font-bold text-secondary-foreground transition-all hover:border-gold/40 hover:bg-secondary/80"
+              href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "5585999999999"}`}
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-6 py-3 text-sm font-extrabold text-secondary-foreground hover:bg-secondary/80"
             >
               Falar no WhatsApp
             </a>
           </div>
 
-          <div className="mt-14 flex gap-10">
-            {[
-              { value: "10.000+", label: "Projetos entregues" },
-              { value: "Prazo", label: "Entrega garantida" },
-              { value: "100%", label: "Sob medida" },
-            ].map((stat) => (
-              <div key={stat.label}>
-                <div className="font-display text-2xl font-bold text-gradient-gold">
-                  {stat.value}
-                </div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
-              </div>
-            ))}
+          <div className="mt-10 flex flex-wrap gap-10 text-sm">
+            <div>
+              <div className="text-primary font-extrabold text-lg">10.000+</div>
+              <div className="text-muted-foreground text-xs">Projetos entregues</div>
+            </div>
+            <div>
+              <div className="text-primary font-extrabold text-lg">Prazo</div>
+              <div className="text-muted-foreground text-xs">Entrega garantida</div>
+            </div>
+            <div>
+              <div className="text-primary font-extrabold text-lg">100%</div>
+              <div className="text-muted-foreground text-xs">Sob medida</div>
+            </div>
           </div>
         </div>
       </div>
     </section>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

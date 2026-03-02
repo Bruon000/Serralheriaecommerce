@@ -5,7 +5,7 @@ const faqs = [
   },
   {
     q: "Vocês entregam e instalam?",
-    a: "Sim! Fazemos entrega e instalação em toda a região. O prazo varia conforme o projeto — geralmente de 7 a 15 dias úteis.",
+    a: "Sim! Fazemos entrega e instalação conforme disponibilidade da equipe. O prazo varia conforme o projeto — geralmente de 7 a 15 dias úteis.",
   },
   {
     q: "Posso personalizar medidas e cores?",
@@ -42,5 +42,6 @@ export default function FAQSection() {
     </section>
   );
 }
+
 
 

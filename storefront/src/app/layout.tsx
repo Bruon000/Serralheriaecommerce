@@ -1,7 +1,4 @@
 import SiteHeader from "../components/SiteHeader";
-import SparksOnClick from "../components/SparksOnClick";
-
-
 import FloatingCartButton from "../components/FloatingCartButton";
 import ConstructorNudge from "../components/ConstructorNudge";
 
@@ -844,33 +841,6 @@ export default function RootLayout({
         <div className="forgeBg_v1">
           <div className="forgeVignette_v1"></div>
         <canvas id="spark-canvas"></canvas>
-        <SparksOnClick />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         <ThemeAutoStyle />
 <SiteHeader />
 
@@ -1002,6 +972,11 @@ export default function RootLayout({
 
 
 }
+
+
+
+
+
 
 
 

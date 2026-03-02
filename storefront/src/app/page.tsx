@@ -61,7 +61,7 @@ function ProductCard({ p, badge }: { p: any; badge?: string }) {
           <span className="font-display text-xl font-bold text-gradient-gold">
             {price}
           </span>
-          <span className="text-sm font-bold text-primary">Ver detalhes →</span>
+          <span className="text-sm font-bold text-primary">Ver detalhes</span>
         </div>
       </div>
     </Link>
@@ -95,7 +95,7 @@ export default async function Home() {
           <div className="steel-card p-6 md:p-8 flex flex-col md:flex-row gap-4 md:items-stretch">
             <div className="flex-1 min-h-[168px] flex flex-col justify-between">
               <h3 className="font-display text-xl font-bold mb-2">
-                🔥 Ofertas da semana
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" stroke="rgba(245,158,11,0.95)" strokeWidth="2"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.2-2-3.4-2.3.9a7 7 0 0 0-1.7-1L14.6 3h-5.2L9.1 6.3a7 7 0 0 0-1.7 1L5.1 6.4l-2 3.4 2 1.2a7 7 0 0 0 0 2l-2 1.2 2 3.4 2.3-.9a7 7 0 0 0 1.7 1L9.4 21h5.2l.3-3.3a7 7 0 0 0 1.7-1l2.3.9 2-3.4-2-1.2c.07-.33.1-.66.1-1z" stroke="rgba(245,158,11,0.45)" strokeWidth="1.6" strokeLinejoin="round"/></svg><span style={{ marginLeft: 8 }}>Ofertas da semana</span> <span className="ml-2 align-middle text-[10px] font-extrabold px-2 py-1 rounded-full bg-[hsl(var(--accent))] text-[hsl(var(--accent-foreground))]">OFERTA</span>
               </h3>
               <p className="text-sm text-muted-foreground mb-4">
                 {promo.length
@@ -104,8 +104,7 @@ export default async function Home() {
               </p>
               <div className="flex flex-wrap gap-2">
                 <Link
-                  href="/catalogo?promo=1"
-                  className="inline-flex items-center rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground hover:brightness-110"
+                  href="/catalogo?promo=1" className="inline-flex items-center rounded-full bg-primary px-6 py-3 text-sm font-extrabold text-primary-foreground hover:brightness-110"
                 >
                   Ver ofertas
                 </Link>
@@ -116,17 +115,17 @@ export default async function Home() {
               <img
                 src={promoImg}
                 alt="Promoção"
-                className="w-full md:w-40 h-28 object-cover rounded-lg border border-border"
+                className="w-full md:w-40 h-24 object-cover rounded-lg border border-border"
               />
             ) : (
-              <div className="w-full md:w-40 h-28 rounded-lg border border-dashed border-border overflow-hidden"><ImageOrPlaceholder src={""} alt="Imagem" /></div>
+              <div className="w-full md:w-40 h-24 rounded-lg border border-dashed border-border overflow-hidden"><ImageOrPlaceholder src={""} alt="Imagem" /></div>
             )}
           </div>
 
           <div className="steel-card p-6 md:p-8 flex flex-col md:flex-row gap-4 md:items-stretch">
             <div className="flex-1 min-h-[168px] flex flex-col justify-between">
               <h3 className="font-display text-xl font-bold mb-2">
-                🏗️ Área Construtor
+                Área Construtor
               </h3>
               <p className="text-sm text-muted-foreground mb-4">
                 {ofertasB2B.length
@@ -153,10 +152,10 @@ export default async function Home() {
               <img
                 src={b2bImg}
                 alt="Construtor"
-                className="w-full md:w-40 h-28 object-cover rounded-lg border border-border"
+                className="w-full md:w-40 h-24 object-cover rounded-lg border border-border"
               />
             ) : (
-              <div className="w-full md:w-40 h-28 rounded-lg border border-dashed border-border overflow-hidden"><ImageOrPlaceholder src={""} alt="Imagem" /></div>
+              <div className="w-full md:w-40 h-24 rounded-lg border border-dashed border-border overflow-hidden"><ImageOrPlaceholder src={""} alt="Imagem" /></div>
             )}
           </div>
         </div>
@@ -189,8 +188,7 @@ export default async function Home() {
   </div>
 
   <div style={{ opacity: 0.9, fontSize: 13, lineHeight: 1.5 }}>
-    Ainda não há produtos cadastrados para exibir. Enquanto isso, você pode ver as promoções
-    ou pedir um orçamento sob medida pelo WhatsApp.
+    Ainda não há produtos cadastrados. Enquanto isso, veja promoções ou peça orçamento no WhatsApp.
   </div>
 
   <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap", marginTop: 6 }}>
@@ -222,7 +220,7 @@ export default async function Home() {
         color: "#111",
       }}
     >
-      Falar no WhatsApp →
+      Falar no WhatsApp
     </a>
   </div>
 </div>
@@ -252,6 +250,12 @@ export default async function Home() {
     </div>
   );
 }
+
+
+
+
+
+
 
 
 
