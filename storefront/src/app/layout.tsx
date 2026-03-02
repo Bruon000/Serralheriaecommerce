@@ -3,6 +3,7 @@ import SparksOnClick from "../components/SparksOnClick";
 
 
 import FloatingCartButton from "../components/FloatingCartButton";
+import ConstructorNudge from "../components/ConstructorNudge";
 
 
 
@@ -871,69 +872,7 @@ export default function RootLayout({
 
 
         <ThemeAutoStyle />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        <ThemeBanner />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-
-        <SiteHeader />
+<SiteHeader />
 
 
 
@@ -952,6 +891,7 @@ export default function RootLayout({
 
 
         <FloatingCartButton />
+        <ConstructorNudge />
 
 
 
@@ -1062,6 +1002,9 @@ export default function RootLayout({
 
 
 }
+
+
+
 
 
 

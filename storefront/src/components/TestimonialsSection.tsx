@@ -40,7 +40,7 @@ export default function TestimonialsSection() {
             <span className="text-gradient-gold">clientes</span>
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Mais de 500 projetos entregues com satisfação garantida.
+            Mais de 10.000 projetos entregues com satisfação garantida.
           </p>
         </div>
 
@@ -75,3 +75,5 @@ export default function TestimonialsSection() {
     </section>
   );
 }
+
+

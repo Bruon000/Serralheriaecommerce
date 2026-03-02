@@ -13,7 +13,7 @@ const faqs = [
   },
   {
     q: "Qual a garantia dos produtos?",
-    a: "Oferecemos garantia de 2 anos contra defeitos de fabricação. Nossos materiais passam por controle de qualidade rigoroso.",
+    a: "Oferecemos garantia de 90 dias contra defeitos de fabricação. Nossos materiais passam por controle de qualidade rigoroso.",
   },
 ];
 
@@ -42,3 +42,5 @@ export default function FAQSection() {
     </section>
   );
 }
+
+

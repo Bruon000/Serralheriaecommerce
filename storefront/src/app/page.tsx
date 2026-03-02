@@ -9,6 +9,27 @@ import SiteFooter from "../components/SiteFooter";
 
 export const dynamic = "force-dynamic";
 
+function ImageOrPlaceholder({ src, alt }: { src?: string; alt: string }) {
+  const s = String(src || "").trim();
+  if (s) {
+    // eslint-disable-next-line @next/next/no-img-element
+    return (
+      <img
+        src={s}
+        alt={alt}
+        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+      />
+    );
+  }
+
+  return (
+    <div className="h-full w-full flex items-center justify-center text-xs text-muted-foreground bg-[radial-gradient(circle_at_30%_20%,rgba(245,158,11,0.18),transparent_40%),radial-gradient(circle_at_70%_70%,rgba(255,255,255,0.06),transparent_45%)]">
+      <span className="inline-flex items-center gap-2">
+        <span aria-hidden="true">🖼️</span> imagem em breve
+      </span>
+    </div>
+  );
+}
 function ProductCard({ p, badge }: { p: any; badge?: string }) {
   const price = getDisplayPriceBRL(p as any, false).text;
   const thumb = p?.thumbnail || (p?.images?.[0] as any)?.url || "";
@@ -19,18 +40,7 @@ function ProductCard({ p, badge }: { p: any; badge?: string }) {
       className="steel-card steel-card-hover group overflow-hidden block"
     >
       <div className="aspect-square overflow-hidden rounded-t-lg -m-[1px] mb-0">
-        {thumb ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={thumb}
-            alt={p.title}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-          />
-        ) : (
-          <div className="h-full w-full bg-muted flex items-center justify-center text-muted-foreground text-sm">
-            sem imagem
-          </div>
-        )}
+        {<ImageOrPlaceholder src={thumb} alt={p.title} />}
       </div>
       <div className="p-5">
         <div className="flex items-center justify-between mb-2">
@@ -59,6 +69,7 @@ function ProductCard({ p, badge }: { p: any; badge?: string }) {
 }
 
 export default async function Home() {
+  const WA_NUMBER = "5585999999999";
   const promo = await getPromocaoSemana();
   const ofertasB2B = await getOfertasConstrutor();
   const all = await listProducts();
@@ -78,11 +89,11 @@ export default async function Home() {
     <div className="min-h-screen bg-background">
       <HeroSection />
 
-      <main className="container">
+      <main className="container py-12 space-y-16">
         {/* Banners Promo + B2B */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-12">
-          <div className="steel-card p-6 md:p-8 flex flex-col md:flex-row gap-4 md:items-center">
-            <div className="flex-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="steel-card p-6 md:p-8 flex flex-col md:flex-row gap-4 md:items-stretch">
+            <div className="flex-1 min-h-[168px] flex flex-col justify-between">
               <h3 className="font-display text-xl font-bold mb-2">
                 🔥 Ofertas da semana
               </h3>
@@ -108,14 +119,12 @@ export default async function Home() {
                 className="w-full md:w-40 h-28 object-cover rounded-lg border border-border"
               />
             ) : (
-              <div className="w-full md:w-40 h-28 rounded-lg border border-dashed border-border flex items-center justify-center text-muted-foreground text-xs">
-                sem imagem
-              </div>
+              <div className="w-full md:w-40 h-28 rounded-lg border border-dashed border-border overflow-hidden"><ImageOrPlaceholder src={""} alt="Imagem" /></div>
             )}
           </div>
 
-          <div className="steel-card p-6 md:p-8 flex flex-col md:flex-row gap-4 md:items-center">
-            <div className="flex-1">
+          <div className="steel-card p-6 md:p-8 flex flex-col md:flex-row gap-4 md:items-stretch">
+            <div className="flex-1 min-h-[168px] flex flex-col justify-between">
               <h3 className="font-display text-xl font-bold mb-2">
                 🏗️ Área Construtor
               </h3>
@@ -147,15 +156,13 @@ export default async function Home() {
                 className="w-full md:w-40 h-28 object-cover rounded-lg border border-border"
               />
             ) : (
-              <div className="w-full md:w-40 h-28 rounded-lg border border-dashed border-border flex items-center justify-center text-muted-foreground text-xs">
-                sem imagem
-              </div>
+              <div className="w-full md:w-40 h-28 rounded-lg border border-dashed border-border overflow-hidden"><ImageOrPlaceholder src={""} alt="Imagem" /></div>
             )}
           </div>
         </div>
 
         {/* Catálogo (destaques) */}
-        <section className="py-16">
+        <section>
           <div className="text-center mb-12">
             <h2 className="font-display text-4xl font-bold tracking-tight">
               Nosso <span className="text-gradient-gold">Catálogo</span>
@@ -166,9 +173,59 @@ export default async function Home() {
           </div>
 
           {destaques.length === 0 ? (
-            <div className="steel-card p-12 text-center text-muted-foreground">
-              Sem produtos para exibir. Cadastre no painel Medusa.
-            </div>
+            <div
+  style={{
+    border: "1px solid rgba(255,255,255,0.08)",
+    background: "rgba(255,255,255,0.03)",
+    borderRadius: 16,
+    padding: 18,
+    display: "grid",
+    gap: 10,
+    textAlign: "center",
+  }}
+>
+  <div style={{ fontWeight: 800, fontSize: 16 }}>
+    Catálogo em atualização
+  </div>
+
+  <div style={{ opacity: 0.9, fontSize: 13, lineHeight: 1.5 }}>
+    Ainda não há produtos cadastrados para exibir. Enquanto isso, você pode ver as promoções
+    ou pedir um orçamento sob medida pelo WhatsApp.
+  </div>
+
+  <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap", marginTop: 6 }}>
+    <Link
+      href="/promocoes"
+      style={{
+        textDecoration: "none",
+        padding: "10px 14px",
+        borderRadius: 12,
+        fontWeight: 800,
+        fontSize: 13,
+        background: "rgba(255,255,255,0.08)",
+        border: "1px solid rgba(255,255,255,0.12)",
+        color: "#fff",
+      }}
+    >
+      Ver promoções
+    </Link>
+
+    <a
+      href={`https://wa.me/${WA_NUMBER}` }
+      style={{
+        textDecoration: "none",
+        padding: "10px 14px",
+        borderRadius: 12,
+        fontWeight: 800,
+        fontSize: 13,
+        background: "rgb(245, 158, 11)",
+        color: "#111",
+      }}
+    >
+      Falar no WhatsApp →
+    </a>
+  </div>
+</div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {destaques.slice(0, 8).map((p: any) => (
@@ -195,3 +252,7 @@ export default async function Home() {
     </div>
   );
 }
+
+
+
+

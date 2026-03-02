@@ -52,7 +52,7 @@ export default function HeroSection() {
 
           <div className="mt-14 flex gap-10">
             {[
-              { value: "500+", label: "Projetos entregues" },
+              { value: "10.000+", label: "Projetos entregues" },
               { value: "Prazo", label: "Entrega garantida" },
               { value: "100%", label: "Sob medida" },
             ].map((stat) => (
@@ -69,3 +69,5 @@ export default function HeroSection() {
     </section>
   );
 }
+
+

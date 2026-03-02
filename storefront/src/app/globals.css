@@ -35,6 +35,10 @@
     --shadowHover: 0 14px 34px rgba(0,0,0,.4);
   }
   body {
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(245, 158, 11, 0.16), transparent 46%),
+    radial-gradient(circle at 82% 58%, rgba(220, 38, 38, 0.10), transparent 50%);
+  background-attachment: fixed;
     @apply bg-background text-foreground antialiased;
     font-family: var(--font-inter), 'Inter', ui-sans-serif, system-ui, sans-serif;
   }
@@ -77,7 +81,11 @@
 }
 
 * { box-sizing: border-box; }
-html, body { padding: 0; margin: 0; }
+html, body {
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(245, 158, 11, 0.16), transparent 46%),
+    radial-gradient(circle at 82% 58%, rgba(220, 38, 38, 0.10), transparent 50%);
+  background-attachment: fixed; padding: 0; margin: 0; }
 
 a{ color:inherit; }
 
@@ -305,7 +313,11 @@ a{ color:inherit; }
   --spark3: #ff2a00;
 }
 
-body{
+body {
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(245, 158, 11, 0.16), transparent 46%),
+    radial-gradient(circle at 82% 58%, rgba(220, 38, 38, 0.10), transparent 50%);
+  background-attachment: fixed;
   background-image: var(--steel-overlay), var(--steel-bg);
   background-size: cover, cover;
   background-repeat: no-repeat, no-repeat;
@@ -369,9 +381,17 @@ body{
   --accent: rgba(255,120,0,.95);
 }
 
-html, body { color: var(--text); }
+html, body {
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(245, 158, 11, 0.16), transparent 46%),
+    radial-gradient(circle at 82% 58%, rgba(220, 38, 38, 0.10), transparent 50%);
+  background-attachment: fixed; color: var(--text); }
 
-body{
+body {
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(245, 158, 11, 0.16), transparent 46%),
+    radial-gradient(circle at 82% 58%, rgba(220, 38, 38, 0.10), transparent 50%);
+  background-attachment: fixed;
   background-image: var(--steel-overlay), var(--steel-bg);
   background-size: cover, cover;
   background-repeat: no-repeat, no-repeat;
@@ -474,7 +494,11 @@ main, section, article{
   --forge-shadow2: 0 10px 30px rgba(0,0,0,0.45);
 }
 
-body{
+body {
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(245, 158, 11, 0.16), transparent 46%),
+    radial-gradient(circle at 82% 58%, rgba(220, 38, 38, 0.10), transparent 50%);
+  background-attachment: fixed;
   background: var(--forge-bg);
   color: var(--forge-text);
 }
@@ -572,4 +596,5 @@ body{
 .forgeBtnPrimary_v1:hover{
   border-color: rgba(255,210,150,0.75);
 }
+
 
