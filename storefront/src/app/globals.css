@@ -1,22 +1,83 @@
-:root{
-  --theme-accent:#111111;
-  --theme-bg:#ffffff;
-  --theme-fg:#111111;
-  --theme-banner-text:"";
-  --radius:12px;
-  --border:#e6e6e6;
-  --muted:rgba(0,0,0,.68);
-  --shadow:0 8px 24px rgba(0,0,0,.06);
-  --shadowHover:0 14px 34px rgba(0,0,0,.10);
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Tema modernized (Delima) - HSL para Tailwind */
+    --background: 25 12% 6%;
+    --foreground: 42 30% 90%;
+    --card: 25 10% 10%;
+    --card-foreground: 42 30% 90%;
+    --primary: 38 85% 50%;
+    --primary-foreground: 25 20% 8%;
+    --secondary: 25 8% 15%;
+    --secondary-foreground: 42 20% 78%;
+    --muted: 25 8% 13%;
+    --muted-foreground: 35 12% 50%;
+    --accent: 30 80% 45%;
+    --accent-foreground: 25 20% 8%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 30 18% 16%;
+    --input: 30 18% 16%;
+    --ring: 38 85% 50%;
+    --radius: 0.75rem;
+    --gold: 38 85% 50%;
+    --gold-light: 42 90% 65%;
+    --gold-dark: 30 80% 38%;
+    /* ThemeAutoStyle / legacy */
+    --theme-accent: #c97a0f;
+    --theme-bg: hsl(25 12% 6%);
+    --theme-fg: hsl(42 30% 90%);
+    --theme-banner-text: "";
+    --shadow: 0 8px 24px rgba(0,0,0,.3);
+    --shadowHover: 0 14px 34px rgba(0,0,0,.4);
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-inter), 'Inter', ui-sans-serif, system-ui, sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
+  }
 }
 
-*{ box-sizing:border-box; }
-html,body{ padding:0; margin:0; }
-body{
-  background:var(--theme-bg);
-  color:var(--theme-fg);
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+@layer utilities {
+  .text-gradient-gold {
+    background: linear-gradient(135deg, hsl(42 100% 62%), hsl(38 85% 50%), hsl(30 80% 38%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .glow-gold {
+    box-shadow: 0 0 40px hsl(38 85% 50% / 0.18), 0 0 80px hsl(30 80% 38% / 0.1);
+  }
+  .glow-gold-strong {
+    box-shadow: 0 0 0 1px hsl(38 85% 50% / 0.25), 0 20px 60px hsl(0 0% 0% / 0.5), 0 0 80px hsl(38 85% 50% / 0.18);
+  }
+  .steel-card {
+    background: hsl(var(--card));
+    border: 1px solid hsl(30 18% 16% / 0.8);
+    border-radius: var(--radius);
+    box-shadow: 0 0 0 1px hsl(38 85% 50% / 0.06), 0 12px 40px hsl(0 0% 0% / 0.4);
+    backdrop-filter: blur(12px);
+  }
+  .steel-card-hover {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .steel-card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 0 1px hsl(38 85% 50% / 0.22), 0 20px 60px hsl(0 0% 0% / 0.5), 0 0 60px hsl(38 85% 50% / 0.14);
+  }
+  .bg-gold-glow {
+    background: radial-gradient(ellipse at 30% 20%, hsl(38 85% 50% / 0.12), transparent 60%),
+                radial-gradient(ellipse at 70% 80%, hsl(30 80% 38% / 0.08), transparent 50%);
+  }
 }
+
+* { box-sizing: border-box; }
+html, body { padding: 0; margin: 0; }
 
 a{ color:inherit; }
 
@@ -389,3 +450,126 @@ main, section, article{
   box-shadow: 0 14px 40px rgba(0,0,0,.40);
 }
 /* ===== /STEEL_BG_FIX_V1 ===== */
+
+/* ===========================
+   FORGE_BG_v1 (fundo do clone)
+   =========================== */
+
+:root{
+  --forge-bg: #070607;
+  --forge-panel: rgba(15,12,12,0.78);
+  --forge-panel2: rgba(10,8,8,0.70);
+  --forge-border: rgba(255,255,255,0.08);
+  --forge-glow: rgba(255, 160, 20, 0.22);
+  --forge-glow-strong: rgba(255, 160, 20, 0.35);
+
+  /* combina com o âmbar/dourado da sua marca */
+  --forge-accent: #f4b234;
+  --forge-accent2: #ff8a1c;
+  --forge-text: rgba(255,255,255,0.92);
+  --forge-muted: rgba(255,255,255,0.70);
+
+  /* sombras no estilo “premium” */
+  --forge-shadow: 0 18px 45px rgba(0,0,0,0.55);
+  --forge-shadow2: 0 10px 30px rgba(0,0,0,0.45);
+}
+
+body{
+  background: var(--forge-bg);
+  color: var(--forge-text);
+}
+
+/* Wrapper global do layout */
+.forgeBg_v1{
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Imagem de fundo (bg-steel) + overlays */
+.forgeBg_v1::before{
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  background-image: url("/brand/bg-steel.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: saturate(1.05) contrast(1.05);
+  transform: scale(1.02);
+}
+
+/* overlay escuro + gradiente (igual clone) */
+.forgeBg_v1::after{
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(1000px 650px at 18% 20%, rgba(255,160,20,0.18), transparent 60%),
+    radial-gradient(900px 600px at 80% 30%, rgba(255,120,0,0.12), transparent 62%),
+    linear-gradient(180deg, rgba(0,0,0,0.82), rgba(0,0,0,0.55) 35%, rgba(0,0,0,0.82));
+  pointer-events: none;
+}
+
+/* “vinheta” extra para profundidade */
+.forgeVignette_v1{
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(closest-side at 50% 35%, rgba(0,0,0,0.0), rgba(0,0,0,0.65)),
+    radial-gradient(closest-side at 20% 80%, rgba(0,0,0,0.0), rgba(0,0,0,0.55)),
+    radial-gradient(closest-side at 80% 80%, rgba(0,0,0,0.0), rgba(0,0,0,0.55));
+}
+
+/* Cards/containers no estilo do clone */
+.forgePanel_v1{
+  background: var(--forge-panel);
+  border: 1px solid var(--forge-border);
+  border-radius: 18px;
+  box-shadow: var(--forge-shadow);
+  backdrop-filter: blur(10px);
+}
+
+.forgePanelSoft_v1{
+  background: var(--forge-panel2);
+  border: 1px solid var(--forge-border);
+  border-radius: 16px;
+  box-shadow: var(--forge-shadow2);
+  backdrop-filter: blur(10px);
+}
+
+.forgeBtn_v1{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 11px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: linear-gradient(180deg, rgba(255,160,20,0.18), rgba(0,0,0,0.10));
+  color: var(--forge-text);
+  text-decoration: none;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+
+.forgeBtn_v1:hover{
+  transform: translateY(-1px);
+  border-color: rgba(255,160,20,0.32);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.45);
+}
+
+.forgeBtnPrimary_v1{
+  background: linear-gradient(180deg, rgba(255,165,35,1), rgba(210,115,0,1));
+  color: #1a0f06;
+  border-color: rgba(255,200,120,0.45);
+}
+
+.forgeBtnPrimary_v1:hover{
+  border-color: rgba(255,210,150,0.75);
+}
+

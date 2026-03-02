@@ -1,52 +1,145 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { b2bRegister } from "../../../lib/b2b";
+
+const STORAGE_EMAIL = "construtor_email_v1";
+const STORAGE_SENHA = "construtor_senha_v1";
+const STORAGE_DOC = "construtor_doc_v1";
+const STORAGE_NOME = "construtor_nome_v1";
 
 export default function CadastroConstrutor() {
   const [doc, setDoc] = useState("");
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
   const [telefone, setTelefone] = useState("");
   const [empresa, setEmpresa] = useState("");
   const [msg, setMsg] = useState<string>("");
+  const [loading, setLoading] = useState(false);
 
-  async function submit() {
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
     setMsg("");
-    const payload = { doc, nome, email, telefone, empresa };
-    const res = await b2bRegister(payload);
+    if (!email.trim() || !senha.trim()) {
+      setMsg("Preencha e-mail e senha.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const payload: Record<string, string> = {
+        nome: nome.trim() || "Construtor",
+        email: email.trim(),
+        telefone: telefone.trim(),
+        empresa: empresa.trim(),
+      };
+      if (doc.trim()) payload.doc = doc.trim();
 
-    localStorage.setItem("construtor_doc_v1", doc);
-    // ainda não aprova aqui — status inicial é pendente
-    localStorage.removeItem("construtor_cadastrado_v1");
+      await b2bRegister(payload);
 
-    setMsg("Cadastro enviado! Status: pendente. Aguarde aprovação.");
-    window.location.href = "/construtor/status";
+      if (typeof window !== "undefined") {
+        localStorage.setItem(STORAGE_EMAIL, email.trim());
+        localStorage.setItem(STORAGE_SENHA, senha);
+        if (doc.trim()) localStorage.setItem(STORAGE_DOC, doc.trim());
+        if (nome.trim()) localStorage.setItem(STORAGE_NOME, nome.trim());
+        localStorage.removeItem("construtor_cadastrado_v1");
+      }
+
+      setMsg("Cadastro enviado! Status: pendente. Faça login para consultar.");
+      setTimeout(() => {
+        window.location.href = "/construtor/login";
+      }, 1500);
+    } catch (err: any) {
+      setMsg(err?.message || "Erro ao enviar. Tente de novo.");
+    } finally {
+      setLoading(false);
+    }
   }
 
+  const canSubmit = email.trim().length > 0 && senha.length >= 4;
+
   return (
-    <main style={{ padding: 16 }}>
-      <a href="/">← Home</a>
-      <h1>Cadastro Construtor (B2B)</h1>
+    <div className="min-h-screen bg-background pt-24 pb-12">
+      <main className="container max-w-md">
+        <Link href="/" className="text-muted-foreground hover:text-foreground text-sm mb-6 inline-block">
+          ← Voltar
+        </Link>
+        <h1 className="font-display text-3xl font-bold tracking-tight mb-2">
+          Área <span className="text-gradient-gold">Construtor</span>
+        </h1>
+        <p className="text-muted-foreground mb-8">
+          Cadastre-se com e-mail e senha. Após aprovação, você acessa ofertas especiais.
+        </p>
 
-      <p>Envie seu cadastro. Você fica com status <b>pendente</b> até aprovação.</p>
+        <form onSubmit={submit} className="space-y-4">
+          <input
+            type="email"
+            placeholder="E-mail *"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full rounded-lg border border-border bg-secondary px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            required
+          />
+          <input
+            type="password"
+            placeholder="Senha (mín. 4 caracteres) *"
+            value={senha}
+            onChange={(e) => setSenha(e.target.value)}
+            minLength={4}
+            className="w-full rounded-lg border border-border bg-secondary px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            required
+          />
+          <input
+            type="text"
+            placeholder="Nome"
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
+            className="w-full rounded-lg border border-border bg-secondary px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+          <input
+            type="text"
+            placeholder="Telefone"
+            value={telefone}
+            onChange={(e) => setTelefone(e.target.value)}
+            className="w-full rounded-lg border border-border bg-secondary px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+          <input
+            type="text"
+            placeholder="CPF/CNPJ (opcional)"
+            value={doc}
+            onChange={(e) => setDoc(e.target.value)}
+            className="w-full rounded-lg border border-border bg-secondary px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+          <input
+            type="text"
+            placeholder="Empresa (opcional)"
+            value={empresa}
+            onChange={(e) => setEmpresa(e.target.value)}
+            className="w-full rounded-lg border border-border bg-secondary px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+          <button
+            type="submit"
+            disabled={!canSubmit || loading}
+            className="w-full rounded-full bg-primary py-3.5 text-base font-bold text-primary-foreground hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? "Enviando…" : "Cadastrar"}
+          </button>
+        </form>
 
-      <div style={{ display: "grid", gap: 8, maxWidth: 420 }}>
-        <input placeholder="Documento (CPF/CNPJ)" value={doc} onChange={(e) => setDoc(e.target.value)} />
-        <input placeholder="Nome" value={nome} onChange={(e) => setNome(e.target.value)} />
-        <input placeholder="E-mail" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <input placeholder="Telefone" value={telefone} onChange={(e) => setTelefone(e.target.value)} />
-        <input placeholder="Empresa (opcional)" value={empresa} onChange={(e) => setEmpresa(e.target.value)} />
-        <button onClick={() => submit()} disabled={!doc.trim()}>
-          Enviar cadastro
-        </button>
-      </div>
+        {msg && (
+          <div className="mt-4 p-4 rounded-lg border border-border bg-secondary text-sm text-foreground">
+            {msg}
+          </div>
+        )}
 
-      {msg && <div style={{ marginTop: 12, padding: 10, border: "1px solid #ddd", borderRadius: 8 }}>{msg}</div>}
-
-      <p style={{ marginTop: 16 }}>
-        Já cadastrou? <a href="/construtor/login">Consultar status (login)</a>
-      </p>
-    </main>
+        <p className="mt-6 text-center text-sm text-muted-foreground">
+          Já tem cadastro?{" "}
+          <Link href="/construtor/login" className="text-primary hover:underline">
+            Entrar
+          </Link>
+        </p>
+      </main>
+    </div>
   );
 }

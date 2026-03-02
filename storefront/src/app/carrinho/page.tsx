@@ -73,82 +73,109 @@ export default function CarrinhoPage() {
   const waLink = buildWhatsappLink(waMessage, { b2b: isB2B });
 
   return (
-    <main style={{ padding: 24, maxWidth: 960, margin: "0 auto" }}>
-      <a href="/">← Home</a>
+    <div className="min-h-screen bg-background pt-24 pb-12">
+      <main className="container max-w-3xl">
+        <h1 className="font-display text-4xl font-bold tracking-tight mb-4 text-center">
+          Seu <span className="text-gradient-gold">Carrinho</span>
+        </h1>
 
-      <h1 style={{ fontSize: 26, marginTop: 14 }}>Carrinho</h1>
+        <p className="text-muted-foreground text-center mb-8">
+          B2B cadastrado: <b>{b2bOk ? "SIM" : "NÃO"}</b> · Portões no carrinho: <b>{portoes}</b> (mín. 3 para B2B)
+        </p>
 
-      <div style={{ opacity: 0.85, marginTop: 8 }}>
-        B2B cadastrado: <b>{b2bOk ? "SIM" : "NÃO"}</b> | Portões no carrinho: <b>{portoes}</b>{" "}
-        (mínimo 3)
-      </div>
-
-      {items.length === 0 ? (
-        <div style={{ marginTop: 16, padding: 16, border: "1px solid rgba(255,140,40,.18)", borderRadius: 16, background: "rgba(0,0,0,.35)" }}>
-          Carrinho vazio.
-        </div>
-      ) : (
-        <div style={{ marginTop: 16, display: "grid", gap: 12 }}>
-          {items.map((it: any, idx: number) => (
-            <div
-              key={idx}
-              className="steelCard"
-              style={{ padding: 14, display: "grid", gap: 8 }}
+        {items.length === 0 ? (
+          <div className="steel-card p-12 text-center">
+            <p className="text-muted-foreground mb-6">Seu carrinho está vazio.</p>
+            <a
+              href="/catalogo"
+              className="inline-flex items-center rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground hover:brightness-110"
             >
-              <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                <div style={{ fontWeight: 950 }}>{it.title}</div>
-                <button onClick={() => remove(idx)} style={{ marginLeft: "auto" }}>
-                  Remover
-                </button>
-              </div>
+              Ver catálogo
+            </a>
+          </div>
+        ) : (
+          <>
+            <div className="space-y-4">
+              {items.map((it: any, idx: number) => (
+                <div key={idx} className="steel-card flex flex-col sm:flex-row items-stretch sm:items-center gap-4 p-4">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-display font-bold truncate">{it.title}</h3>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      ipo: {String((it as any).metadata?.ipo ?? "-")} · tipo: {String((it as any).metadata?.tipo ?? "-")}
+                    </p>
+                    <p className="text-sm font-bold text-gradient-gold mt-1">
+                      {formatBRL(getUnitPrice(it, isB2B))} × {it.qty ?? 1} = {formatBRL(getUnitPrice(it, isB2B) * Number(it.qty ?? 1))}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => dec(idx)}
+                      className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                    >
+                      −
+                    </button>
+                    <span className="w-8 text-center font-bold">{it.qty ?? 1}</span>
+                    <button
+                      type="button"
+                      onClick={() => inc(idx)}
+                      className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                    >
+                      +
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => remove(idx)}
+                      className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground hover:text-destructive"
+                      aria-label="Remover"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
 
-              <div style={{ opacity: 0.8, fontSize: 13 }}>
-                ipo: {String((it as any).metadata?.ipo ?? "-")} | tipo: {String((it as any).metadata?.tipo ?? "-")}
-              </div>
-
-              <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                <button onClick={() => dec(idx)}>-</button>
-                <b>{it.qty ?? 1}</b>
-                <button onClick={() => inc(idx)}>+</button>
-
-                <div style={{ marginLeft: "auto", fontWeight: 900 }}>
-                  {formatBRL(getUnitPrice(it, isB2B))} x {it.qty ?? 1} ={" "}
-                  {formatBRL(getUnitPrice(it, isB2B) * Number(it.qty ?? 1))}
+            <div className="steel-card mt-6 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <span className="text-muted-foreground">
+                  {items.length} {items.length === 1 ? "item" : "itens"}
+                </span>
+                <div className="text-right">
+                  <p className="text-sm text-muted-foreground">Total estimado</p>
+                  <p className="font-display text-3xl font-bold text-gradient-gold">
+                    {formatBRL(total)}
+                  </p>
                 </div>
               </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <a
+                  href={canWhatsapp ? waLink : "#"}
+                  onClick={(e) => !canWhatsapp && e.preventDefault()}
+                  className={`flex-1 inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 text-base font-bold transition-all ${
+                    canWhatsapp
+                      ? "bg-primary text-primary-foreground hover:brightness-110 glow-gold"
+                      : "bg-muted text-muted-foreground cursor-not-allowed opacity-60"
+                  }`}
+                >
+                  Finalizar no WhatsApp
+                </a>
+                <a
+                  href="/catalogo"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-secondary px-6 py-4 text-sm font-bold text-muted-foreground hover:text-foreground"
+                >
+                  Continuar comprando
+                </a>
+              </div>
+              {!canWhatsapp && (
+                <p className="mt-4 text-sm text-muted-foreground">
+                  B2B: é preciso estar cadastrado e ter pelo menos 3 portões no carrinho. No varejo, o WhatsApp fica liberado.
+                </p>
+              )}
             </div>
-          ))}
-        </div>
-      )}
-
-      <div style={{ marginTop: 14, padding: 14, borderRadius: 16, border: "1px solid rgba(255,140,40,.18)", background: "rgba(0,0,0,.35)" }}>
-        <b>Total:</b> {formatBRL(total)}
-      </div>
-
-      <div style={{ marginTop: 14 }}>
-        <a
-          href={canWhatsapp ? waLink : "#"}
-          data-spark="1"
-          onClick={(e) => {
-            if (!canWhatsapp) e.preventDefault();
-          }}
-          className="steelBtn"
-          style={{
-            display: "inline-block",
-            opacity: canWhatsapp ? 1 : 0.4,
-            pointerEvents: canWhatsapp ? "auto" : "none",
-            textDecoration: "none",
-          }}
-        >
-          Finalizar no WhatsApp
-        </a>
-
-        {!canWhatsapp && (
-          <div style={{ marginTop: 10, opacity: 0.8 }}>
-            Para B2B: precisa estar cadastrado e ter pelo menos 3 portões no carrinho. No varejo, o WhatsApp fica liberado.
-          </div>
+          </>
         )}
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }

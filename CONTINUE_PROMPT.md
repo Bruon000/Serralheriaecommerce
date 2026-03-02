@@ -28,9 +28,8 @@ Você é minha IA assistente de dev. Continue o projeto **Serralheria Ecommerce*
 - Home com Promoção da Semana (metadata.promocao='semana')
 
 ## Onde paramos / próximo passo
-1) Home agora tem banners grandes (Promo/B2B) + cards com imagem (thumbnail) e tema altera textos do Hero via themes.json.
-2) /catalogo com chips de filtro (PROMO/B2B) + cards com thumb e preço B2B quando aprovado.
-3) Próximo: galeria de imagens na página do produto (se API expor images[]) + melhorar conteúdo (depoimentos/FAQ) e banners com imagens reais.
+1) Ajustes de conteúdo e UX: header com fundo sólido (sem barra roxa), só nome "Serralheria Delima" (sem logo); hero com texto foco em portões, confiança, entrega garantida e "Em breve: móveis industriais"; cards da home com textos melhores e sem menção B2B (Área Construtor); depoimentos com avatar/rosto (iniciais ou foto); cadastro construtor com e-mail/senha e CNPJ opcional; login construtor com e-mail/senha; nova página /cadastro para cliente (nome, e-mail, telefone); links Cadastre-se e Área Construtor no header.
+2) Próximo: galeria de imagens na página do produto; fotos reais nos depoimentos (colocar em public/depoimentos e preencher avatar); autenticação real do construtor no backend (opcional).
 
 ## Fonte da verdade
 CHECKLIST.md = lista de tarefas. AGENTS.md = como a IA deve trabalhar e onde atualizar.

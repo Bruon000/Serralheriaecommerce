@@ -1,47 +1,35 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { ShoppingCart } from "lucide-react";
 import { loadCart } from "../lib/cart";
 
-function countQty(items: any[]): number {
+function countQty(items: { qty?: number }[]): number {
   return (items || []).reduce((acc, it) => acc + Number(it?.qty || 0), 0);
 }
 
 export default function FloatingCartButton() {
-  const [qty, setQty] = useState<number>(0);
+  const [qty, setQty] = useState(0);
 
   useEffect(() => {
-    const refresh = () => {
-      try {
-        const items = loadCart();
-        setQty(countQty(items));
-      } catch {
-        setQty(0);
-      }
-    };
-
+    const refresh = () => setQty(countQty(loadCart()));
     refresh();
-
-    const onStorage = (e: StorageEvent) => {
-      if (!e.key) return;
-      // atualiza sempre que algo mudar no localStorage
-      refresh();
-    };
-
-    window.addEventListener("storage", onStorage);
-    const t = window.setInterval(refresh, 1500); // fallback simples
-
-    return () => {
-      window.removeEventListener("storage", onStorage);
-      window.clearInterval(t);
-    };
+    const t = setInterval(refresh, 1500);
+    return () => clearInterval(t);
   }, []);
 
+  if (qty === 0) return null;
+
   return (
-    <a className="floatCart" data-spark="1" href="/carrinho" title="Ir para o carrinho">
-      <span style={{ fontWeight: 950 }}>Carrinho</span>
-      <span className="floatCartBadge">{qty}</span>
-    </a>
+    <Link
+      href="/carrinho"
+      className="fixed bottom-6 right-6 z-50 inline-flex items-center gap-3 rounded-full bg-primary px-5 py-3.5 text-sm font-bold text-primary-foreground shadow-lg transition-all hover:brightness-110 hover:scale-105 glow-gold"
+    >
+      <ShoppingCart className="h-5 w-5" />
+      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-foreground/20 text-xs font-bold">
+        {qty}
+      </span>
+    </Link>
   );
 }
-

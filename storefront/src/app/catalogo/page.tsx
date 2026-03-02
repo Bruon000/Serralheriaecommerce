@@ -50,104 +50,129 @@ export default async function CatalogoPage({
   const baseQuery = { q: q || undefined, ipo: ipo || undefined, tipo: tipo || undefined, promo: promoOn ? "1" : undefined, b2b: b2bOn ? "1" : undefined };
 
   return (
-    <main className="container">
-      <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
-        <a className="pill" href="/">← Home</a>
-        <a className="pill" href="/carrinho">Carrinho</a>
-        <a className="pill pillPrimary" href="/construtor/status" style={{ marginLeft: "auto" }}>Status B2B</a>
-      </div>
+    <div className="min-h-screen bg-background pt-24 pb-12">
+      <main className="container">
+        <h1 className="font-display text-4xl font-bold tracking-tight mb-2">
+          Nosso <span className="text-gradient-gold">Catálogo</span>
+        </h1>
+        <p className="text-muted-foreground mb-6">Use os chips para filtrar (PROMO / B2B / Tipo / IPO).</p>
 
-      <h1 style={{ fontSize: 26, marginTop: 14, marginBottom: 6, fontWeight: 950 }}>Catálogo</h1>
-      <div style={{ opacity: 0.75, marginBottom: 10 }}>Use os chips para filtrar rápido (PROMO/B2B/Tipo/IPO).</div>
-
-      <div className="chips">
-        <a
-          className={"chip " + (promoOn ? "chipOn" : "")}
-          href={"/catalogo" + buildQuery({ ...baseQuery, promo: promoOn ? undefined : "1" })}
-        >
-          <span className="chipDot"></span> PROMO
-        </a>
-
-        <a
-          className={"chip " + (b2bOn ? "chipOn" : "")}
-          href={"/catalogo" + buildQuery({ ...baseQuery, b2b: b2bOn ? undefined : "1" })}
-        >
-          <span className="chipDot"></span> B2B
-        </a>
-
-        <a className="chip" href="/catalogo">Limpar</a>
-      </div>
-
-      <form style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
-        <input
-          name="q"
-          defaultValue={q}
-          placeholder="Buscar..."
-          style={{ padding: 10, border: "1px solid var(--border)", borderRadius: 10, minWidth: 240 }}
-        />
-
-        <select name="ipo" defaultValue={ipo} style={{ padding: 10, border: "1px solid var(--border)", borderRadius: 10 }}>
-          <option value="">IPO (todos)</option>
-          {ipos.map((x) => (
-            <option key={x} value={x}>{x}</option>
-          ))}
-        </select>
-
-        <select name="tipo" defaultValue={tipo} style={{ padding: 10, border: "1px solid var(--border)", borderRadius: 10 }}>
-          <option value="">Tipo (todos)</option>
-          {tipos.map((x) => (
-            <option key={x} value={x.toLowerCase()}>{x}</option>
-          ))}
-        </select>
-
-        {/* manter promo/b2b quando usar submit */}
-        {promoOn && <input type="hidden" name="promo" value="1" />}
-        {b2bOn && <input type="hidden" name="b2b" value="1" />}
-
-        <button type="submit" style={{ padding: "10px 14px", border: "1px solid var(--border)", borderRadius: 10, fontWeight: 950 }}>
-          Filtrar
-        </button>
-      </form>
-
-      {list.length === 0 ? (
-        <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: "var(--radius)", background: "#fff" }}>
-          Nenhum produto encontrado.
+        <div className="flex flex-wrap justify-center gap-3 mb-8">
+          <a
+            className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-all ${
+              promoOn ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground border border-border hover:bg-secondary/80"
+            }`}
+            href={"/catalogo" + buildQuery({ ...baseQuery, promo: promoOn ? undefined : "1" })}
+          >
+            PROMO
+          </a>
+          <a
+            className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-all ${
+              b2bOn ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground border border-border hover:bg-secondary/80"
+            }`}
+            href={"/catalogo" + buildQuery({ ...baseQuery, b2b: b2bOn ? undefined : "1" })}
+          >
+            B2B
+          </a>
+          <a
+            className="rounded-full px-5 py-2.5 text-sm font-semibold border border-border bg-secondary text-secondary-foreground hover:bg-secondary/80"
+            href="/catalogo"
+          >
+            Limpar
+          </a>
         </div>
-      ) : (
-        <div className="grid">
-          {list.map((p) => {
-            const promo = String(p?.metadata?.promocao || "") === "semana";
-            const b2b = String(p?.metadata?.oferta || "") === "construtor";
 
-            return (
-              <a key={p.id} className="card" href={`/produto/${p.handle}`}>
-                {p.thumbnail ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img className="thumb" src={p.thumbnail} alt={p.title} />
-                ) : (
-                  <div className="thumb" style={{ display: "grid", placeItems: "center", opacity: 0.6 }}>
-                    sem imagem
+        <form className="flex flex-wrap gap-3 mb-10" action="/catalogo" method="get">
+          <input
+            name="q"
+            defaultValue={q}
+            placeholder="Buscar..."
+            className="rounded-lg border border-border bg-secondary px-4 py-2.5 text-foreground min-w-[200px] focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+          <select
+            name="ipo"
+            defaultValue={ipo}
+            className="rounded-lg border border-border bg-secondary px-4 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+          >
+            <option value="">IPO (todos)</option>
+            {ipos.map((x) => (
+              <option key={x} value={x}>{x}</option>
+            ))}
+          </select>
+          <select
+            name="tipo"
+            defaultValue={tipo}
+            className="rounded-lg border border-border bg-secondary px-4 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+          >
+            <option value="">Tipo (todos)</option>
+            {tipos.map((x) => (
+              <option key={x} value={x.toLowerCase()}>{x}</option>
+            ))}
+          </select>
+          {promoOn && <input type="hidden" name="promo" value="1" />}
+          {b2bOn && <input type="hidden" name="b2b" value="1" />}
+          <button
+            type="submit"
+            className="rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground hover:brightness-110"
+          >
+            Filtrar
+          </button>
+        </form>
+
+        {list.length === 0 ? (
+          <div className="steel-card p-12 text-center text-muted-foreground">
+            Nenhum produto encontrado.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {list.map((p) => {
+              const promo = String(p?.metadata?.promocao || "") === "semana";
+              const b2b = String(p?.metadata?.oferta || "") === "construtor";
+              return (
+                <a
+                  key={p.id}
+                  href={`/produto/${p.handle}`}
+                  className="steel-card steel-card-hover group overflow-hidden block"
+                >
+                  <div className="aspect-square overflow-hidden rounded-t-lg -m-[1px] mb-0">
+                    {p.thumbnail ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={p.thumbnail}
+                        alt={p.title}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                    ) : (
+                      <div className="h-full w-full bg-muted flex items-center justify-center text-muted-foreground text-sm">
+                        sem imagem
+                      </div>
+                    )}
                   </div>
-                )}
-
-                <div style={{ marginTop: 10, display: "flex", gap: 8, alignItems: "center" }}>
-                  <div className="cardTitle" style={{ flex: 1 }}>{p.title}</div>
-                  {promo && <span className="badge">PROMO</span>}
-                  {b2b && <span className="badge">B2B</span>}
-                </div>
-
-                <CatalogPrice product={p as any} />
-
-                <div className="meta">
-                  ipo: {String(p.metadata?.ipo ?? "-")} | tipo: {String(p.metadata?.tipo ?? "-")}
-                </div>
-
-                <div style={{ marginTop: 10, fontWeight: 900, fontSize: 13 }}>Ver detalhes →</div>
-              </a>
-            );
-          })}
-        </div>
-      )}
-    </main>
+                  <div className="p-5">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-primary">
+                        {String(p?.metadata?.tipo ?? "Produto")}
+                      </span>
+                      <div className="flex gap-1">
+                        {promo && <span className="text-xs rounded-full border border-border px-2 py-0.5">PROMO</span>}
+                        {b2b && <span className="text-xs rounded-full border border-border px-2 py-0.5">B2B</span>}
+                      </div>
+                    </div>
+                    <h3 className="font-display text-lg font-bold">{p.title}</h3>
+                    <div className="mt-2">
+                      <CatalogPrice product={p as any} />
+                    </div>
+                    <div className="mt-2 text-sm text-muted-foreground">
+                      ipo: {String(p.metadata?.ipo ?? "-")} | tipo: {String(p.metadata?.tipo ?? "-")}
+                    </div>
+                    <div className="mt-3 text-sm font-bold text-primary">Ver detalhes →</div>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        )}
+      </main>
+    </div>
   );
 }

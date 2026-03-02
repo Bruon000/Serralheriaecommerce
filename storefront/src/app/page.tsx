@@ -1,470 +1,197 @@
+import Link from "next/link";
 import { getPromocaoSemana, getOfertasConstrutor, listProducts } from "../lib/medusa";
-import { getTheme } from "../lib/theme";
-
-
 import { getDisplayPriceBRL } from "../lib/pricing";
-
-
-
-
+import HeroSection from "../components/HeroSection";
+import TestimonialsSection from "../components/TestimonialsSection";
+import FAQSection from "../components/FAQSection";
+import CTASection from "../components/CTASection";
+import SiteFooter from "../components/SiteFooter";
 
 export const dynamic = "force-dynamic";
 
-
-
-
-
 function ProductCard({ p, badge }: { p: any; badge?: string }) {
-
-
   const price = getDisplayPriceBRL(p as any, false).text;
-
-
-
-
+  const thumb = p?.thumbnail || (p?.images?.[0] as any)?.url || "";
 
   return (
-
-
-    <a className="card steelCard" href={`/produto/${p.handle}`}>
-
-
-      {p.thumbnail ? (
-
-
-        // eslint-disable-next-line @next/next/no-img-element
-
-
-        <img className="thumb" src={p.thumbnail} alt={p.title} />
-
-
-      ) : (
-
-
-        <div className="thumb" style={{ display: "grid", placeItems: "center", opacity: 0.6 }}>
-
-
-          sem imagem
-
-
+    <Link
+      href={`/produto/${p.handle}`}
+      className="steel-card steel-card-hover group overflow-hidden block"
+    >
+      <div className="aspect-square overflow-hidden rounded-t-lg -m-[1px] mb-0">
+        {thumb ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={thumb}
+            alt={p.title}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+          />
+        ) : (
+          <div className="h-full w-full bg-muted flex items-center justify-center text-muted-foreground text-sm">
+            sem imagem
+          </div>
+        )}
+      </div>
+      <div className="p-5">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs font-semibold uppercase tracking-wider text-primary">
+            {String(p?.metadata?.tipo ?? "Produto")}
+          </span>
+          {badge && (
+            <span className="text-xs rounded-full border border-border px-3 py-1 text-muted-foreground">
+              {badge}
+            </span>
+          )}
         </div>
-
-
-      )}
-
-
-
-
-
-      <div style={{ marginTop: 10, display: "flex", gap: 8, alignItems: "center" }}>
-
-
-        <div className="cardTitle" style={{ flex: 1 }}>{p.title}</div>
-
-
-        {badge && <span className="badge">{badge}</span>}
-
-
+        <h3 className="font-display text-lg font-bold">{p.title}</h3>
+        <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
+          {p.description || "Produto sob medida — solicite orçamento."}
+        </p>
+        <div className="mt-4 flex items-center justify-between">
+          <span className="font-display text-xl font-bold text-gradient-gold">
+            {price}
+          </span>
+          <span className="text-sm font-bold text-primary">Ver detalhes →</span>
+        </div>
       </div>
-
-
-
-
-
-      <div className="price">{price}</div>
-
-
-
-
-
-      <div className="meta">
-
-
-        ipo: {String(p.metadata?.ipo ?? "-")} | tipo: {String(p.metadata?.tipo ?? "-")}
-
-
-      </div>
-
-
-
-
-
-      <div style={{ marginTop: 10, fontWeight: 900, fontSize: 13 }}>Ver detalhes →</div>
-
-
-    </a>
-
-
+    </Link>
   );
-
-
 }
 
-
-
-
-
 export default async function Home() {
-
-
-    const theme = getTheme(new Date());
-const promo = await getPromocaoSemana();
-
-
+  const promo = await getPromocaoSemana();
   const ofertasB2B = await getOfertasConstrutor();
+  const all = await listProducts();
 
-
-  
   function getImg(p: any): string {
     return String(p?.thumbnail || p?.images?.[0]?.url || "");
   }
-
   const promoImg = promo?.length ? getImg(promo[0] as any) : "";
   const b2bImg = ofertasB2B?.length ? getImg(ofertasB2B[0] as any) : "";
-const all = await listProducts();
-
-
-
-
 
   const destaques =
-
-
-    (all || []).filter((p: any) => String(p?.metadata?.tipo || "").toLowerCase() === "portao").slice(0, 8) ||
-
-
-    (all || []).slice(0, 8);
-
-
-
-
+    (all || []).filter(
+      (p: any) => String(p?.metadata?.tipo || "").toLowerCase() === "portao"
+    ).slice(0, 8) || (all || []).slice(0, 8);
 
   return (
-
-
-    <main className="container">
-
-
-      <div className="hero steelCard2">
-
-
-        <h1>{theme.heroTitle || "Seu projeto em metal, do jeito certo."}</h1>
-
-
-        <p>{theme.heroSubtitle || "Escolha o modelo, configure medidas e finalize pelo WhatsApp."}</p>
-
-
-
-
-
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 14 }}>
-
-
-          <a className="pill pillPrimary" href="/catalogo">{theme.ctaPrimary || "Ver catálogo"}</a>
-
-
-          <a className="pill" href="/carrinho">{theme.ctaSecondary || "Ir para o carrinho"}</a>
-
-
-          <a className="pill" href="/construtor/login">{theme.ctaTertiary || "Sou construtor (B2B)"}</a>
-
-
-        </div>
-
-      <div className="bannerRow">
-  <div className="bannerCard steelCard" style={{ display: "grid", gridTemplateColumns: "1fr 180px", gap: 14, alignItems: "center" }}>
-    <div>
-      <div className="bannerTitle">🔥 Promoções da Semana</div>
-      <div className="bannerText">
-        {promo.length ? `Temos ${promo.length} item(ns) em promoção.` : "Nenhuma promoção marcada no momento."}{" "}
-        Marque no Admin: <code>metadata.promocao="semana"</code>.
-      </div>
-      <div className="bannerActions">
-        <a className="pill pillPrimary" href="/catalogo?promo=1">Ver promo no catálogo</a>
-        <a className="pill" href="#promocoes">Ir para a seção</a>
-      </div>
-    </div>
-
-    {promoImg ? (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img className="bannerImg" src={promoImg} alt="Promoção" style={{ width: "100%", height: 120, objectFit: "cover", borderRadius: 12, border: "1px solid var(--border)" }} />
-    ) : (
-      <div style={{ width: "100%", height: 120, borderRadius: 12, border: "1px dashed var(--border)", display: "grid", placeItems: "center", opacity: .7 }}>
-        sem imagem
-      </div>
-    )}
-  </div>
-
-  <div className="bannerCard steelCard" style={{ display: "grid", gridTemplateColumns: "1fr 180px", gap: 14, alignItems: "center" }}>
-    <div>
-      <div className="bannerTitle">🏗️ Área Construtor (B2B)</div>
-      <div className="bannerText">
-        {ofertasB2B.length ? `Ofertas B2B ativas: ${ofertasB2B.length}.` : "Marque produtos B2B no Admin para aparecerem aqui."}{" "}
-        Use <code>metadata.oferta="construtor"</code> e (opcional) <code>metadata.preco_b2b</code>.
-      </div>
-      <div className="bannerActions">
-        <a className="pill pillPrimary" href="/construtor/status">Meu status</a>
-        <a className="pill" href="/construtor/ofertas">Ver ofertas B2B</a>
-      </div>
-    </div>
-
-    {b2bImg ? (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img className="bannerImg" src={b2bImg} alt="B2B" style={{ width: "100%", height: 120, objectFit: "cover", borderRadius: 12, border: "1px solid var(--border)" }} />
-    ) : (
-      <div style={{ width: "100%", height: 120, borderRadius: 12, border: "1px dashed var(--border)", display: "grid", placeItems: "center", opacity: .7 }}>
-        sem imagem
-      </div>
-    )}
-  </div>
-</div>
-
-
-      </div>
-
-
-
-
-
-      <section className="sectionTitle">
-
-
-        <h2 id="promocoes">Promoção da Semana</h2>
-
-
-        <span>metadata.promocao = "semana"</span>
-
-
-      </section>
-
-
-
-
-
-      {promo.length === 0 ? (
-
-
-        <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: "var(--radius)", background: "#fff" }}>
-
-
-          Nenhum produto em promoção nesta semana.
-
-
-        </div>
-
-
-      ) : (
-
-
-        <div className="grid">
-
-
-          {promo.slice(0, 8).map((p) => (
-
-
-            <ProductCard key={p.id} p={p} badge="PROMO" />
-
-
-          ))}
-
-
-        </div>
-
-
-      )}
-
-
-
-
-
-      <section className="sectionTitle">
-
-
-        <h2>Ofertas para Construtores (B2B)</h2>
-
-
-        <span>metadata.oferta = "construtor"</span>
-
-
-      </section>
-
-
-
-
-
-      <div style={{ marginTop: 10, opacity: 0.82 }}>
-
-
-        <a href="/construtor/status">Ver meu status</a> · <a href="/construtor/ofertas">Ver ofertas B2B</a>
-
-
-      </div>
-
-
-
-
-
-      {ofertasB2B.length === 0 ? (
-
-
-        <div style={{ marginTop: 12, padding: 16, border: "1px solid var(--border)", borderRadius: "var(--radius)", background: "#fff" }}>
-
-
-          <div style={{ fontWeight: 950, marginBottom: 6 }}>Nenhuma oferta B2B marcada ainda</div>
-
-
-          <div style={{ opacity: 0.8 }}>
-
-
-            No Admin, abra um produto e em <b>Metadata</b> adicione: <code>oferta</code> = <code>construtor</code>.
-
-
-            <div style={{ marginTop: 8 }}>
-
-
-              Alternativa em lote: <code>tools\ofertas-construtor.ps1</code>
-
-
+    <div className="min-h-screen bg-background">
+      <HeroSection />
+
+      <main className="container">
+        {/* Banners Promo + B2B */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-12">
+          <div className="steel-card p-6 md:p-8 flex flex-col md:flex-row gap-4 md:items-center">
+            <div className="flex-1">
+              <h3 className="font-display text-xl font-bold mb-2">
+                🔥 Ofertas da semana
+              </h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                {promo.length
+                  ? "Condições especiais nos destaques. Confira e aproveite."
+                  : "Em breve novas ofertas. Acompanhe o catálogo."}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <Link
+                  href="/catalogo?promo=1"
+                  className="inline-flex items-center rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground hover:brightness-110"
+                >
+                  Ver ofertas
+                </Link>
+              </div>
             </div>
-
-
+            {promoImg ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={promoImg}
+                alt="Promoção"
+                className="w-full md:w-40 h-28 object-cover rounded-lg border border-border"
+              />
+            ) : (
+              <div className="w-full md:w-40 h-28 rounded-lg border border-dashed border-border flex items-center justify-center text-muted-foreground text-xs">
+                sem imagem
+              </div>
+            )}
           </div>
 
-
-        </div>
-
-
-      ) : (
-
-
-        <div className="grid">
-
-
-          {ofertasB2B.slice(0, 8).map((p) => (
-
-
-            <ProductCard key={p.id} p={p} badge="B2B" />
-
-
-          ))}
-
-
-        </div>
-
-
-      )}
-
-
-
-
-
-      <section className="sectionTitle">
-
-
-        <h2>Destaques</h2>
-
-
-        <span>seleção automática (tipo=portao)</span>
-
-
-      </section>
-
-
-
-
-
-      {destaques.length === 0 ? (
-
-
-        <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: "var(--radius)", background: "#fff" }}>
-
-
-          Sem produtos para exibir.
-
-
-        </div>
-
-
-      ) : (
-
-
-        <div className="grid">
-
-
-          {destaques.map((p: any) => (
-
-
-            <ProductCard key={p.id} p={p} />
-
-
-          ))}
-
-
-        </div>
-
-
-      )}
-
-
-
-
-
-      <div className="footer">
-
-
-        Dica: no Admin, use <code>metadata.promocao="semana"</code> e <code>metadata.oferta="construtor"</code> para destacar produtos.
-
-
-      </div>
-      <div style={{ marginTop: 34, display: "grid", gap: 16 }}>
-        <h2 style={{ fontSize: 22, fontWeight: 950 }}>Depoimentos</h2>
-
-        <div className="grid">
-          <div className="card steelCard">
-            <div className="cardTitle">“Ficou perfeito e rápido.”</div>
-            <div className="meta" style={{ marginTop: 8 }}>Portão sob medida, atendimento excelente. — Cliente</div>
-          </div>
-          <div className="card steelCard">
-            <div className="cardTitle">“Preço de construtor ajudou muito.”</div>
-            <div className="meta" style={{ marginTop: 8 }}>Compras recorrentes com condição B2B. — Construtor</div>
-          </div>
-          <div className="card steelCard">
-            <div className="cardTitle">“Qualidade top.”</div>
-            <div className="meta" style={{ marginTop: 8 }}>Material forte e acabamento bonito. — Cliente</div>
+          <div className="steel-card p-6 md:p-8 flex flex-col md:flex-row gap-4 md:items-center">
+            <div className="flex-1">
+              <h3 className="font-display text-xl font-bold mb-2">
+                🏗️ Área Construtor
+              </h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                {ofertasB2B.length
+                  ? "Condições especiais e ofertas para profissionais. Cadastre-se e consulte seu status."
+                  : "Condições especiais para construtores. Cadastre-se para acessar ofertas."}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <Link
+                  href="/construtor/status"
+                  className="inline-flex items-center rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground hover:brightness-110"
+                >
+                  Meu status
+                </Link>
+                <Link
+                  href="/construtor/ofertas"
+                  className="inline-flex items-center rounded-full border border-border bg-secondary px-5 py-2.5 text-sm font-bold text-secondary-foreground hover:bg-secondary/80"
+                >
+                  Ver ofertas
+                </Link>
+              </div>
+            </div>
+            {b2bImg ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={b2bImg}
+                alt="Construtor"
+                className="w-full md:w-40 h-28 object-cover rounded-lg border border-border"
+              />
+            ) : (
+              <div className="w-full md:w-40 h-28 rounded-lg border border-dashed border-border flex items-center justify-center text-muted-foreground text-xs">
+                sem imagem
+              </div>
+            )}
           </div>
         </div>
 
-        <h2 style={{ fontSize: 22, fontWeight: 950, marginTop: 10 }}>Perguntas frequentes</h2>
-        <div style={{ display: "grid", gap: 10 }}>
-          <div className="card steelCard">
-            <div className="cardTitle">Como eu finalizo o pedido?</div>
-            <div className="meta" style={{ marginTop: 8 }}>Você monta o carrinho e clica em “Finalizar no WhatsApp”. A mensagem já vai com itens e total.</div>
+        {/* Catálogo (destaques) */}
+        <section className="py-16">
+          <div className="text-center mb-12">
+            <h2 className="font-display text-4xl font-bold tracking-tight">
+              Nosso <span className="text-gradient-gold">Catálogo</span>
+            </h2>
+            <p className="mt-4 text-muted-foreground max-w-md mx-auto">
+              Produtos fabricados sob medida com materiais de primeira qualidade.
+            </p>
           </div>
-          <div className="card steelCard">
-            <div className="cardTitle">O que é a Área Construtor (B2B)?</div>
-            <div className="meta" style={{ marginTop: 8 }}>É uma área para construtores com ofertas e preços especiais quando aprovado.</div>
-          </div>
-          <div className="card steelCard">
-            <div className="cardTitle">Consigo mudar imagens e promoções pelo painel?</div>
-            <div className="meta" style={{ marginTop: 8 }}>Sim. No Medusa Admin você altera imagens (Media) e marca metadados: promocao/oferta/preco_b2b.</div>
-          </div>
-        </div>
-      </div>
-    </main>
 
+          {destaques.length === 0 ? (
+            <div className="steel-card p-12 text-center text-muted-foreground">
+              Sem produtos para exibir. Cadastre no painel Medusa.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {destaques.slice(0, 8).map((p: any) => (
+                <ProductCard key={p.id} p={p} />
+              ))}
+            </div>
+          )}
+
+          <div className="text-center mt-10">
+            <Link
+              href="/catalogo"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-bold text-primary-foreground transition-all hover:brightness-110"
+            >
+              Ver todo o catálogo
+            </Link>
+          </div>
+        </section>
+      </main>
+
+      <TestimonialsSection />
+      <FAQSection />
+      <CTASection />
+      <SiteFooter />
+    </div>
   );
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
