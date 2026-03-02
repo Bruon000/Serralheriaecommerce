@@ -38,9 +38,10 @@ export default function FloatingCartButton() {
   }, []);
 
   return (
-    <a className="floatCart" href="/carrinho" title="Ir para o carrinho">
+    <a className="floatCart" data-spark="1" href="/carrinho" title="Ir para o carrinho">
       <span style={{ fontWeight: 950 }}>Carrinho</span>
       <span className="floatCartBadge">{qty}</span>
     </a>
   );
 }
+

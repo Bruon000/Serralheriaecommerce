@@ -370,3 +370,22 @@ a:hover{ opacity: .95; }
   z-index: 9999;
 }
 /* ===== /STEEL_FORGE_THEME_V2 ===== */
+
+/* ===== STEEL_BG_FIX_V1 ===== */
+main{
+  color: var(--text);
+}
+
+/* força fundos claros a ficarem transparentes */
+main, section, article{
+  background: transparent;
+}
+
+.steelWrap{
+  background: rgba(0,0,0,.35);
+  border: 1px solid rgba(255,140,40,.12);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 14px 40px rgba(0,0,0,.40);
+}
+/* ===== /STEEL_BG_FIX_V1 ===== */
