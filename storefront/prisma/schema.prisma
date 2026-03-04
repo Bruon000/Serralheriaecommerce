@@ -1,0 +1,21 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model CmsPage {
+  id                   String   @id @default(cuid())
+  urlPath              String   @unique
+  title                String?
+  content              String?  // legado HTML (deprecated)
+  contentJson          String?  // rascunho (blocos)
+  publishedContentJson String?  // conteúdo publicado (copiado ao publicar)
+  published            Boolean  @default(false)
+  routeParamsExample   String?  // JSON ex: {"handle":"portao-modelo-a"} para rotas dinâmicas
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}

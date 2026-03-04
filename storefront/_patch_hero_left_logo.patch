@@ -1,0 +1,27 @@
+*** Begin Patch
+*** Update File: src/components/HeroSection.tsx
+@@
+- <div className="container relative pt-[300px] pb-12">
++      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pt-[300px] pb-12">
+         <div className="max-w-2xl">
+-                    <div className="h-[96px]" aria-hidden="true" />
++          <div className="h-[56px] sm:h-[72px]" aria-hidden="true" />
+ {/* Logo acima do texto (grande e inclinada) */}
+-          <div className="mb-10">
++          <div className="mb-10 -ml-2 sm:-ml-6 lg:-ml-10">
+             {/* eslint-disable-next-line @next/next/no-img-element */}
+             <img
+               src="/brand/hero-logo.png"
+               alt="Serralheria Delima"
+               className="select-none"
+               style={{
+                 height: "min(440px, 36vh)",
+                 width: "auto",
+                 maxWidth: "min(98vw, 1400px)",
+                 objectFit: "contain",
+                 transform: "rotate(-16deg)",
+                 filter: "drop-shadow(0 26px 44px rgba(245,158,11,0.30))",
+               }}
+             />
+           </div>
+*** End Patch

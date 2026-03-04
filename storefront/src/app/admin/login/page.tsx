@@ -1,0 +1,62 @@
+"use client";
+
+import { useState } from "react";
+
+export default function AdminLoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [err, setErr] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  async function submit(e: any) {
+    e.preventDefault();
+    setErr(null);
+    setLoading(true);
+    try {
+      const res = await fetch("/api/cms/login", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.ok) throw new Error(data.error || "Falha no login");
+      window.location.href = "/admin";
+    } catch (e: any) {
+      setErr(String(e?.message ?? "Erro"));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-background pt-24 pb-16">
+      <main className="container max-w-md">
+        <div className="steel-card p-6">
+          <h1 className="font-display text-3xl font-extrabold">Login do Admin</h1>
+          <p className="mt-2 text-sm text-muted-foreground">Use o email/senha do .env.local</p>
+
+          <form onSubmit={submit} className="mt-6 grid gap-4">
+            <div className="grid gap-2">
+              <label className="text-xs font-extrabold tracking-wider text-foreground/80">Email</label>
+              <input className="h-11 w-full rounded-xl border border-border/50 bg-black/35 px-4 text-sm" value={email} onChange={(e) => setEmail(e.target.value)} />
+            </div>
+
+            <div className="grid gap-2">
+              <label className="text-xs font-extrabold tracking-wider text-foreground/80">Senha</label>
+              <input type="password" className="h-11 w-full rounded-xl border border-border/50 bg-black/35 px-4 text-sm" value={password} onChange={(e) => setPassword(e.target.value)} />
+            </div>
+
+            {err && <div className="text-sm text-red-400">{err}</div>}
+
+            <button
+              disabled={loading}
+              className="inline-flex justify-center items-center rounded-full bg-primary px-6 py-3 text-sm font-extrabold text-primary-foreground disabled:opacity-50"
+            >
+              {loading ? "Entrando..." : "Entrar"}
+            </button>
+          </form>
+        </div>
+      </main>
+    </div>
+  );
+}

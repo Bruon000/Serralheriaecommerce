@@ -25,11 +25,22 @@ export default function SiteHeader() {
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 bg-black/65 backdrop-blur">
-      <div className="container h-[68px] flex items-center gap-6">
-        {/* Marca mínima (não compete com a logo grande do hero) */}
+    <header className="fixed top-0 left-0 right-0 z-[80] border-b border-border/40 bg-black/65 backdrop-blur">
+      <div className="container h-[72px] flex items-center gap-6">
+        {/* Marca mínima (não compete com a logo grande do hero) */}        {/* Logo / Marca */}
+        <Link href="/" className="shrink-0 inline-flex items-center gap-3">
+          <img
+            src="/brand/hero-logo.png"
+            alt="Logo"
+            className="h-10 w-auto object-contain"
+          />
+          <span className="hidden sm:block font-extrabold tracking-tight text-foreground">
+            Serralheria
+          </span>
+        </Link>
+
 {/* Nav desktop */}
-        <nav className="hidden lg:flex flex-1 items-center justify-center gap-7 whitespace-nowrap">
+        <nav className="hidden lg:flex flex-1 items-center justify-center gap-6 whitespace-nowrap">
           {navLinks.slice(0, 5).map((link) => (
             <Link
               key={link.href}
@@ -58,12 +69,7 @@ export default function SiteHeader() {
             <span className="hidden sm:inline">Carrinho</span>
           </Link>
 
-          <Link
-            href="/orcamento"
-            className="inline-flex items-center rounded-full bg-primary px-5 py-2 text-sm font-extrabold text-primary-foreground hover:brightness-110"
-          >
-            Orçamento
-          </Link>
+          <Link href="/orcamento" className="inline-flex items-center rounded-full bg-primary px-5 py-2 text-sm font-extrabold text-primary-foreground hover:brightness-110 hover:shadow-[0_10px_30px_rgba(245,158,11,0.18)]">Orçamento</Link>
 
           {/* Mobile menu button */}
           <button
@@ -97,5 +103,7 @@ export default function SiteHeader() {
     </header>
   );
 }
+
+
 
 

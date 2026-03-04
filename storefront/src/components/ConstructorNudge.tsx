@@ -42,12 +42,11 @@ export default function ConstructorNudge({ enabled = true }: Props) {
 if (!enabled || !mounted || !canShow || !visible) return null;
 
   return (
-    <div
+        <div
       style={{
         position: "fixed",
-        right: 16,
-        bottom: 16,
-        zIndex: 60,
+        right: 24,
+        bottom: 92,        zIndex: 60,
         display: "flex",
         flexDirection: "column",
         gap: 10,
@@ -69,7 +68,7 @@ if (!enabled || !mounted || !canShow || !visible) return null;
             pointerEvents: "auto",
           }}
         >
-          <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+          <div style={{ display: "flex", gap: 10, alignItems: "flex-end" }}>
             <div
               style={{
                 width: 36,
@@ -184,6 +183,17 @@ if (!enabled || !mounted || !canShow || !visible) return null;
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

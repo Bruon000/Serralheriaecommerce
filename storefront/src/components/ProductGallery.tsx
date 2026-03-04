@@ -4,15 +4,32 @@ import { useMemo, useState } from "react";
 
 type Img = { url?: string | null };
 
-export default function ProductGallery({
-  title,
-  thumbnail,
-  images,
-}: {
-  title: string;
+type ProductGalleryProps = {
+  title?: string;
   thumbnail?: string | null;
   images?: Img[] | null;
-}) {
+  /** When provided (e.g. from Builder state), overrides title/thumbnail/images if not set */
+  product?: { title?: string; thumbnail?: string | null; images?: Img[] | null };
+  imageHeight?: number;
+  showThumbnails?: boolean;
+  thumbsSize?: "sm" | "md" | "lg";
+};
+
+const thumbsSizeMap = { sm: "h-14 w-20", md: "h-[76px] w-[104px]", lg: "h-24 w-32" };
+
+export default function ProductGallery({
+  title: titleProp,
+  thumbnail: thumbnailProp,
+  images: imagesProp,
+  product,
+  imageHeight = 420,
+  showThumbnails = true,
+  thumbsSize = "md",
+}: ProductGalleryProps) {
+  const title = titleProp ?? product?.title ?? "";
+  const thumbnail = thumbnailProp ?? product?.thumbnail ?? null;
+  const images = imagesProp ?? product?.images ?? null;
+
   const list = useMemo(() => {
     const urls: string[] = [];
     if (thumbnail) urls.push(thumbnail);
@@ -26,47 +43,60 @@ export default function ProductGallery({
   const [active, setActive] = useState<string>(list[0] || thumbnail || "");
 
   if (!list.length) {
-    return (
-      <div style={{ border: "1px solid var(--border)", borderRadius: 12, padding: 18, opacity: 0.7, background: "#fff" }}>
-        Sem imagens cadastradas.
+  return (
+    <div className="rounded-2xl border border-border/40 bg-black/25 p-6">
+      <div className="text-sm font-extrabold text-foreground/90">Sem imagens cadastradas</div>
+      <div className="mt-2 text-sm text-muted-foreground">
+        Em breve adicionaremos fotos reais do modelo. Enquanto isso, você pode pedir orçamento com medidas.
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   return (
-    <div>
-      <div style={{ border: "1px solid var(--border)", borderRadius: 12, overflow: "hidden", background: "#fff" }}>
+    <div className="grid gap-4">
+      <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-black/30">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={active}
           alt={title}
-          style={{ width: "100%", display: "block", height: 420, objectFit: "cover" }}
+          className="block w-full object-cover"
+          style={{ height: imageHeight }}
         />
+        <div className="pointer-events-none absolute inset-0 ring-1 ring-[rgba(245,158,11,0.10)]" />
       </div>
 
-      {list.length > 1 && (
-        <div style={{ display: "flex", gap: 10, marginTop: 10, overflowX: "auto", paddingBottom: 4 }}>
-          {list.map((u) => (
-            <button
-              key={u}
-              onClick={() => setActive(u)}
-              style={{
-                border: "1px solid var(--border)",
-                borderRadius: 10,
-                padding: 0,
-                background: "#fff",
-                cursor: "pointer",
-                outline: active === u ? "2px solid var(--theme-accent)" : "none",
-                flex: "0 0 auto",
-              }}
-              title="Ver imagem"
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={u} alt={title} style={{ width: 92, height: 68, objectFit: "cover", display: "block", borderRadius: 10 }} />
-            </button>
-          ))}
+      {showThumbnails && list.length > 1 && (
+        <div className="flex gap-3 overflow-x-auto pb-1">
+          {list.map((u) => {
+            const isOn = active === u;
+            return (
+              <button
+                key={u}
+                type="button"
+                onClick={() => setActive(u)}
+                className={
+                  "shrink-0 overflow-hidden rounded-xl border bg-black/25 transition-all " +
+                  (isOn
+                    ? "border-[rgba(245,158,11,0.55)] ring-2 ring-[rgba(245,158,11,0.18)]"
+                    : "border-border/60 hover:border-[rgba(245,158,11,0.30)]")
+                }
+                title="Ver imagem"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={u}
+                  alt={title}
+                  className={`object-cover ${thumbsSizeMap[thumbsSize]}`}
+                />
+              </button>
+            );
+          })}
         </div>
       )}
     </div>
   );
 }
+
+
+

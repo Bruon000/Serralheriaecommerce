@@ -4,8 +4,15 @@ export type MedusaMoneyAmount = {
   currency_code: string;
 };
 
+export type MedusaCalculatedPrice = {
+  calculated_amount: number;
+  currency_code: string;
+  original_amount?: number;
+};
+
 export type MedusaVariant = {
   prices?: MedusaMoneyAmount[];
+  calculated_price?: MedusaCalculatedPrice;
 };
 
 export type MedusaProduct = {
@@ -29,7 +36,9 @@ export const MEDUSA_PUBLISHABLE_KEY =
   process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY ??
   "";
 
-function medusaHeaders() {
+
+export const MEDUSA_REGION_ID = process.env.NEXT_PUBLIC_REGION_ID ?? "";
+function medusaHeaders(): Record<string, string> {
   return MEDUSA_PUBLISHABLE_KEY
     ? { "x-publishable-api-key": MEDUSA_PUBLISHABLE_KEY }
     : {};
@@ -38,7 +47,7 @@ function medusaHeaders() {
 export async function listProducts(): Promise<MedusaProduct[]> {
   try {
     const res = await fetch(
-      `${MEDUSA_BACKEND_URL}/store/products?limit=100`,
+      `${MEDUSA_BACKEND_URL}/store/products?limit=100${MEDUSA_REGION_ID ? `&region_id=${MEDUSA_REGION_ID}` : ""}`,
       {
         cache: "no-store",
         headers: medusaHeaders(),
@@ -88,5 +97,7 @@ export async function getProductByHandle(handle: string): Promise<MedusaProduct 
   const products = await listProducts();
   return products.find((p) => p.handle === handle) ?? null;
 }
+
+
 
 

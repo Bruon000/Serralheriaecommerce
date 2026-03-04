@@ -1,6 +1,8 @@
 import SiteHeader from "../components/SiteHeader";
 import FloatingCartButton from "../components/FloatingCartButton";
 import ConstructorNudge from "../components/ConstructorNudge";
+import BuilderRegistryInit from "../components/BuilderRegistryInit";
+import { getSiteSettings } from "../lib/builder";
 
 
 
@@ -648,7 +650,7 @@ export const metadata: Metadata = {
 
 
 
-export default function RootLayout({
+export default async function RootLayout({
 
 
 
@@ -757,10 +759,9 @@ export default function RootLayout({
 
 
 }>) {
-
-
-
-
+  const siteSettings = await getSiteSettings();
+  const showFloatingCart = siteSettings?.showFloatingCartButton !== false;
+  const showConstructorNudge = siteSettings?.showConstructorNudge !== false;
 
 
 
@@ -842,6 +843,7 @@ export default function RootLayout({
           <div className="forgeVignette_v1"></div>
         <canvas id="spark-canvas"></canvas>
         <ThemeAutoStyle />
+        <BuilderRegistryInit />
 <SiteHeader />
 
 
@@ -856,12 +858,8 @@ export default function RootLayout({
 
 
 
-
-
-
-
-        <FloatingCartButton />
-        <ConstructorNudge />
+        {showFloatingCart && <FloatingCartButton />}
+        {showConstructorNudge && <ConstructorNudge />}
 
 
 

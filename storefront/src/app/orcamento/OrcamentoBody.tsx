@@ -1,0 +1,201 @@
+"use client";
+
+import { Suspense, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+
+type Modelo =
+  | "Portão de correr"
+  | "Portão de abrir (2 folhas)"
+  | "Portão social"
+  | "Grade"
+  | "Corrimão"
+  | "Estrutura metálica";
+
+function onlyDigits(s: string) {
+  return (s || "").replace(/\D/g, "");
+}
+
+const inputBase =
+  "h-11 w-full rounded-xl border border-border/50 bg-black/35 px-4 text-sm text-foreground outline-none " +
+  "focus:ring-2 focus:ring-[rgba(245,158,11,0.28)] focus:border-[rgba(245,158,11,0.28)]";
+
+const labelBase = "text-xs font-extrabold tracking-wider text-foreground/80";
+
+function OrcamentoContent() {
+  const searchParams = useSearchParams();
+
+  const produtoNome = searchParams.get("nome") || "";
+  const produtoHandle = searchParams.get("produto") || "";
+
+  const qpLargura = searchParams.get("largura") || "";
+  const qpAltura = searchParams.get("altura") || "";
+  const qpCor = searchParams.get("cor") || "";
+
+  const [modelo, setModelo] = useState<Modelo>("Portão de correr");
+  const [largura, setLargura] = useState<string>("3.00");
+  const [altura, setAltura] = useState<string>("2.00");
+  const [pintura, setPintura] = useState<string>("Esmalte / pintura padrão");
+  const [instalacao, setInstalacao] = useState<string>("Com instalação");
+  const [cidade, setCidade] = useState<string>("");
+  const [observacoes, setObservacoes] = useState<string>("");
+
+  useEffect(() => {
+    if (qpLargura.trim()) setLargura(qpLargura.trim());
+    if (qpAltura.trim()) setAltura(qpAltura.trim());
+    if (qpCor.trim() && !observacoes.trim()) setObservacoes(`Cor: ${qpCor.trim()}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const whatsappNumber = useMemo(() => {
+    return onlyDigits(process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "5584987940211");
+  }, []);
+
+  const msg = useMemo(() => {
+    const parts: string[] = [];
+    parts.push("Olá! Quero um orçamento.");
+
+    if (produtoNome) {
+      parts.push(`Produto: ${produtoNome}${produtoHandle ? ` (ref: ${produtoHandle})` : ""}`);
+      if (typeof window !== "undefined" && produtoHandle) {
+        parts.push(`Link: ${window.location.origin}/produto/${produtoHandle}`);
+      }
+    }
+
+    parts.push("");
+    parts.push(`Modelo: ${modelo}`);
+    parts.push(`Medidas: ${largura} m (L) x ${altura} m (A)`);
+    parts.push(`Pintura: ${pintura}`);
+    parts.push(`Instalação: ${instalacao}`);
+    if (cidade.trim()) parts.push(`Cidade/Bairro: ${cidade.trim()}`);
+    if (observacoes.trim()) parts.push(`Obs.: ${observacoes.trim()}`);
+    parts.push("");
+    parts.push("Pode me passar uma estimativa e prazo?");
+    return parts.join("\n");
+  }, [produtoNome, produtoHandle, modelo, largura, altura, pintura, instalacao, cidade, observacoes]);
+
+  const waUrl = useMemo(() => {
+    const encoded = encodeURIComponent(msg);
+    return `https://wa.me/${whatsappNumber}?text=${encoded}`;
+  }, [whatsappNumber, msg]);
+
+  return (
+    <main className="min-h-screen bg-background pt-24 pb-16">
+      <div className="container">
+        <div className="mb-8">
+          <h1 className="font-display text-4xl md:text-5xl font-extrabold tracking-tight">
+            Orçamento <span className="text-gradient-gold">rápido</span>
+          </h1>
+          <p className="mt-2 text-muted-foreground">
+            Escolha o modelo e informe as medidas. Abrimos o WhatsApp com a mensagem pronta.
+          </p>
+        </div>
+
+        <div
+          className="rounded-3xl border border-border/40 bg-black/35 backdrop-blur p-5 md:p-8"
+          style={{ boxShadow: "0 18px 55px rgba(0,0,0,0.45), 0 0 0 1px rgba(245,158,11,0.10)" }}
+        >
+          <div className="grid gap-6 lg:grid-cols-3">
+            <section className="lg:col-span-2">
+              <div className="grid gap-5 sm:grid-cols-2">
+                <div className="grid gap-2 sm:col-span-2">
+                  <label className={labelBase}>Modelo</label>
+                  <select value={modelo} onChange={(e) => setModelo(e.target.value as Modelo)} className={inputBase}>
+                    <option>Portão de correr</option>
+                    <option>Portão de abrir (2 folhas)</option>
+                    <option>Portão social</option>
+                    <option>Grade</option>
+                    <option>Corrimão</option>
+                    <option>Estrutura metálica</option>
+                  </select>
+                </div>
+
+                <div className="grid gap-2">
+                  <label className={labelBase}>Largura (m)</label>
+                  <input value={largura} onChange={(e) => setLargura(e.target.value)} inputMode="decimal" placeholder="Ex.: 3.00" className={inputBase} />
+                </div>
+
+                <div className="grid gap-2">
+                  <label className={labelBase}>Altura (m)</label>
+                  <input value={altura} onChange={(e) => setAltura(e.target.value)} inputMode="decimal" placeholder="Ex.: 2.00" className={inputBase} />
+                </div>
+
+                <div className="grid gap-2">
+                  <label className={labelBase}>Pintura</label>
+                  <select value={pintura} onChange={(e) => setPintura(e.target.value)} className={inputBase}>
+                    <option>Esmalte / pintura padrão</option>
+                    <option>Pintura automotiva</option>
+                    <option>Galvanizado</option>
+                    <option>Sem pintura (cru)</option>
+                  </select>
+                </div>
+
+                <div className="grid gap-2">
+                  <label className={labelBase}>Instalação</label>
+                  <select value={instalacao} onChange={(e) => setInstalacao(e.target.value)} className={inputBase}>
+                    <option>Com instalação</option>
+                    <option>Sem instalação</option>
+                  </select>
+                </div>
+
+                <div className="grid gap-2 sm:col-span-2">
+                  <label className={labelBase}>Cidade/Bairro (opcional)</label>
+                  <input value={cidade} onChange={(e) => setCidade(e.target.value)} placeholder="Ex.: Natal/RN — Zona Norte" className={inputBase} />
+                </div>
+
+                <div className="grid gap-2 sm:col-span-2">
+                  <label className={labelBase}>Observações (opcional)</label>
+                  <textarea
+                    value={observacoes}
+                    onChange={(e) => setObservacoes(e.target.value)}
+                    rows={4}
+                    placeholder="Ex.: com portinhola, reforço, motor, tipo de chapa..."
+                    className="w-full rounded-xl border border-border/50 bg-black/35 px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-[rgba(245,158,11,0.28)]"
+                  />
+                </div>
+              </div>
+            </section>
+
+            <aside className="grid gap-4">
+              <div className="rounded-2xl border border-border/40 bg-black/25 p-5">
+                <div className="text-sm font-extrabold text-foreground/90">Enviar agora</div>
+                <p className="mt-1 text-sm text-muted-foreground">Abre o WhatsApp já com a mensagem pronta.</p>
+
+                <div className="mt-4 grid gap-3">
+                  <a
+                    href={waUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex justify-center items-center rounded-full bg-primary px-6 py-3 text-sm font-extrabold text-primary-foreground hover:brightness-110 hover:shadow-[0_10px_30px_rgba(245,158,11,0.18)]"
+                  >
+                    Enviar no WhatsApp
+                  </a>
+
+                  <button
+                    type="button"
+                    onClick={() => navigator.clipboard.writeText(msg)}
+                    className="inline-flex justify-center items-center rounded-full border border-border bg-secondary px-6 py-3 text-sm font-extrabold text-secondary-foreground hover:bg-secondary/80"
+                  >
+                    Copiar mensagem
+                  </button>
+                </div>
+              </div>
+
+              <details className="rounded-2xl border border-border/40 bg-black/25 p-5">
+                <summary className="cursor-pointer text-sm font-extrabold text-foreground/90">Ver mensagem que será enviada</summary>
+                <pre className="mt-4 whitespace-pre-wrap rounded-xl border border-border bg-black/35 p-4 text-sm text-foreground/85">{msg}</pre>
+              </details>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+}
+
+export default function OrcamentoBody() {
+  return (
+    <Suspense fallback={<main className="min-h-screen bg-background pt-24 pb-16"><div className="container animate-pulse">Carregando...</div></main>}>
+      <OrcamentoContent />
+    </Suspense>
+  );
+}

@@ -18,12 +18,17 @@ export default function HeroSection() {
               alt="Serralheria Delima"
               className="select-none"
               style={{
-                height: "min(440px, 36vh)",
+                // ===== AJUSTES FÁCEIS =====
+                height: 320,          // <-- TAMANHO (px). Ex: 260 menor / 380 maior
                 width: "auto",
-                maxWidth: "min(98vw, 1400px)",
+                maxWidth: "min(98vw, 1200px)",
                 objectFit: "contain",
-                transform: "rotate(-16deg)",
-                filter: "drop-shadow(0 26px 44px rgba(245,158,11,0.30))",
+
+                // mover (px): negativo sobe/esquerda | positivo desce/direita
+                transform: "translateX(0px) translateY(-10px) rotate(-12deg)",
+
+                // sombra premium
+                filter: "drop-shadow(0 18px 38px rgba(245,158,11,0.26))",
               }}
             />
           </div>
@@ -32,25 +37,16 @@ export default function HeroSection() {
             <span aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" stroke="rgba(245,158,11,0.95)" strokeWidth="2"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.2-2-3.4-2.3.9a7 7 0 0 0-1.7-1L14.6 3h-5.2L9.1 6.3a7 7 0 0 0-1.7 1L5.1 6.4l-2 3.4 2 1.2a7 7 0 0 0 0 2l-2 1.2 2 3.4 2.3-.9a7 7 0 0 0 1.7 1L9.4 21h5.2l.3-3.3a7 7 0 0 0 1.7-1l2.3.9 2-3.4-2-1.2c.07-.33.1-.66.1-1z" stroke="rgba(245,158,11,0.45)" strokeWidth="1.6" strokeLinejoin="round"/></svg></span>
             <span>Portões, grades e estruturas sob medida</span>
           </div>
-<div
-  className="mt-5 w-full sm:w-fit rounded-2xl border border-[rgba(245,158,11,0.70)] bg-black/85 px-5 py-4 backdrop-blur"
-  style={{ boxShadow: "0 14px 42px rgba(0,0,0,0.45), 0 0 0 1px rgba(245,158,11,0.18), 0 0 40px rgba(245,158,11,0.22)" }}
->
-  <div className="flex items-center gap-2">
-    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[rgba(245,158,11,0.55)] bg-[rgba(245,158,11,0.14)]">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-  <path d="M12 2l2.2 5.6L20 10l-5.8 2.4L12 18l-2.2-5.6L4 10l5.8-2.4L12 2z" stroke="rgba(245,158,11,0.98)" strokeWidth="2" strokeLinejoin="round"/>
-  <path d="M7.5 16.5l-1 4 3-2 2.5 1.5 2.5-1.5 3 2-1-4" stroke="rgba(245,158,11,0.55)" strokeWidth="1.6" strokeLinejoin="round"/>
-</svg>
-    </span>
-    <span className="inline-flex items-center rounded-full bg-[rgba(245,158,11,0.18)] border border-[rgba(245,158,11,0.65)] px-3 py-1 text-[11px] font-extrabold tracking-widest text-[rgba(245,158,11,0.98)]">
-      EXTRA • NOVIDADES
-    </span>
-  </div>
-  <div className="mt-2 text-base md:text-lg font-extrabold text-foreground">
-    Em breve mais novidades e ofertas especiais.
-  </div>
-</div>
+          <div className="mt-4 w-full sm:w-fit">
+            <div className="inline-flex items-center gap-3 rounded-full border border-[rgba(245,158,11,0.28)] bg-black/40 px-4 py-2 text-sm backdrop-blur">
+              <span className="inline-flex items-center rounded-full bg-[rgba(245,158,11,0.14)] border border-[rgba(245,158,11,0.35)] px-3 py-1 text-[11px] font-extrabold tracking-widest text-[rgba(245,158,11,0.92)]">
+                EXTRA • NOVIDADES
+              </span>
+              <span className="text-foreground/80 font-semibold">
+                Em breve mais novidades e ofertas especiais.
+              </span>
+            </div>
+          </div>
 <h1 className="mt-6 font-display text-5xl md:text-6xl font-extrabold leading-[1.05]">
             Seu projeto em <span className="text-gradient-gold">metal</span>,<br />
             do jeito certo.
@@ -96,26 +92,5 @@ export default function HeroSection() {
     </section>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

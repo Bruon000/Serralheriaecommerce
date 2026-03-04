@@ -14,10 +14,13 @@ export default function CatalogPrice({ product }: { product: MedusaProduct }) {
   const p = getDisplayPriceBRL(product, isB2B);
 
   return (
-    <div style={{ marginTop: 6, fontWeight: 900, fontSize: 16 }}>
-      {p.text}
+    <div className="mt-2 flex items-center gap-2">
+      <div className="text-base font-extrabold text-foreground">
+        {p.text}
+      </div>
+
       {p.isB2BPrice && (
-        <span style={{ fontSize: 11, marginLeft: 8, padding: "2px 8px", border: "1px solid #ddd", borderRadius: 999 }}>
+        <span className="inline-flex items-center rounded-full border border-border/60 bg-black/25 px-2 py-0.5 text-[10px] font-extrabold tracking-widest text-foreground/90">
           B2B
         </span>
       )}

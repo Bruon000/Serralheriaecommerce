@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { CartItem, loadCart, saveCart } from "../lib/cart";
 import { getPriceValueBRL } from "../lib/pricing";
+
 type Props = {
   product: {
     id: string;
@@ -10,9 +11,41 @@ type Props = {
     handle: string;
     metadata?: Record<string, any> | null;
   };
+  showColor?: boolean;
+  showDims?: boolean;
+  showObs?: boolean;
+  labelQty?: string;
+  labelColor?: string;
+  labelLargura?: string;
+  labelAltura?: string;
+  labelObs?: string;
+  btnAddText?: string;
+  btnOrcamentoText?: string;
+  btnCarrinhoText?: string;
+  outerClassName?: string;
 };
 
-export default function AddToCartForm({ product }: Props) {
+const inputBase =
+  "h-11 w-full rounded-xl border border-border/50 bg-black/35 px-4 text-sm text-foreground outline-none " +
+  "focus:ring-2 focus:ring-[rgba(245,158,11,0.28)] focus:border-[rgba(245,158,11,0.28)]";
+
+const labelBase = "text-xs font-extrabold tracking-wider text-foreground/80";
+
+export default function AddToCartForm({
+  product,
+  showColor = true,
+  showDims = true,
+  showObs = true,
+  labelQty = "Quantidade",
+  labelColor = "Cor (opcional)",
+  labelLargura = "Largura (cm)",
+  labelAltura = "Altura (cm)",
+  labelObs = "Observações (opcional)",
+  btnAddText = "Adicionar ao carrinho",
+  btnOrcamentoText = "Pedir orçamento deste modelo",
+  btnCarrinhoText = "Ir para o carrinho",
+  outerClassName = "",
+}: Props) {
   const tipo = String(product.metadata?.tipo ?? "") || (product.handle?.startsWith("portao-") ? "portao" : "");
   const ipo = String(product.metadata?.ipo ?? "");
 
@@ -22,7 +55,30 @@ export default function AddToCartForm({ product }: Props) {
   const [cor, setCor] = useState<string>("");
   const [obs, setObs] = useState<string>("");
 
-  const canAdd = useMemo(() => qty > 0, [qty]);
+  const [added, setAdded] = useState(false);
+
+  const requiresDims = useMemo(() => tipo === "portao" || tipo === "grade" || tipo === "estrutura", [tipo]);
+
+  const canAdd = useMemo(() => {
+    if (!Number.isFinite(qty) || qty <= 0) return false;
+    if (!requiresDims) return true;
+
+    // se for item sob medida, recomenda medidas (mas não trava totalmente)
+    // para travar, troque "true" por checagem de largura/altura.
+    return true;
+  }, [qty, requiresDims]);
+
+  const waBudgetUrl = useMemo(() => {
+    const sp = new URLSearchParams();
+    sp.set("produto", product.handle);
+    sp.set("nome", product.title);
+
+    if (largura.trim()) sp.set("largura", largura.trim());
+    if (altura.trim()) sp.set("altura", altura.trim());
+    if (cor.trim()) sp.set("cor", cor.trim());
+
+    return `/orcamento?${sp.toString()}`;
+  }, [product.handle, product.title, largura, altura, cor]);
 
   function add() {
     const items = loadCart();
@@ -45,49 +101,110 @@ export default function AddToCartForm({ product }: Props) {
 
     items.push(item);
     saveCart(items);
-    alert("Adicionado ao carrinho!");
+
+    setAdded(true);
+    window.setTimeout(() => setAdded(false), 2200);
   }
 
   return (
-    <div style={{ marginTop: 16, border: "1px solid #ddd", borderRadius: 8, padding: 12 }}>
-      <h3 style={{ marginTop: 0 }}>Configurar</h3>
+    <div
+      className={("rounded-3xl border border-border/40 bg-black/35 backdrop-blur p-5 md:p-6 " + outerClassName).trim()}
+      style={{ boxShadow: "0 18px 55px rgba(0,0,0,0.40), 0 0 0 1px rgba(245,158,11,0.08)" }}
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h3 className="font-display text-xl font-extrabold tracking-tight">Configurar</h3>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Ajuste os detalhes do seu pedido. Para itens sob medida, informe as medidas.
+          </p>
+        </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-        <label>
-          Quantidade
-          <input type="number" min={1} value={qty} onChange={(e) => setQty(Number(e.target.value))} style={{ width: "100%" }} />
-        </label>
-
-        <label>
-          Cor
-          <input value={cor} onChange={(e) => setCor(e.target.value)} style={{ width: "100%" }} />
-        </label>
-
-        <label>
-          Largura (cm)
-          <input value={largura} onChange={(e) => setLargura(e.target.value)} style={{ width: "100%" }} />
-        </label>
-
-        <label>
-          Altura (cm)
-          <input value={altura} onChange={(e) => setAltura(e.target.value)} style={{ width: "100%" }} />
-        </label>
+        {added && (
+          <span className="inline-flex items-center rounded-full border border-[rgba(34,197,94,0.35)] bg-[rgba(34,197,94,0.10)] px-3 py-1 text-xs font-extrabold text-[rgba(34,197,94,0.95)]">
+            Adicionado
+          </span>
+        )}
       </div>
 
-      <label style={{ display: "block", marginTop: 10 }}>
-        Observações
-        <textarea value={obs} onChange={(e) => setObs(e.target.value)} style={{ width: "100%" }} />
-      </label>
+      <div className="mt-5 grid gap-4 md:grid-cols-2">
+        <div className="grid gap-2">
+          <label className={labelBase}>{labelQty}</label>
+          <input
+            type="number"
+            min={1}
+            value={qty}
+            onChange={(e) => setQty(Number(e.target.value))}
+            className={inputBase}
+          />
+        </div>
 
-      <button onClick={add} disabled={!canAdd} style={{ marginTop: 12, padding: "10px 14px" }}>
-        Adicionar ao carrinho
-      </button>
+        {showColor && (
+          <div className="grid gap-2">
+            <label className={labelBase}>{labelColor}</label>
+            <input value={cor} onChange={(e) => setCor(e.target.value)} className={inputBase} placeholder="Ex.: preto fosco" />
+          </div>
+        )}
 
-      <div style={{ marginTop: 8 }}>
-        <a href="/carrinho">Ir para o carrinho</a>
+        {showDims && (
+          <>
+            <div className="grid gap-2">
+              <label className={labelBase}>{labelLargura}</label>
+              <input value={largura} onChange={(e) => setLargura(e.target.value)} className={inputBase} placeholder="Ex.: 300" />
+            </div>
+            <div className="grid gap-2">
+              <label className={labelBase}>{labelAltura}</label>
+              <input value={altura} onChange={(e) => setAltura(e.target.value)} className={inputBase} placeholder="Ex.: 200" />
+            </div>
+          </>
+        )}
       </div>
+
+      {showObs && (
+      <div className="mt-4 grid gap-2">
+        <label className={labelBase}>{labelObs}</label>
+        <textarea
+          value={obs}
+          onChange={(e) => setObs(e.target.value)}
+          rows={4}
+          className={"w-full rounded-xl border border-border/50 bg-black/35 px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-[rgba(245,158,11,0.28)]"}
+          placeholder="Ex.: com portinhola, reforço, motor, tipo de chapa..."
+        />
+      </div>
+      )}
+
+      <div className="mt-6 flex flex-col sm:flex-row gap-3">
+        <button
+          onClick={add}
+          disabled={!canAdd}
+          className="inline-flex justify-center items-center rounded-full bg-primary px-6 py-3 text-sm font-extrabold text-primary-foreground hover:brightness-110 hover:shadow-[0_10px_30px_rgba(245,158,11,0.18)] disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {btnAddText}
+        </button>
+
+        <a
+          href={waBudgetUrl}
+          className="inline-flex justify-center items-center rounded-full border border-border bg-secondary px-6 py-3 text-sm font-extrabold text-secondary-foreground hover:bg-secondary/80"
+        >
+          {btnOrcamentoText}
+        </a>
+
+        <a
+          href="/carrinho"
+          className="inline-flex justify-center items-center rounded-full border border-border/60 bg-black/25 px-6 py-3 text-sm font-extrabold text-foreground hover:bg-black/35"
+        >
+          {btnCarrinhoText}
+        </a>
+      </div>
+
+      {requiresDims && (
+        <p className="mt-3 text-xs text-muted-foreground">
+          Dica: quanto mais detalhes você informar, mais rápido sai o orçamento e o prazo.
+        </p>
+      )}
     </div>
   );
 }
+
+
 
 

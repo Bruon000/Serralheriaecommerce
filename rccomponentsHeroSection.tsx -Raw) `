@@ -1,0 +1,92 @@
+[1mdiff --git a/storefront/src/components/HeroSection.tsx b/storefront/src/components/HeroSection.tsx[m
+[1mindex f47c72b..b0737d1 100644[m
+[1m--- a/storefront/src/components/HeroSection.tsx[m
+[1m+++ b/storefront/src/components/HeroSection.tsx[m
+[36m@@ -7,20 +7,20 @@[m [mexport default function HeroSection() {[m
+       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/65 via-black/25 to-black/70" />[m
+ [m
+       <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(900px 420px at 30% 20%, rgba(245,158,11,0.16), transparent 60%)" }} />[m
+[31m-<div className="container relative pt-[300px] pb-12">[m
+[32m+[m[32m<div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pt-[170px] lg:pt-[190px] pb-12">[m
+         <div className="max-w-2xl">[m
+[31m-                    <div className="h-[96px]" aria-hidden="true" />[m
+[32m+[m[32m                    <div className="h-0" aria-hidden="true" />[m
+ {/* Logo acima do texto (grande e inclinada) */}[m
+[31m-          <div className="mb-10">[m
+[32m+[m[32m          <div className="mb-8 -mt-10 -ml-6 sm:-ml-10 lg:-ml-28 lg:-mt-8">[m
+             {/* eslint-disable-next-line @next/next/no-img-element */}[m
+             <img[m
+               src="/brand/hero-logo.png"[m
+               alt="Serralheria Delima"[m
+               className="select-none"[m
+               style={{[m
+[31m-                height: "min(440px, 36vh)",[m
+[32m+[m[32m                height: "min(880px, 62vh)",[m
+                 width: "auto",[m
+[31m-                maxWidth: "min(98vw, 1400px)",[m
+[32m+[m[32m                maxWidth: "min(98vw, 1600px)",[m
+                 objectFit: "contain",[m
+                 transform: "rotate(-16deg)",[m
+                 filter: "drop-shadow(0 26px 44px rgba(245,158,11,0.30))",[m
+[36m@@ -109,6 +109,15 @@[m [mexport default function HeroSection() {[m
+ [m
+ [m
+ [m
+[41m+[m
+[41m+[m
+[41m+[m
+[41m+[m
+[41m+[m
+[41m+[m
+[41m+[m
+[41m+[m
+[41m+[m
+ [m
+ [m
+ [m
+[1mdiff --git a/storefront/src/components/HeroSection.tsx b/storefront/src/components/HeroSection.tsx[m
+[1mindex f47c72b..b0737d1 100644[m
+[1m--- a/storefront/src/components/HeroSection.tsx[m
+[1m+++ b/storefront/src/components/HeroSection.tsx[m
+[36m@@ -7,20 +7,20 @@[m [mexport default function HeroSection() {[m
+       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/65 via-black/25 to-black/70" />[m
+ [m
+       <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(900px 420px at 30% 20%, rgba(245,158,11,0.16), transparent 60%)" }} />[m
+[31m-<div className="container relative pt-[300px] pb-12">[m
+[32m+[m[32m<div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pt-[170px] lg:pt-[190px] pb-12">[m
+         <div className="max-w-2xl">[m
+[31m-                    <div className="h-[96px]" aria-hidden="true" />[m
+[32m+[m[32m                    <div className="h-0" aria-hidden="true" />[m
+ {/* Logo acima do texto (grande e inclinada) */}[m
+[31m-          <div className="mb-10">[m
+[32m+[m[32m          <div className="mb-8 -mt-10 -ml-6 sm:-ml-10 lg:-ml-28 lg:-mt-8">[m
+             {/* eslint-disable-next-line @next/next/no-img-element */}[m
+             <img[m
+               src="/brand/hero-logo.png"[m
+               alt="Serralheria Delima"[m
+               className="select-none"[m
+               style={{[m
+[31m-                height: "min(440px, 36vh)",[m
+[32m+[m[32m                height: "min(880px, 62vh)",[m
+                 width: "auto",[m
+[31m-                maxWidth: "min(98vw, 1400px)",[m
+[32m+[m[32m                maxWidth: "min(98vw, 1600px)",[m
+                 objectFit: "contain",[m
+                 transform: "rotate(-16deg)",[m
+                 filter: "drop-shadow(0 26px 44px rgba(245,158,11,0.30))",[m
+[36m@@ -109,6 +109,15 @@[m [mexport default function HeroSection() {[m
+ [m
+ [m
+ [m
+[41m+[m
+[41m+[m
+[41m+[m
+[41m+[m
+[41m+[m
+[41m+[m
+[41m+[m
+[41m+[m
+[41m+[m
+ [m
+ [m
+ [m

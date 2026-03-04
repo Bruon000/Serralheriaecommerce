@@ -1,3 +1,9 @@
 ignoredBuiltDependencies:
+  - '@prisma/client'
+  - isolated-vm
+  - prisma
   - sharp
   - unrs-resolver
+
+onlyBuiltDependencies:
+  - '@prisma/engines'

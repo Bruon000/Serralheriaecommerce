@@ -1,5 +1,7 @@
 import { listProducts } from "../../lib/medusa";
 import CatalogPrice from "../../components/CatalogPrice";
+import { BUILDER_API_KEY, getPageSectionContent, getSiteSettings } from "../../lib/builder";
+import BuilderContentBlock from "../../components/BuilderContentBlock";
 
 export const dynamic = "force-dynamic";
 
@@ -49,9 +51,23 @@ export default async function CatalogoPage({
 
   const baseQuery = { q: q || undefined, ipo: ipo || undefined, tipo: tipo || undefined, promo: promoOn ? "1" : undefined, b2b: b2bOn ? "1" : undefined };
 
+  const [sectionTop, sectionBottom, siteSettings] = BUILDER_API_KEY
+    ? await Promise.all([
+        getPageSectionContent("/catalogo", "top"),
+        getPageSectionContent("/catalogo", "bottom"),
+        getSiteSettings(),
+      ])
+    : [null, null, null];
+  const data = { urlPath: "/catalogo", ...siteSettings };
+
   return (
     <div className="min-h-screen bg-background pt-24 pb-12">
       <main className="container">
+        {sectionTop && BUILDER_API_KEY && (
+          <div className="mb-8">
+            <BuilderContentBlock content={sectionTop} model="page-section" apiKey={BUILDER_API_KEY} data={data} />
+          </div>
+        )}
         <h1 className="font-display text-4xl font-bold tracking-tight mb-2">
           Nosso <span className="text-gradient-gold">Catálogo</span>
         </h1>
@@ -129,25 +145,26 @@ export default async function CatalogoPage({
               const promo = String(p?.metadata?.promocao || "") === "semana";
               const b2b = String(p?.metadata?.oferta || "") === "construtor";
               return (
-                <a
+                <div
                   key={p.id}
-                  href={`/produto/${p.handle}`}
-                  className="steel-card steel-card-hover group overflow-hidden block"
+                  className="steel-card steel-card-hover group overflow-hidden"
                 >
-                  <div className="aspect-square overflow-hidden rounded-t-lg -m-[1px] mb-0">
-                    {p.thumbnail ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={p.thumbnail}
-                        alt={p.title}
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
-                    ) : (
-                      <div className="h-full w-full bg-muted flex items-center justify-center text-muted-foreground text-sm">
-                        sem imagem
-                      </div>
-                    )}
-                  </div>
+                  <a href={`/produto/${p.handle}`} className="block">
+                    <div className="aspect-square overflow-hidden rounded-t-lg -m-[1px] mb-0">
+                      {p.thumbnail ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={p.thumbnail}
+                          alt={p.title}
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                      ) : (
+                        <div className="h-full w-full bg-muted flex items-center justify-center text-muted-foreground text-sm">
+                          sem imagem
+                        </div>
+                      )}
+                    </div>
+                  </a>
                   <div className="p-5">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-xs font-semibold uppercase tracking-wider text-primary">
@@ -158,18 +175,46 @@ export default async function CatalogoPage({
                         {b2b && <span className="text-xs rounded-full border border-border px-2 py-0.5">B2B</span>}
                       </div>
                     </div>
-                    <h3 className="font-display text-lg font-bold">{p.title}</h3>
+
+                    <a href={`/produto/${p.handle}`} className="block">
+                      <h3 className="font-display text-lg font-bold">{p.title}</h3>
+                    </a>
+
                     <div className="mt-2">
                       <CatalogPrice product={p as any} />
                     </div>
                     <div className="mt-2 text-sm text-muted-foreground">
                       ipo: {String(p.metadata?.ipo ?? "-")} | tipo: {String(p.metadata?.tipo ?? "-")}
                     </div>
-                    <div className="mt-3 text-sm font-bold text-primary">Ver detalhes</div>
+
+                    {(() => {
+                      const quoteHref = `/orcamento?produto=${encodeURIComponent(p.handle)}&nome=${encodeURIComponent(p.title)}`;
+                      return (
+                        <div className="mt-4 flex flex-wrap gap-3">
+                          <a
+                            href={`/produto/${p.handle}`}
+                            className="inline-flex items-center justify-center rounded-full border border-border bg-secondary px-4 py-2 text-xs font-extrabold text-secondary-foreground hover:bg-secondary/80"
+                          >
+                            Ver detalhes
+                          </a>
+                          <a
+                            href={quoteHref}
+                            className="inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 text-xs font-extrabold text-primary-foreground hover:brightness-110 hover:shadow-[0_10px_28px_rgba(245,158,11,0.14)]"
+                          >
+                            Orçar este modelo
+                          </a>
+                        </div>
+                      );
+                    })()}
                   </div>
-                </a>
+                </div>
               );
             })}
+          </div>
+        )}
+        {sectionBottom && BUILDER_API_KEY && (
+          <div className="mt-12">
+            <BuilderContentBlock content={sectionBottom} model="page-section" apiKey={BUILDER_API_KEY} data={data} />
           </div>
         )}
       </main>
