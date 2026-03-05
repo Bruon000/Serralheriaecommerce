@@ -31,3 +31,6 @@ CHECKLIST.big.bak.md
 
 # Clone temporário (serralheria-modernized)
 _temp-modernized/
+
+# backups gerados por scripts
+*.bak_*
