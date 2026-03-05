@@ -1,0 +1,225 @@
+import { listProducts } from "../../lib/medusa";
+import CatalogPrice from "../../components/CatalogPrice";
+import { BUILDER_API_KEY, getPageSectionContent, getSiteSettings } from "../../lib/builder";
+import BuilderContentBlock from "../../components/BuilderContentBlock";
+
+export const dynamic = "force-dynamic";
+
+type AnyProduct = {
+  id: string;
+  title: string;
+  handle: string;
+  thumbnail?: string | null;
+  metadata?: Record<string, any> | null;
+};
+
+function buildQuery(base: Record<string, string | undefined>) {
+  const sp = new URLSearchParams();
+  for (const [k, v] of Object.entries(base)) {
+    if (v && String(v).trim().length) sp.set(k, String(v));
+  }
+  const s = sp.toString();
+  return s ? `?${s}` : "";
+}
+
+export default async function CatalogoPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ ipo?: string; q?: string; tipo?: string; promo?: string; b2b?: string }>;
+}) {
+  const sp = (await searchParams) || {};
+  const ipo = (sp.ipo || "").trim();
+  const q = (sp.q || "").trim().toLowerCase();
+  const tipo = (sp.tipo || "").trim().toLowerCase();
+  const promoOn = String(sp.promo || "") === "1";
+  const b2bOn = String(sp.b2b || "") === "1";
+
+  const products = (await listProducts()) as AnyProduct[];
+  let list = products || [];
+
+  if (ipo) list = list.filter((p) => String(p?.metadata?.ipo || "").toLowerCase() === ipo.toLowerCase());
+  if (tipo) list = list.filter((p) => String(p?.metadata?.tipo || "").toLowerCase() === tipo);
+  if (promoOn) list = list.filter((p) => String(p?.metadata?.promocao || "") === "semana");
+  if (b2bOn) list = list.filter((p) => String(p?.metadata?.oferta || "") === "construtor");
+  if (q) list = list.filter((p) =>
+    String(p?.title || "").toLowerCase().includes(q) ||
+    String(p?.handle || "").toLowerCase().includes(q)
+  );
+
+  const tipos = Array.from(new Set((products || []).map((p) => String(p?.metadata?.tipo || "")).filter(Boolean))).sort();
+  const ipos = Array.from(new Set((products || []).map((p) => String(p?.metadata?.ipo || "")).filter(Boolean))).sort();
+
+  const baseQuery = { q: q || undefined, ipo: ipo || undefined, tipo: tipo || undefined, promo: promoOn ? "1" : undefined, b2b: b2bOn ? "1" : undefined };
+
+  const [sectionTop, sectionBottom, siteSettings] = BUILDER_API_KEY
+    ? await Promise.all([
+        getPageSectionContent("/catalogo", "top"),
+        getPageSectionContent("/catalogo", "bottom"),
+        getSiteSettings(),
+      ])
+    : [null, null, null];
+  const data = { urlPath: "/catalogo", ...siteSettings };
+
+  return (
+    <div className="tune-catalog min-h-screen bg-background pt-24 pb-12">
+      <main className="tune-catalog container">
+        {sectionTop && BUILDER_API_KEY && (
+          <div className="tune-catalog mb-8">
+            <BuilderContentBlock content={sectionTop} model="page-section" apiKey={BUILDER_API_KEY} data={data} />
+          </div>
+        )}
+        <h1 className="tune-catalog font-display text-4xl font-bold tracking-tight mb-2">
+          Nosso <span className="tune-catalog text-gradient-gold">Catálogo</span>
+        </h1>
+        <p className="tune-catalog text-muted-foreground mb-6">Use os chips para filtrar (PROMO / B2B / Tipo / IPO).</p>
+
+        <div className="tune-catalog flex flex-wrap justify-center gap-3 mb-8">
+          <a
+            className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-all ${
+              promoOn ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground border border-border hover:bg-secondary/80"
+            }`}
+            href={"/catalogo" + buildQuery({ ...baseQuery, promo: promoOn ? undefined : "1" })}
+          >
+            PROMO
+          </a>
+          <a
+            className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-all ${
+              b2bOn ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground border border-border hover:bg-secondary/80"
+            }`}
+            href={"/catalogo" + buildQuery({ ...baseQuery, b2b: b2bOn ? undefined : "1" })}
+          >
+            B2B
+          </a>
+          <a
+            className="tune-catalog rounded-full px-5 py-2.5 text-sm font-semibold border border-border bg-secondary text-secondary-foreground hover:bg-secondary/80"
+            href="/catalogo"
+          >
+            Limpar
+          </a>
+        </div>
+
+        <form className="tune-catalog flex flex-wrap gap-3 mb-10" action="/catalogo" method="get">
+          <input
+            name="q"
+            defaultValue={q}
+            placeholder="Buscar..."
+            className="tune-catalog rounded-lg border border-border bg-secondary px-4 py-2.5 text-foreground min-w-[200px] focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+          <select
+            name="ipo"
+            defaultValue={ipo}
+            className="tune-catalog rounded-lg border border-border bg-secondary px-4 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+          >
+            <option value="">IPO (todos)</option>
+            {ipos.map((x) => (
+              <option key={x} value={x}>{x}</option>
+            ))}
+          </select>
+          <select
+            name="tipo"
+            defaultValue={tipo}
+            className="tune-catalog rounded-lg border border-border bg-secondary px-4 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+          >
+            <option value="">Tipo (todos)</option>
+            {tipos.map((x) => (
+              <option key={x} value={x.toLowerCase()}>{x}</option>
+            ))}
+          </select>
+          {promoOn && <input type="hidden" name="promo" value="1" />}
+          {b2bOn && <input type="hidden" name="b2b" value="1" />}
+          <button
+            type="submit"
+            className="tune-catalog rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground hover:brightness-110"
+          >
+            Filtrar
+          </button>
+        </form>
+
+        {list.length === 0 ? (
+          <div className="tune-catalog steel-card p-12 text-center text-muted-foreground">
+            Nenhum produto encontrado.
+          </div>
+        ) : (
+          <div className="tune-catalog grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {list.map((p) => {
+              const promo = String(p?.metadata?.promocao || "") === "semana";
+              const b2b = String(p?.metadata?.oferta || "") === "construtor";
+              return (
+                <div
+                  key={p.id}
+                  className="tune-catalog steel-card steel-card-hover group overflow-hidden"
+                >
+                  <a href={`/produto/${p.handle}`} className="tune-catalog block">
+                    <div className="tune-catalog aspect-square overflow-hidden rounded-t-lg -m-[1px] mb-0">
+                      {p.thumbnail ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={p.thumbnail}
+                          alt={p.title}
+                          className="tune-catalog h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                      ) : (
+                        <div className="tune-catalog h-full w-full bg-muted flex items-center justify-center text-muted-foreground text-sm">
+                          sem imagem
+                        </div>
+                      )}
+                    </div>
+                  </a>
+                  <div className="tune-catalog p-5">
+                    <div className="tune-catalog flex items-center justify-between mb-2">
+                      <span className="tune-catalog text-xs font-semibold uppercase tracking-wider text-primary">
+                        {String(p?.metadata?.tipo ?? "Produto")}
+                      </span>
+                      <div className="tune-catalog flex gap-1">
+                        {promo && <span className="tune-catalog text-xs rounded-full border border-border px-2 py-0.5">PROMO</span>}
+                        {b2b && <span className="tune-catalog text-xs rounded-full border border-border px-2 py-0.5">B2B</span>}
+                      </div>
+                    </div>
+
+                    <a href={`/produto/${p.handle}`} className="tune-catalog block">
+                      <h3 className="tune-catalog font-display text-lg font-bold">{p.title}</h3>
+                    </a>
+
+                    <div className="tune-catalog mt-2">
+                      <CatalogPrice product={p as any} />
+                    </div>
+                    <div className="tune-catalog mt-2 text-sm text-muted-foreground">
+                      ipo: {String(p.metadata?.ipo ?? "-")} | tipo: {String(p.metadata?.tipo ?? "-")}
+                    </div>
+
+                    {(() => {
+                      const quoteHref = `/orcamento?produto=${encodeURIComponent(p.handle)}&nome=${encodeURIComponent(p.title)}`;
+                      return (
+                        <div className="tune-catalog mt-4 flex flex-wrap gap-3">
+                          <a
+                            href={`/produto/${p.handle}`}
+                            className="tune-catalog inline-flex items-center justify-center rounded-full border border-border bg-secondary px-4 py-2 text-xs font-extrabold text-secondary-foreground hover:bg-secondary/80"
+                          >
+                            Ver detalhes
+                          </a>
+                          <a
+                            href={quoteHref}
+                            className="tune-catalog inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 text-xs font-extrabold text-primary-foreground hover:brightness-110 hover:shadow-[0_10px_28px_rgba(245,158,11,0.14)]"
+                          >
+                            Orçar este modelo
+                          </a>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+        {sectionBottom && BUILDER_API_KEY && (
+          <div className="tune-catalog mt-12">
+            <BuilderContentBlock content={sectionBottom} model="page-section" apiKey={BUILDER_API_KEY} data={data} />
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}
+
+

@@ -25,7 +25,7 @@ function buildQuery(base: Record<string, string | undefined>) {
 export default async function CatalogoPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ ipo?: string; q?: string; tipo?: string; promo?: string; b2b?: string }>;
+  searchParams?: Promise<{ ipo?: string; q?: string; tipo?: string; promo?: string; b2b?: string; seminovo?: string }>;
 }) {
   const sp = (await searchParams) || {};
   const ipo = (sp.ipo || "").trim();
@@ -33,6 +33,7 @@ export default async function CatalogoPage({
   const tipo = (sp.tipo || "").trim().toLowerCase();
   const promoOn = String(sp.promo || "") === "1";
   const b2bOn = String(sp.b2b || "") === "1";
+  const seminovoOn = String((sp as any).seminovo || "") === "1";
 
   const products = (await listProducts()) as AnyProduct[];
   let list = products || [];
@@ -41,7 +42,22 @@ export default async function CatalogoPage({
   if (tipo) list = list.filter((p) => String(p?.metadata?.tipo || "").toLowerCase() === tipo);
   if (promoOn) list = list.filter((p) => String(p?.metadata?.promocao || "") === "semana");
   if (b2bOn) list = list.filter((p) => String(p?.metadata?.oferta || "") === "construtor");
-  if (q) list = list.filter((p) =>
+  
+  if (seminovoOn) {
+    list = list.filter((p) => {
+      const md = (p?.metadata || {}) as any;
+      const v1 = String(md?.seminovo ?? "").toLowerCase();
+      const v2 = String(md?.condicao ?? "").toLowerCase();
+      const v3 = String(md?.estado ?? "").toLowerCase();
+      const v4 = String(md?.categoria ?? "").toLowerCase();
+      // aceita: seminovo=1/true/sim/yes ou condicao/estado/categoria == "seminovo"
+      const ok =
+        v1 === "1" || v1 === "true" || v1 === "sim" || v1 === "yes" ||
+        v2 === "seminovo" || v3 === "seminovo" || v4 === "seminovo";
+      return ok;
+    });
+  }
+if (q) list = list.filter((p) =>
     String(p?.title || "").toLowerCase().includes(q) ||
     String(p?.handle || "").toLowerCase().includes(q)
   );
@@ -49,7 +65,7 @@ export default async function CatalogoPage({
   const tipos = Array.from(new Set((products || []).map((p) => String(p?.metadata?.tipo || "")).filter(Boolean))).sort();
   const ipos = Array.from(new Set((products || []).map((p) => String(p?.metadata?.ipo || "")).filter(Boolean))).sort();
 
-  const baseQuery = { q: q || undefined, ipo: ipo || undefined, tipo: tipo || undefined, promo: promoOn ? "1" : undefined, b2b: b2bOn ? "1" : undefined };
+  const baseQuery = { q: q || undefined, ipo: ipo || undefined, tipo: tipo || undefined, promo: promoOn ? "1" : undefined, b2b: b2bOn ? "1" : undefined, seminovo: seminovoOn ? "1" : undefined, };
 
   const [sectionTop, sectionBottom, siteSettings] = BUILDER_API_KEY
     ? await Promise.all([
@@ -61,19 +77,19 @@ export default async function CatalogoPage({
   const data = { urlPath: "/catalogo", ...siteSettings };
 
   return (
-    <div className="min-h-screen bg-background pt-24 pb-12">
-      <main className="container">
+    <div className="tune-catalog min-h-screen bg-background pt-24 pb-12">
+      <main className="tune-catalog container">
         {sectionTop && BUILDER_API_KEY && (
-          <div className="mb-8">
+          <div className="tune-catalog mb-8">
             <BuilderContentBlock content={sectionTop} model="page-section" apiKey={BUILDER_API_KEY} data={data} />
           </div>
         )}
-        <h1 className="font-display text-4xl font-bold tracking-tight mb-2">
-          Nosso <span className="text-gradient-gold">Catálogo</span>
+        <h1 className="tune-catalog font-display text-4xl font-bold tracking-tight mb-2">
+          Nosso <span className="tune-catalog text-gradient-gold">Catálogo</span>
         </h1>
-        <p className="text-muted-foreground mb-6">Use os chips para filtrar (PROMO / B2B / Tipo / IPO).</p>
+        <p className="tune-catalog text-muted-foreground mb-6">Use os chips para filtrar (PROMO / B2B / Tipo / IPO).</p>
 
-        <div className="flex flex-wrap justify-center gap-3 mb-8">
+        <div className="tune-catalog flex flex-wrap justify-center gap-3 mb-8">
           <a
             className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-all ${
               promoOn ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground border border-border hover:bg-secondary/80"
@@ -89,26 +105,35 @@ export default async function CatalogoPage({
             href={"/catalogo" + buildQuery({ ...baseQuery, b2b: b2bOn ? undefined : "1" })}
           >
             B2B
+          </a>          <a
+            className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-all ${
+              seminovoOn ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground border border-border hover:bg-secondary/80"
+            }`}
+            href={"/catalogo" + buildQuery({ ...baseQuery, seminovo: seminovoOn ? undefined : "1" })}
+          >
+            SEMINOVOS
           </a>
+
+
           <a
-            className="rounded-full px-5 py-2.5 text-sm font-semibold border border-border bg-secondary text-secondary-foreground hover:bg-secondary/80"
+            className="tune-catalog rounded-full px-5 py-2.5 text-sm font-semibold border border-border bg-secondary text-secondary-foreground hover:bg-secondary/80"
             href="/catalogo"
           >
             Limpar
           </a>
         </div>
 
-        <form className="flex flex-wrap gap-3 mb-10" action="/catalogo" method="get">
+        <form className="tune-catalog flex flex-wrap gap-3 mb-10" action="/catalogo" method="get">
           <input
             name="q"
             defaultValue={q}
             placeholder="Buscar..."
-            className="rounded-lg border border-border bg-secondary px-4 py-2.5 text-foreground min-w-[200px] focus:outline-none focus:ring-2 focus:ring-primary"
+            className="tune-catalog rounded-lg border border-border bg-secondary px-4 py-2.5 text-foreground min-w-[200px] focus:outline-none focus:ring-2 focus:ring-primary"
           />
           <select
             name="ipo"
             defaultValue={ipo}
-            className="rounded-lg border border-border bg-secondary px-4 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            className="tune-catalog rounded-lg border border-border bg-secondary px-4 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
           >
             <option value="">IPO (todos)</option>
             {ipos.map((x) => (
@@ -118,7 +143,7 @@ export default async function CatalogoPage({
           <select
             name="tipo"
             defaultValue={tipo}
-            className="rounded-lg border border-border bg-secondary px-4 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            className="tune-catalog rounded-lg border border-border bg-secondary px-4 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
           >
             <option value="">Tipo (todos)</option>
             {tipos.map((x) => (
@@ -127,79 +152,80 @@ export default async function CatalogoPage({
           </select>
           {promoOn && <input type="hidden" name="promo" value="1" />}
           {b2bOn && <input type="hidden" name="b2b" value="1" />}
+          {seminovoOn && <input type="hidden" name="seminovo" value="1" />}
           <button
             type="submit"
-            className="rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground hover:brightness-110"
+            className="tune-catalog rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground hover:brightness-110"
           >
             Filtrar
           </button>
         </form>
 
         {list.length === 0 ? (
-          <div className="steel-card p-12 text-center text-muted-foreground">
+          <div className="tune-catalog steel-card p-12 text-center text-muted-foreground">
             Nenhum produto encontrado.
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="tune-catalog grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {list.map((p) => {
               const promo = String(p?.metadata?.promocao || "") === "semana";
               const b2b = String(p?.metadata?.oferta || "") === "construtor";
               return (
                 <div
                   key={p.id}
-                  className="steel-card steel-card-hover group overflow-hidden"
+                  className="tune-catalog steel-card steel-card-hover group overflow-hidden"
                 >
-                  <a href={`/produto/${p.handle}`} className="block">
-                    <div className="aspect-square overflow-hidden rounded-t-lg -m-[1px] mb-0">
+                  <a href={`/produto/${p.handle}`} className="tune-catalog block">
+                    <div className="tune-catalog aspect-square overflow-hidden rounded-t-lg -m-[1px] mb-0">
                       {p.thumbnail ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={p.thumbnail}
                           alt={p.title}
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          className="tune-catalog h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
                       ) : (
-                        <div className="h-full w-full bg-muted flex items-center justify-center text-muted-foreground text-sm">
+                        <div className="tune-catalog h-full w-full bg-muted flex items-center justify-center text-muted-foreground text-sm">
                           sem imagem
                         </div>
                       )}
                     </div>
                   </a>
-                  <div className="p-5">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-semibold uppercase tracking-wider text-primary">
+                  <div className="tune-catalog p-5">
+                    <div className="tune-catalog flex items-center justify-between mb-2">
+                      <span className="tune-catalog text-xs font-semibold uppercase tracking-wider text-primary">
                         {String(p?.metadata?.tipo ?? "Produto")}
                       </span>
-                      <div className="flex gap-1">
-                        {promo && <span className="text-xs rounded-full border border-border px-2 py-0.5">PROMO</span>}
-                        {b2b && <span className="text-xs rounded-full border border-border px-2 py-0.5">B2B</span>}
+                      <div className="tune-catalog flex gap-1">
+                        {promo && <span className="tune-catalog text-xs rounded-full border border-border px-2 py-0.5">PROMO</span>}
+                        {b2b && <span className="tune-catalog text-xs rounded-full border border-border px-2 py-0.5">B2B</span>}
                       </div>
                     </div>
 
-                    <a href={`/produto/${p.handle}`} className="block">
-                      <h3 className="font-display text-lg font-bold">{p.title}</h3>
+                    <a href={`/produto/${p.handle}`} className="tune-catalog block">
+                      <h3 className="tune-catalog font-display text-lg font-bold">{p.title}</h3>
                     </a>
 
-                    <div className="mt-2">
+                    <div className="tune-catalog mt-2">
                       <CatalogPrice product={p as any} />
                     </div>
-                    <div className="mt-2 text-sm text-muted-foreground">
+                    <div className="tune-catalog mt-2 text-sm text-muted-foreground">
                       ipo: {String(p.metadata?.ipo ?? "-")} | tipo: {String(p.metadata?.tipo ?? "-")}
                     </div>
 
                     {(() => {
                       const quoteHref = `/orcamento?produto=${encodeURIComponent(p.handle)}&nome=${encodeURIComponent(p.title)}`;
                       return (
-                        <div className="mt-4 flex flex-wrap gap-3">
+                        <div className="tune-catalog mt-4 flex flex-wrap gap-3">
                           <a
                             href={`/produto/${p.handle}`}
-                            className="inline-flex items-center justify-center rounded-full border border-border bg-secondary px-4 py-2 text-xs font-extrabold text-secondary-foreground hover:bg-secondary/80"
+                            className="tune-catalog inline-flex items-center justify-center rounded-full border border-border bg-secondary px-4 py-2 text-xs font-extrabold text-secondary-foreground hover:bg-secondary/80"
                           >
                             Ver detalhes
                           </a>
                           <a
                             href={quoteHref}
-                            className="inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 text-xs font-extrabold text-primary-foreground hover:brightness-110 hover:shadow-[0_10px_28px_rgba(245,158,11,0.14)]"
+                            className="tune-catalog inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 text-xs font-extrabold text-primary-foreground hover:brightness-110 hover:shadow-[0_10px_28px_rgba(245,158,11,0.14)]"
                           >
                             Orçar este modelo
                           </a>
@@ -213,7 +239,7 @@ export default async function CatalogoPage({
           </div>
         )}
         {sectionBottom && BUILDER_API_KEY && (
-          <div className="mt-12">
+          <div className="tune-catalog mt-12">
             <BuilderContentBlock content={sectionBottom} model="page-section" apiKey={BUILDER_API_KEY} data={data} />
           </div>
         )}
@@ -221,4 +247,9 @@ export default async function CatalogoPage({
     </div>
   );
 }
+
+
+
+
+
 

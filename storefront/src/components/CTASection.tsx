@@ -10,13 +10,8 @@ export default function CTASection() {
           <div className="relative z-10">
             <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 border border-primary/20 px-4 py-2 text-sm font-medium text-primary mb-6">
               <MessageCircle className="h-4 w-4" />
-              Atendimento rápido
+              Pronto para iniciar seu projeto?
             </div>
-
-            <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight mb-4">
-              Pronto para começar{" "}
-              <span className="text-gradient-gold">seu projeto?</span>
-            </h2>
 
             <p className="text-muted-foreground text-lg max-w-lg mx-auto mb-10">
               Fale conosco pelo WhatsApp e receba um orçamento personalizado em minutos.
@@ -28,7 +23,7 @@ export default function CTASection() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-3 rounded-full bg-primary px-10 py-5 text-lg font-bold text-primary-foreground transition-all hover:brightness-110 hover:scale-105 glow-gold"
             >
-              Chamar no WhatsApp
+              Chamar no WhatsApp Agora
               <ArrowRight className="h-5 w-5" />
             </a>
 
@@ -39,3 +34,6 @@ export default function CTASection() {
     </section>
   );
 }
+
+
+

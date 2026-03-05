@@ -20,9 +20,9 @@ export default function ProductHeaderCard({
   children,
 }: Props) {
   return (
-    <div className={`steel-card p-4 md:p-5 min-w-0 max-w-full ${className}`.trim()}>
+    <div className={`steel-card dev-product-header-card p-4 md:p-5 min-w-0 max-w-full ${className}`.trim()}>
       <div className="flex items-start justify-between gap-4 min-w-0">
-        <h1 className="font-display text-2xl md:text-3xl font-extrabold leading-tight tracking-tight min-w-0 break-words">
+        <h1 className="dev-product-title font-display text-2xl md:text-3xl font-extrabold leading-tight tracking-tight min-w-0 break-words">
           {title}
         </h1>
 
@@ -46,4 +46,5 @@ export default function ProductHeaderCard({
     </div>
   );
 }
+
 

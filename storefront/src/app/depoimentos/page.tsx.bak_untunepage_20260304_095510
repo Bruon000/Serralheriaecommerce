@@ -1,0 +1,17 @@
+import TestimonialsSection from "../../components/TestimonialsSection";
+
+export const dynamic = "force-dynamic";
+
+export default function DepoimentosPage() {
+  return (
+    <div className="tune-page min-h-screen bg-background">
+      <main className="tune-page container py-12">
+        <h1 className="tune-page font-display text-4xl font-bold mb-10">
+          Depoimentos <span className="tune-page text-gradient-gold">de clientes</span>
+        </h1>
+        <TestimonialsSection />
+      </main>
+    </div>
+  );
+}
+

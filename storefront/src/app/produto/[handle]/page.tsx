@@ -49,22 +49,22 @@ export default async function ProdutoPage({ params, searchParams }: Props) {
     if (builderContent) {
       const siteSettings = await getSiteSettings();
       return (
-        <div className="min-h-screen bg-background pt-24 pb-16 overflow-x-hidden">
-          <main className="container">
-            <div className="flex items-center gap-3 text-sm text-muted-foreground">
-              <a href="/" className="hover:text-foreground transition-colors">
+        <div className="tune-product min-h-screen bg-background pt-24 pb-16 overflow-x-hidden">
+          <main className="tune-product tune-product-main container">
+            <div className="tune-product flex items-center gap-3 text-sm text-muted-foreground">
+              <a href="/" className="tune-product hover:text-foreground transition-colors">
                 Início
               </a>
               <span>/</span>
-              <a href="/catalogo" className="hover:text-foreground transition-colors">
+              <a href="/catalogo" className="tune-product hover:text-foreground transition-colors">
                 Catálogo
               </a>
               <span>/</span>
-              <span className="text-foreground/90 font-semibold truncate">
+              <span className="tune-product text-foreground/90 font-semibold truncate">
                 {product.title}
               </span>
             </div>
-            <div className="mt-8">
+            <div className="tune-product mt-8">
               <Content
                 content={builderContent}
                 model="product-page"
@@ -79,45 +79,48 @@ export default async function ProdutoPage({ params, searchParams }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-24 pb-16 overflow-x-hidden">
-      <main className="container">
-        <div className="flex items-center gap-3 text-sm text-muted-foreground">
-          <a href="/" className="hover:text-foreground transition-colors">
+    <div className="tune-product min-h-screen bg-background pt-24 pb-16 overflow-x-hidden">
+      <main className="tune-product tune-product-main container">
+        <div className="tune-product flex items-center gap-3 text-sm text-muted-foreground">
+          <a href="/" className="tune-product hover:text-foreground transition-colors">
             Início
           </a>
           <span>/</span>
-          <a href="/catalogo" className="hover:text-foreground transition-colors">
+          <a href="/catalogo" className="tune-product hover:text-foreground transition-colors">
             Catálogo
           </a>
           <span>/</span>
-          <span className="text-foreground/90 font-semibold truncate">
+          <span className="tune-product text-foreground/90 font-semibold truncate">
             {product.title}
           </span>
         </div>
-        <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.85fr)] xl:grid-cols-3">
-          <div className="steel-card overflow-hidden min-w-0 max-w-full">
-            <div className="p-4">
-              <ProductGallery
-                title={product.title}
-                thumbnail={(product as any).thumbnail}
-                images={(product as any).images}
-              />
+        <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(460px,1fr)]">
+          {/* Coluna esquerda: galeria + detalhes */}
+          <div className="min-w-0 flex flex-col gap-6">
+            <div className="steel-card overflow-hidden min-w-0">
+              <div className="p-4">
+                <ProductGallery
+                  title={product.title}
+                  thumbnail={(product as any).thumbnail}
+                  images={(product as any).images}
+                />
+              </div>
             </div>
+            <DetailsCard
+              title="Detalhes do produto"
+              description={
+                (product as any).description ||
+                "Produto sob medida, feito com material reforçado e acabamento profissional. Informe medidas e observações para receber uma estimativa mais rápida."
+              }
+              showMetaIpoTipo
+              ipo={String((product as any).metadata?.ipo ?? "-")}
+              tipo={String((product as any).metadata?.tipo ?? "-")}
+            />
           </div>
 
-          <DetailsCard
-            title="Detalhes do produto"
-            description={
-              (product as any).description ||
-              "Produto sob medida, feito com material reforçado e acabamento profissional. Informe medidas e observações para receber uma estimativa mais rápida."
-            }
-            showMetaIpoTipo
-            ipo={String((product as any).metadata?.ipo ?? "-")}
-            tipo={String((product as any).metadata?.tipo ?? "-")}
-          />
-
-          <div className="grid gap-6 min-w-0 max-w-full">
-            <div className="steel-card p-6 min-w-0 max-w-full">
+          {/* Coluna direita: título + preço + buybox (lg: coluna tem min 380px via grid) */}
+          <div className="min-w-0 flex flex-col gap-6">
+            <div className="steel-card overflow-hidden min-w-0 p-6 min-w-0">
               <div className="flex items-start justify-between gap-4 min-w-0">
                 <h1 className="font-display text-3xl md:text-4xl font-extrabold leading-tight tracking-tight min-w-0 break-words">
                   {product.title}
@@ -134,7 +137,7 @@ export default async function ProdutoPage({ params, searchParams }: Props) {
               </div>
             </div>
 
-            <div className="steel-card p-6 min-w-0 max-w-full">
+            <div className="steel-card overflow-hidden min-w-0 p-6 min-w-0">
               <div className="text-sm font-extrabold text-foreground/90 mb-3">
                 Comprar / Adicionar ao carrinho
               </div>
@@ -153,4 +156,15 @@ export default async function ProdutoPage({ params, searchParams }: Props) {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
 

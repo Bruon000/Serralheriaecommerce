@@ -16,9 +16,10 @@ export default function ColumnsLayout({
   children,
 }: Props) {
   return (
-    <div className={`grid ${gap} ${columnsLg} ${columnsXl} ${className}`.trim()}>
+    <div className={`grid dev-cols-layout ${gap} ${columnsLg} ${columnsXl} ${className}`.trim()}>
       {children}
     </div>
   );
 }
+
 

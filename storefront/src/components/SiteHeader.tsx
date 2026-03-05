@@ -10,7 +10,7 @@ const navLinks = [
   { href: "/promocoes", label: "Promoções" },
   { href: "/depoimentos", label: "Depoimentos" },
   { href: "/contato", label: "Contato" },
-  { href: "/construtor/status", label: "Área Construtor" },
+  { href: "/Área Construtor/status", label: "Área Área Construtor" },
 ];
 
 export default function SiteHeader() {
@@ -26,17 +26,15 @@ export default function SiteHeader() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-[80] border-b border-border/40 bg-black/65 backdrop-blur">
-      <div className="container h-[72px] flex items-center gap-6">
+      <div className="container h-[108px] flex items-center gap-6">
         {/* Marca mínima (não compete com a logo grande do hero) */}        {/* Logo / Marca */}
         <Link href="/" className="shrink-0 inline-flex items-center gap-3">
           <img
             src="/brand/hero-logo.png"
             alt="Logo"
-            className="h-10 w-auto object-contain"
+            className="w-auto object-contain" style={{ height: "80px" }}
           />
-          <span className="hidden sm:block font-extrabold tracking-tight text-foreground">
-            Serralheria
-          </span>
+          <span className="hidden sm:block font-extrabold tracking-tight text-foreground"></span>
         </Link>
 
 {/* Nav desktop */}
@@ -55,21 +53,19 @@ export default function SiteHeader() {
         {/* Ações */}
         <div className="ml-auto flex items-center gap-3 shrink-0 whitespace-nowrap">
           <Link
-            href="/construtor/status"
-            className="hidden lg:inline-flex text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Área Construtor
-          </Link>
+            href="/Área Construtor/status"
+           
+           className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-extrabold text-primary-foreground hover:brightness-110 shadow-[0_12px_35px_rgba(245,158,11,0.25)] border border-primary/30">Área Construtor</Link>
 
           <Link
             href="/carrinho"
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-4 py-2 text-sm font-bold text-secondary-foreground hover:bg-secondary/80"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-4 py-4 text-sm font-bold text-secondary-foreground hover:bg-secondary/80"
           >
             <ShoppingCart className="h-4 w-4" />
             <span className="hidden sm:inline">Carrinho</span>
           </Link>
 
-          <Link href="/orcamento" className="inline-flex items-center rounded-full bg-primary px-5 py-2 text-sm font-extrabold text-primary-foreground hover:brightness-110 hover:shadow-[0_10px_30px_rgba(245,158,11,0.18)]">Orçamento</Link>
+          <Link href="/orcamento" className="inline-flex items-center rounded-full bg-primary px-5 py-4 text-sm font-extrabold text-primary-foreground hover:brightness-110 hover:shadow-[0_10px_30px_rgba(245,158,11,0.18)]">Orçamento</Link>
 
           {/* Mobile menu button */}
           <button
@@ -92,7 +88,7 @@ export default function SiteHeader() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-2 text-sm font-semibold text-foreground/90 hover:bg-secondary"
+                className="rounded-lg px-3 py-4 text-sm font-semibold text-foreground/90 hover:bg-secondary"
               >
                 {link.label}
               </Link>
@@ -103,6 +99,13 @@ export default function SiteHeader() {
     </header>
   );
 }
+
+
+
+
+
+
+
 
 
 

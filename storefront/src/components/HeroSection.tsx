@@ -19,13 +19,13 @@ export default function HeroSection() {
               className="select-none"
               style={{
                 // ===== AJUSTES FÁCEIS =====
-                height: 320,          // <-- TAMANHO (px). Ex: 260 menor / 380 maior
+                height: 420,          // <-- TAMANHO (px). Ex: 260 menor / 380 maior
                 width: "auto",
                 maxWidth: "min(98vw, 1200px)",
                 objectFit: "contain",
 
                 // mover (px): negativo sobe/esquerda | positivo desce/direita
-                transform: "translateX(0px) translateY(-10px) rotate(-12deg)",
+                transform: "translateX(-220px) translateY(-10px) rotate(-12deg)",
 
                 // sombra premium
                 filter: "drop-shadow(0 18px 38px rgba(245,158,11,0.26))",
@@ -48,8 +48,7 @@ export default function HeroSection() {
             </div>
           </div>
 <h1 className="mt-6 font-display text-5xl md:text-6xl font-extrabold leading-[1.05]">
-            Seu projeto em <span className="text-gradient-gold">metal</span>,<br />
-            do jeito certo.
+            Seu projeto em metal feito certo e na hora certa.
           </h1>
 
           <p className="mt-5 text-sm md:text-base text-muted-foreground leading-relaxed max-w-xl">
@@ -69,7 +68,7 @@ export default function HeroSection() {
               href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "5585999999999"}`}
               className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-6 py-3 text-sm font-extrabold text-secondary-foreground hover:bg-secondary/80"
             >
-              Falar no WhatsApp
+              Orçamento Grátis no WhatsApp
             </a>
           </div>
 
@@ -92,5 +91,7 @@ export default function HeroSection() {
     </section>
   );
 }
+
+
 
 

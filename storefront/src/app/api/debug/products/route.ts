@@ -1,0 +1,17 @@
+import { MEDUSA_BACKEND_URL, MEDUSA_PUBLISHABLE_KEY, MEDUSA_REGION_ID } from "../../../lib/medusa";
+
+export async function GET() {
+  const url = `${MEDUSA_BACKEND_URL}/store/products?limit=12${MEDUSA_REGION_ID ? `&region_id=${MEDUSA_REGION_ID}` : ""}`;
+
+  const res = await fetch(url, {
+    cache: "no-store",
+    headers: MEDUSA_PUBLISHABLE_KEY ? { "x-publishable-api-key": MEDUSA_PUBLISHABLE_KEY } : {},
+  });
+
+  const text = await res.text();
+
+  return new Response(text, {
+    status: res.status,
+    headers: { "content-type": "application/json; charset=utf-8" },
+  });
+}

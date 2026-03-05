@@ -73,67 +73,67 @@ export default function CarrinhoBody() {
   const waLink = buildWhatsappLink(waMessage, { b2b: isB2B });
 
   return (
-    <div className="min-h-screen bg-background pt-24 pb-12">
-      <main className="container max-w-3xl">
-        <h1 className="font-display text-4xl font-bold tracking-tight mb-4 text-center">
-          Seu <span className="text-gradient-gold">Carrinho</span>
+    <div className="tune-cart min-h-screen bg-background pt-24 pb-12">
+      <main className="tune-cart container max-w-3xl">
+        <h1 className="tune-cart font-display text-4xl font-bold tracking-tight mb-4 text-center">
+          Seu <span className="tune-cart text-gradient-gold">Carrinho</span>
         </h1>
 
-        <p className="text-muted-foreground text-center mb-8">
+        <p className="tune-cart text-muted-foreground text-center mb-8">
           B2B cadastrado: <b>{b2bOk ? "SIM" : "NÃO"}</b> · Portões no carrinho: <b>{portoes}</b> (mín. 3 para B2B)
         </p>
 
         {items.length === 0 ? (
-          <div className="steel-card p-12 text-center">
-            <p className="text-muted-foreground mb-6">Seu carrinho está vazio.</p>
+          <div className="tune-cart steel-card p-12 text-center">
+            <p className="tune-cart text-muted-foreground mb-6">Seu carrinho está vazio.</p>
             <a
               href="/catalogo"
-              className="inline-flex items-center rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground hover:brightness-110"
+              className="tune-cart inline-flex items-center rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground hover:brightness-110"
             >
               Ver catálogo
             </a>
           </div>
         ) : (
           <>
-            <div className="space-y-4">
+            <div className="tune-cart space-y-4">
               {items.map((it: any, idx: number) => (
-                <div key={idx} className="steel-card flex flex-col sm:flex-row items-stretch sm:items-center gap-4 p-4">
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-display font-bold truncate">{it.title}</h3>
-                    <p className="text-sm text-muted-foreground mt-1">
+                <div key={idx} className="tune-cart steel-card flex flex-col sm:flex-row items-stretch sm:items-center gap-4 p-4">
+                  <div className="tune-cart flex-1 min-w-0">
+                    <h3 className="tune-cart font-display font-bold truncate">{it.title}</h3>
+                    <p className="tune-cart text-sm text-muted-foreground mt-1">
                       ipo: {String((it as any).ipo ?? "-")} · tipo: {String((it as any).tipo ?? "-")}
                     </p>
-                    <div className="mt-2 text-sm text-muted-foreground">
+                    <div className="tune-cart mt-2 text-sm text-muted-foreground">
                       {((it as any).largura || (it as any).altura) && (
                         <div>Medidas: {(it as any).largura || "?"} × {(it as any).altura || "?"}</div>
                       )}
                       {(it as any).cor && <div>Cor: {(it as any).cor}</div>}
                       {(it as any).obs && <div>Obs.: {(it as any).obs}</div>}
                     </div>
-                    <p className="text-sm font-bold text-gradient-gold mt-1">
+                    <p className="tune-cart text-sm font-bold text-gradient-gold mt-1">
                       {formatBRL(getUnitPrice(it, isB2B))} × {it.qty ?? 1} = {formatBRL(getUnitPrice(it, isB2B) * Number(it.qty ?? 1))}
                     </p>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
+                  <div className="tune-cart flex items-center gap-2 shrink-0">
                     <button
                       type="button"
                       onClick={() => dec(idx)}
-                      className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                      className="tune-cart flex h-8 w-8 items-center justify-center rounded-full border border-border bg-secondary text-secondary-foreground hover:bg-secondary/80"
                     >
                       −
                     </button>
-                    <span className="w-8 text-center font-bold">{it.qty ?? 1}</span>
+                    <span className="tune-cart w-8 text-center font-bold">{it.qty ?? 1}</span>
                     <button
                       type="button"
                       onClick={() => inc(idx)}
-                      className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                      className="tune-cart flex h-8 w-8 items-center justify-center rounded-full border border-border bg-secondary text-secondary-foreground hover:bg-secondary/80"
                     >
                       +
                     </button>
                     <button
                       type="button"
                       onClick={() => remove(idx)}
-                      className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground hover:text-destructive"
+                      className="tune-cart flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground hover:text-destructive"
                       aria-label="Remover"
                     >
                       ✕
@@ -143,19 +143,19 @@ export default function CarrinhoBody() {
               ))}
             </div>
 
-            <div className="steel-card mt-6 p-6">
-              <div className="flex items-center justify-between mb-6">
-                <span className="text-muted-foreground">
+            <div className="tune-cart steel-card mt-6 p-6">
+              <div className="tune-cart flex items-center justify-between mb-6">
+                <span className="tune-cart text-muted-foreground">
                   {items.length} {items.length === 1 ? "item" : "itens"}
                 </span>
-                <div className="text-right">
-                  <p className="text-sm text-muted-foreground">Total estimado</p>
-                  <p className="font-display text-3xl font-bold text-gradient-gold">
+                <div className="tune-cart-summary tune-cart text-right">
+                  <p className="tune-cart text-sm text-muted-foreground">Total estimado</p>
+                  <p className="tune-cart-total tune-cart font-display text-3xl font-bold text-gradient-gold">
                     {formatBRL(total)}
                   </p>
                 </div>
               </div>
-              <div className="flex flex-col sm:flex-row gap-3">
+              <div className="tune-cart flex flex-col sm:flex-row gap-3">
                 <a
                   href={canWhatsapp ? waLink : "#"}
                   onClick={(e) => !canWhatsapp && e.preventDefault()}
@@ -169,13 +169,13 @@ export default function CarrinhoBody() {
                 </a>
                 <a
                   href="/catalogo"
-                  className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-secondary px-6 py-4 text-sm font-bold text-muted-foreground hover:text-foreground"
+                  className="tune-cart inline-flex items-center justify-center gap-2 rounded-full border border-border bg-secondary px-6 py-4 text-sm font-bold text-muted-foreground hover:text-foreground"
                 >
                   Continuar comprando
                 </a>
               </div>
               {!canWhatsapp && (
-                <p className="mt-4 text-sm text-muted-foreground">
+                <p className="tune-cart mt-4 text-sm text-muted-foreground">
                   B2B: é preciso estar cadastrado e ter pelo menos 3 portões no carrinho. No varejo, o WhatsApp fica liberado.
                 </p>
               )}
@@ -186,3 +186,5 @@ export default function CarrinhoBody() {
     </div>
   );
 }
+
+

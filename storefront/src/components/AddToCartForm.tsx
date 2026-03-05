@@ -33,11 +33,11 @@ const labelBase = "text-xs font-extrabold tracking-wider text-foreground/80";
 
 export default function AddToCartForm({
   product,
-  showColor = true,
+  showColor = false,
   showDims = true,
   showObs = true,
   labelQty = "Quantidade",
-  labelColor = "Cor (opcional)",
+  labelColor = "",
   labelLargura = "Largura (cm)",
   labelAltura = "Altura (cm)",
   labelObs = "Observações (opcional)",
@@ -52,7 +52,6 @@ export default function AddToCartForm({
   const [qty, setQty] = useState<number>(1);
   const [largura, setLargura] = useState<string>("");
   const [altura, setAltura] = useState<string>("");
-  const [cor, setCor] = useState<string>("");
   const [obs, setObs] = useState<string>("");
 
   const [added, setAdded] = useState(false);
@@ -75,10 +74,8 @@ export default function AddToCartForm({
 
     if (largura.trim()) sp.set("largura", largura.trim());
     if (altura.trim()) sp.set("altura", altura.trim());
-    if (cor.trim()) sp.set("cor", cor.trim());
-
     return `/orcamento?${sp.toString()}`;
-  }, [product.handle, product.title, largura, altura, cor]);
+  }, [product.handle, product.title, largura, altura]);
 
   function add() {
     const items = loadCart();
@@ -95,7 +92,6 @@ export default function AddToCartForm({
       qty,
       largura: largura || undefined,
       altura: altura || undefined,
-      cor: cor || undefined,
       obs: obs || undefined,
     };
 
@@ -126,7 +122,7 @@ export default function AddToCartForm({
         )}
       </div>
 
-      <div className="mt-5 grid gap-4 md:grid-cols-2">
+      <div className="mt-5 grid gap-4 md:grid-cols-1">
         <div className="grid gap-2">
           <label className={labelBase}>{labelQty}</label>
           <input
@@ -137,14 +133,6 @@ export default function AddToCartForm({
             className={inputBase}
           />
         </div>
-
-        {showColor && (
-          <div className="grid gap-2">
-            <label className={labelBase}>{labelColor}</label>
-            <input value={cor} onChange={(e) => setCor(e.target.value)} className={inputBase} placeholder="Ex.: preto fosco" />
-          </div>
-        )}
-
         {showDims && (
           <>
             <div className="grid gap-2">
@@ -160,16 +148,16 @@ export default function AddToCartForm({
       </div>
 
       {showObs && (
-      <div className="mt-4 grid gap-2">
-        <label className={labelBase}>{labelObs}</label>
-        <textarea
-          value={obs}
-          onChange={(e) => setObs(e.target.value)}
-          rows={4}
-          className={"w-full rounded-xl border border-border/50 bg-black/35 px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-[rgba(245,158,11,0.28)]"}
-          placeholder="Ex.: com portinhola, reforço, motor, tipo de chapa..."
-        />
-      </div>
+        <div className="mt-4 grid gap-2">
+          <label className={labelBase}>{labelObs}</label>
+          <textarea
+            value={obs}
+            onChange={(e) => setObs(e.target.value)}
+            rows={4}
+            className="w-full rounded-xl border border-border/50 bg-black/35 px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/30"
+            placeholder="Ex.: com portinhola, reforço, motor, tipo de chapa..."
+          />
+        </div>
       )}
 
       <div className="mt-6 flex flex-col sm:flex-row gap-3">
@@ -204,6 +192,15 @@ export default function AddToCartForm({
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
 
 
 

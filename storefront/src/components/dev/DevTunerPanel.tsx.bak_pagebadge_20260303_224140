@@ -1,0 +1,381 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+type TunerState = {
+  // Home (logo grande)
+  heroH: number;
+  heroX: number;
+  heroY: number;
+  heroRot: number;
+  heroScale: number;      // 50..150 (%)
+  heroOpacity: number;    // 0..100 (%)
+
+  // Topo
+  headerLogoH: number;
+
+  // Grade / colunas
+  colsGap: number;     // px
+  colsBase: number;    // 1..4
+  colsLg: number;      // 1..4
+  colsXl: number;      // 1..6
+  colsPadX: number;    // px (padding lateral do bloco)
+  colsMaxW: number;    // px (largura max)
+
+  // Produto header card
+  prodPad: number;     // px
+  prodTitle: number;   // px
+  prodRadius: number;  // px
+  prodBgOpacity: number; // 0..100 (%)
+};
+
+const DEFAULTS: TunerState = {
+  heroH: 320,
+  heroX: 0,
+  heroY: -10,
+  heroRot: -12,
+  heroScale: 100,
+  heroOpacity: 100,
+
+  headerLogoH: 40,
+
+  colsGap: 16,
+  colsBase: 1,
+  colsLg: 2,
+  colsXl: 2,
+  colsPadX: 16,
+  colsMaxW: 1320,
+
+  prodPad: 16,
+  prodTitle: 30,
+  prodRadius: 16,
+  prodBgOpacity: 100,
+};
+
+function setCssVar(name: string, value: string) {
+  document.documentElement.style.setProperty(name, value);
+}
+function clearCssVar(name: string) {
+  document.documentElement.style.removeProperty(name);
+}
+
+export default function DevTunerPanel() {
+    const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") {
+      setEnabled(false);
+      return;
+    }
+    const read = () => {
+      try {
+        const v = new URLSearchParams(window.location.search).get("tune");
+        setEnabled(v === "1" || v === "true" || v === "on");
+      } catch {
+        setEnabled(false);
+      }
+    };
+    read();
+    window.addEventListener("popstate", read);
+    return () => window.removeEventListener("popstate", read);
+  }, []);const [s, setS] = useState<TunerState>(DEFAULTS);
+
+  // liga/desliga
+  useEffect(() => {
+    if (!enabled) {
+      document.documentElement.removeAttribute("data-dev-tune");
+      document.documentElement.removeAttribute("data-tune-focus");
+
+      [
+        "--heroLogoH","--heroLogoX","--heroLogoY","--heroLogoRot","--heroLogoScale","--heroLogoOpacity",
+        "--headerLogoH",
+        "--devColsGap","--devColsBase","--devColsLg","--devColsXl","--devColsPadX","--devColsMaxW",
+        "--devProductHeaderPad","--devProductTitleSize","--devProductRadius","--devProductBgOpacity",
+      ].forEach(clearCssVar);
+      return;
+    }
+    document.documentElement.setAttribute("data-dev-tune", "1");
+  }, [enabled]);
+
+  // escreve vars
+  useEffect(() => {
+    if (!enabled) return;
+
+    setCssVar("--heroLogoH", `${s.heroH}px`);
+    setCssVar("--heroLogoX", `${s.heroX}px`);
+    setCssVar("--heroLogoY", `${s.heroY}px`);
+    setCssVar("--heroLogoRot", `${s.heroRot}deg`);
+    setCssVar("--heroLogoScale", `${s.heroScale}`);
+    setCssVar("--heroLogoOpacity", `${s.heroOpacity}`);
+
+    setCssVar("--headerLogoH", `${s.headerLogoH}px`);
+
+    setCssVar("--devColsGap", `${s.colsGap}px`);
+    setCssVar("--devColsBase", `${s.colsBase}`);
+    setCssVar("--devColsLg", `${s.colsLg}`);
+    setCssVar("--devColsXl", `${s.colsXl}`);
+    setCssVar("--devColsPadX", `${s.colsPadX}px`);
+    setCssVar("--devColsMaxW", `${s.colsMaxW}px`);
+
+    setCssVar("--devProductHeaderPad", `${s.prodPad}px`);
+    setCssVar("--devProductTitleSize", `${s.prodTitle}px`);
+    setCssVar("--devProductRadius", `${s.prodRadius}px`);
+    setCssVar("--devProductBgOpacity", `${s.prodBgOpacity}`);
+  }, [enabled, s]);
+
+  if (!enabled) return null;
+
+  const copy = async (text: string) => {
+    try { await navigator.clipboard.writeText(text); } catch {}
+  };
+
+  // realce "onde mexe"
+  const focus = (key: "" | "hero" | "header" | "grid" | "product") => {
+    if (!key) document.documentElement.removeAttribute("data-tune-focus");
+    else document.documentElement.setAttribute("data-tune-focus", key);
+  };
+
+  // snippets simples
+  const heroSnippet = `// Logo da Home (HeroSection.tsx)
+height: ${s.heroH}px
+x: ${s.heroX}px | y: ${s.heroY}px | rot: ${s.heroRot}deg
+scale: ${s.heroScale}% | opacity: ${s.heroOpacity}%`;
+
+  const headerSnippet = `// Logo do topo (SiteHeader.tsx)
+height: ${s.headerLogoH}px`;
+
+  const gridSnippet = `// Grade de cards (ColumnsLayout + CSS tune)
+gap: ${s.colsGap}px
+cols: base ${s.colsBase} | lg ${s.colsLg} | xl ${s.colsXl}
+paddingX: ${s.colsPadX}px | maxW: ${s.colsMaxW}px`;
+
+  const prodSnippet = `// Card do Produto (ProductHeaderCard + CSS tune)
+padding: ${s.prodPad}px
+titulo: ${s.prodTitle}px
+radius: ${s.prodRadius}px
+bg: ${s.prodBgOpacity}%`;
+
+  // comando PS que aplica fallbacks no código (Apenas Hero + Header por enquanto, mais embaixo eu te dou o upgrade pra Grid+Produto também)
+  const applyPS = `$ErrorActionPreference="Stop"
+
+# HERO
+$hero="src\\components\\HeroSection.tsx"
+$h = Get-Content $hero -Raw
+$h = $h -replace 'var\\(--heroLogoH,\\s*\\d+px\\)', 'var(--heroLogoH, ${s.heroH}px)'
+$h = $h -replace 'var\\(--heroLogoX,\\s*[-\\d]+px\\)', 'var(--heroLogoX, ${s.heroX}px)'
+$h = $h -replace 'var\\(--heroLogoY,\\s*[-\\d]+px\\)', 'var(--heroLogoY, ${s.heroY}px)'
+$h = $h -replace 'var\\(--heroLogoRot,\\s*[-\\d]+deg\\)', 'var(--heroLogoRot, ${s.heroRot}deg)'
+$h = $h -replace 'var\\(--heroLogoScale,\\s*\\d+%\\)', 'var(--heroLogoScale, ${s.heroScale}%)'
+$h = $h -replace 'var\\(--heroLogoOpacity,\\s*\\d+%\\)', 'var(--heroLogoOpacity, ${s.heroOpacity}%)'
+$h | Set-Content -Encoding UTF8 $hero
+Write-Host "OK HERO"
+
+# HEADER
+$header="src\\components\\SiteHeader.tsx"
+$hh = Get-Content $header -Raw
+$hh = $hh -replace 'var\\(--headerLogoH,\\s*\\d+px\\)', 'var(--headerLogoH, ${s.headerLogoH}px)'
+$hh | Set-Content -Encoding UTF8 $header
+Write-Host "OK HEADER"
+`;
+
+  const Row = (p: { label: string; hint?: string; children: React.ReactNode; onFocus?: () => void; onBlur?: () => void }) => (
+    <div
+      className="flex items-center justify-between gap-3 py-1.5"
+      onMouseEnter={p.onFocus}
+      onMouseLeave={p.onBlur}
+    >
+      <div className="min-w-[130px]">
+        <div className="text-xs font-bold text-foreground/85">{p.label}</div>
+        {p.hint ? <div className="text-[10px] text-foreground/55">{p.hint}</div> : null}
+      </div>
+      <div className="flex items-center gap-2">{p.children}</div>
+    </div>
+  );
+
+  const Num = (p: { value: number; min: number; max: number; step?: number; onChange: (v: number) => void }) => (
+    <input
+      className="w-20 rounded-md border border-border bg-black/40 px-2 py-1 text-xs"
+      type="number"
+      value={p.value}
+      min={p.min}
+      max={p.max}
+      step={p.step ?? 1}
+      onChange={(e) => p.onChange(Number(e.target.value))}
+    />
+  );
+
+  const Range = (p: { value: number; min: number; max: number; step?: number; onChange: (v: number) => void }) => (
+    <input
+      className="w-52"
+      type="range"
+      value={p.value}
+      min={p.min}
+      max={p.max}
+      step={p.step ?? 1}
+      onChange={(e) => p.onChange(Number(e.target.value))}
+    />
+  );
+
+  const Card = (p: { title: string; where: string; children: React.ReactNode; onFocus: () => void }) => (
+    <div className="rounded-lg border border-border/50 bg-black/30 p-2">
+      <div className="mb-1 flex items-center justify-between">
+        <div className="text-xs font-extrabold">{p.title}</div>
+        <div className="text-[10px] text-foreground/60">mexe em: {p.where}</div>
+      </div>
+      <div onMouseEnter={p.onFocus} onMouseLeave={() => focus("")}>
+        {p.children}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="fixed bottom-4 right-4 z-[9999] w-[460px] max-w-[96vw] rounded-xl border border-border/60 bg-black/80 p-3 shadow-[0_30px_90px_rgba(0,0,0,0.45)] backdrop-blur">
+      <div className="flex items-center justify-between gap-2">
+        <div className="text-sm font-extrabold">Ajustes rápidos</div>
+        <div className="flex items-center gap-2">
+          <button
+            className="rounded-md border border-border bg-black/30 px-2 py-1 text-xs font-bold hover:bg-black/50"
+            onClick={() => setS(DEFAULTS)}
+          >
+            Reset
+          </button>
+          <button
+            className="rounded-md border border-border bg-black/30 px-2 py-1 text-xs font-bold hover:bg-black/50"
+            onClick={() => copy(applyPS)}
+            title="Copia um script PowerShell pra aplicar esses números no código"
+          >
+            Copiar comando (PS)
+          </button>
+        </div>
+      </div>
+
+      <div className="mt-3 max-h-[70vh] space-y-3 overflow-auto pr-1">
+        <Card title="Logo da Home" where="home" onFocus={() => focus("hero")}>
+          <Row label="Altura" hint="tamanho do logo" onFocus={() => focus("hero")} onBlur={() => focus("")}>
+            <Range value={s.heroH} min={160} max={520} step={2} onChange={(v) => setS((x) => ({ ...x, heroH: v }))} />
+            <Num value={s.heroH} min={160} max={520} step={2} onChange={(v) => setS((x) => ({ ...x, heroH: v }))} />
+          </Row>
+
+          <Row label="Lado (X)" hint="pra esquerda / direita" onFocus={() => focus("hero")} onBlur={() => focus("")}>
+            <Range value={s.heroX} min={-400} max={400} onChange={(v) => setS((x) => ({ ...x, heroX: v }))} />
+            <Num value={s.heroX} min={-400} max={400} onChange={(v) => setS((x) => ({ ...x, heroX: v }))} />
+          </Row>
+
+          <Row label="Cima/baixo (Y)" hint="sobe / desce" onFocus={() => focus("hero")} onBlur={() => focus("")}>
+            <Range value={s.heroY} min={-400} max={400} onChange={(v) => setS((x) => ({ ...x, heroY: v }))} />
+            <Num value={s.heroY} min={-400} max={400} onChange={(v) => setS((x) => ({ ...x, heroY: v }))} />
+          </Row>
+
+          <Row label="Giro" hint="rotaciona" onFocus={() => focus("hero")} onBlur={() => focus("")}>
+            <Range value={s.heroRot} min={-45} max={45} onChange={(v) => setS((x) => ({ ...x, heroRot: v }))} />
+            <Num value={s.heroRot} min={-45} max={45} onChange={(v) => setS((x) => ({ ...x, heroRot: v }))} />
+          </Row>
+
+          <Row label="Zoom" hint="escala do logo" onFocus={() => focus("hero")} onBlur={() => focus("")}>
+            <Range value={s.heroScale} min={50} max={150} onChange={(v) => setS((x) => ({ ...x, heroScale: v }))} />
+            <Num value={s.heroScale} min={50} max={150} onChange={(v) => setS((x) => ({ ...x, heroScale: v }))} />
+          </Row>
+
+          <Row label="Transparência" hint="0 some / 100 normal" onFocus={() => focus("hero")} onBlur={() => focus("")}>
+            <Range value={s.heroOpacity} min={0} max={100} onChange={(v) => setS((x) => ({ ...x, heroOpacity: v }))} />
+            <Num value={s.heroOpacity} min={0} max={100} onChange={(v) => setS((x) => ({ ...x, heroOpacity: v }))} />
+          </Row>
+
+          <div className="mt-2 flex items-center gap-2">
+            <button className="rounded-md border border-border bg-black/30 px-2 py-1 text-xs font-bold hover:bg-black/50" onClick={() => copy(heroSnippet)}>
+              Copiar
+            </button>
+            <pre className="max-h-16 flex-1 overflow-auto rounded-md bg-black/40 p-2 text-[10px] leading-snug text-foreground/80">{heroSnippet}</pre>
+          </div>
+        </Card>
+
+        <Card title="Logo do topo" where="topo" onFocus={() => focus("header")}>
+          <Row label="Altura" hint="tamanho do logo no topo" onFocus={() => focus("header")} onBlur={() => focus("")}>
+            <Range value={s.headerLogoH} min={24} max={72} onChange={(v) => setS((x) => ({ ...x, headerLogoH: v }))} />
+            <Num value={s.headerLogoH} min={24} max={72} onChange={(v) => setS((x) => ({ ...x, headerLogoH: v }))} />
+          </Row>
+
+          <div className="mt-2 flex items-center gap-2">
+            <button className="rounded-md border border-border bg-black/30 px-2 py-1 text-xs font-bold hover:bg-black/50" onClick={() => copy(headerSnippet)}>
+              Copiar
+            </button>
+            <pre className="max-h-16 flex-1 overflow-auto rounded-md bg-black/40 p-2 text-[10px] leading-snug text-foreground/80">{headerSnippet}</pre>
+          </div>
+        </Card>
+
+        <Card title="Grade de cards" where="lista/home/catálogo" onFocus={() => focus("grid")}>
+          <Row label="Espaço entre cards" hint="gap" onFocus={() => focus("grid")} onBlur={() => focus("")}>
+            <Range value={s.colsGap} min={0} max={64} onChange={(v) => setS((x) => ({ ...x, colsGap: v }))} />
+            <Num value={s.colsGap} min={0} max={64} onChange={(v) => setS((x) => ({ ...x, colsGap: v }))} />
+          </Row>
+
+          <Row label="Colunas (celular)" hint="base" onFocus={() => focus("grid")} onBlur={() => focus("")}>
+            <Range value={s.colsBase} min={1} max={4} onChange={(v) => setS((x) => ({ ...x, colsBase: v }))} />
+            <Num value={s.colsBase} min={1} max={4} onChange={(v) => setS((x) => ({ ...x, colsBase: v }))} />
+          </Row>
+
+          <Row label="Colunas (pc)" hint="lg" onFocus={() => focus("grid")} onBlur={() => focus("")}>
+            <Range value={s.colsLg} min={1} max={4} onChange={(v) => setS((x) => ({ ...x, colsLg: v }))} />
+            <Num value={s.colsLg} min={1} max={4} onChange={(v) => setS((x) => ({ ...x, colsLg: v }))} />
+          </Row>
+
+          <Row label="Colunas (wide)" hint="xl" onFocus={() => focus("grid")} onBlur={() => focus("")}>
+            <Range value={s.colsXl} min={1} max={6} onChange={(v) => setS((x) => ({ ...x, colsXl: v }))} />
+            <Num value={s.colsXl} min={1} max={6} onChange={(v) => setS((x) => ({ ...x, colsXl: v }))} />
+          </Row>
+
+          <Row label="Margem lateral" hint="padding do bloco" onFocus={() => focus("grid")} onBlur={() => focus("")}>
+            <Range value={s.colsPadX} min={0} max={64} onChange={(v) => setS((x) => ({ ...x, colsPadX: v }))} />
+            <Num value={s.colsPadX} min={0} max={64} onChange={(v) => setS((x) => ({ ...x, colsPadX: v }))} />
+          </Row>
+
+          <Row label="Largura máxima" hint="tamanho do container" onFocus={() => focus("grid")} onBlur={() => focus("")}>
+            <Range value={s.colsMaxW} min={900} max={1680} step={10} onChange={(v) => setS((x) => ({ ...x, colsMaxW: v }))} />
+            <Num value={s.colsMaxW} min={900} max={1680} step={10} onChange={(v) => setS((x) => ({ ...x, colsMaxW: v }))} />
+          </Row>
+
+          <div className="mt-2 flex items-center gap-2">
+            <button className="rounded-md border border-border bg-black/30 px-2 py-1 text-xs font-bold hover:bg-black/50" onClick={() => copy(gridSnippet)}>
+              Copiar
+            </button>
+            <pre className="max-h-16 flex-1 overflow-auto rounded-md bg-black/40 p-2 text-[10px] leading-snug text-foreground/80">{gridSnippet}</pre>
+          </div>
+        </Card>
+
+        <Card title="Card do produto" where="página do produto" onFocus={() => focus("product")}>
+          <Row label="Padding" hint="respiro interno" onFocus={() => focus("product")} onBlur={() => focus("")}>
+            <Range value={s.prodPad} min={8} max={48} onChange={(v) => setS((x) => ({ ...x, prodPad: v }))} />
+            <Num value={s.prodPad} min={8} max={48} onChange={(v) => setS((x) => ({ ...x, prodPad: v }))} />
+          </Row>
+
+          <Row label="Título" hint="tamanho do texto" onFocus={() => focus("product")} onBlur={() => focus("")}>
+            <Range value={s.prodTitle} min={18} max={46} onChange={(v) => setS((x) => ({ ...x, prodTitle: v }))} />
+            <Num value={s.prodTitle} min={18} max={46} onChange={(v) => setS((x) => ({ ...x, prodTitle: v }))} />
+          </Row>
+
+          <Row label="Borda arredondada" hint="radius" onFocus={() => focus("product")} onBlur={() => focus("")}>
+            <Range value={s.prodRadius} min={0} max={40} onChange={(v) => setS((x) => ({ ...x, prodRadius: v }))} />
+            <Num value={s.prodRadius} min={0} max={40} onChange={(v) => setS((x) => ({ ...x, prodRadius: v }))} />
+          </Row>
+
+          <Row label="Fundo" hint="opacidade do card" onFocus={() => focus("product")} onBlur={() => focus("")}>
+            <Range value={s.prodBgOpacity} min={30} max={100} onChange={(v) => setS((x) => ({ ...x, prodBgOpacity: v }))} />
+            <Num value={s.prodBgOpacity} min={30} max={100} onChange={(v) => setS((x) => ({ ...x, prodBgOpacity: v }))} />
+          </Row>
+
+          <div className="mt-2 flex items-center gap-2">
+            <button className="rounded-md border border-border bg-black/30 px-2 py-1 text-xs font-bold hover:bg-black/50" onClick={() => copy(prodSnippet)}>
+              Copiar
+            </button>
+            <pre className="max-h-16 flex-1 overflow-auto rounded-md bg-black/40 p-2 text-[10px] leading-snug text-foreground/80">{prodSnippet}</pre>
+          </div>
+        </Card>
+      </div>
+
+      <div className="mt-3 text-[10px] text-foreground/60">
+        abre com <span className="font-bold">?tune=1</span> • não salva nada • só pra ajustar rápido
+      </div>
+    </div>
+  );
+}
+
+

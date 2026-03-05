@@ -29,20 +29,17 @@ function OrcamentoContent() {
 
   const qpLargura = searchParams.get("largura") || "";
   const qpAltura = searchParams.get("altura") || "";
-  const qpCor = searchParams.get("cor") || "";
 
+  const [nomeCliente, setNomeCliente] = useState<string>("");
   const [modelo, setModelo] = useState<Modelo>("Portão de correr");
   const [largura, setLargura] = useState<string>("3.00");
   const [altura, setAltura] = useState<string>("2.00");
-  const [pintura, setPintura] = useState<string>("Esmalte / pintura padrão");
-  const [instalacao, setInstalacao] = useState<string>("Com instalação");
   const [cidade, setCidade] = useState<string>("");
   const [observacoes, setObservacoes] = useState<string>("");
 
   useEffect(() => {
     if (qpLargura.trim()) setLargura(qpLargura.trim());
     if (qpAltura.trim()) setAltura(qpAltura.trim());
-    if (qpCor.trim() && !observacoes.trim()) setObservacoes(`Cor: ${qpCor.trim()}`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -62,16 +59,15 @@ function OrcamentoContent() {
     }
 
     parts.push("");
+    if (nomeCliente.trim()) parts.push(`Nome: ${nomeCliente.trim()}`);
     parts.push(`Modelo: ${modelo}`);
     parts.push(`Medidas: ${largura} m (L) x ${altura} m (A)`);
-    parts.push(`Pintura: ${pintura}`);
-    parts.push(`Instalação: ${instalacao}`);
     if (cidade.trim()) parts.push(`Cidade/Bairro: ${cidade.trim()}`);
     if (observacoes.trim()) parts.push(`Obs.: ${observacoes.trim()}`);
     parts.push("");
     parts.push("Pode me passar uma estimativa e prazo?");
     return parts.join("\n");
-  }, [produtoNome, produtoHandle, modelo, largura, altura, pintura, instalacao, cidade, observacoes]);
+  }, [produtoNome, produtoHandle, nomeCliente, modelo, largura, altura, cidade, observacoes]);
 
   const waUrl = useMemo(() => {
     const encoded = encodeURIComponent(msg);
@@ -98,6 +94,10 @@ function OrcamentoContent() {
             <section className="lg:col-span-2">
               <div className="grid gap-5 sm:grid-cols-2">
                 <div className="grid gap-2 sm:col-span-2">
+                  <label className={labelBase}>Nome</label>
+                  <input value={nomeCliente} onChange={(e) => setNomeCliente(e.target.value)} placeholder="Seu nome" className={inputBase} />
+                </div>
+                <div className="grid gap-2 sm:col-span-2">
                   <label className={labelBase}>Modelo</label>
                   <select value={modelo} onChange={(e) => setModelo(e.target.value as Modelo)} className={inputBase}>
                     <option>Portão de correr</option>
@@ -117,24 +117,6 @@ function OrcamentoContent() {
                 <div className="grid gap-2">
                   <label className={labelBase}>Altura (m)</label>
                   <input value={altura} onChange={(e) => setAltura(e.target.value)} inputMode="decimal" placeholder="Ex.: 2.00" className={inputBase} />
-                </div>
-
-                <div className="grid gap-2">
-                  <label className={labelBase}>Pintura</label>
-                  <select value={pintura} onChange={(e) => setPintura(e.target.value)} className={inputBase}>
-                    <option>Esmalte / pintura padrão</option>
-                    <option>Pintura automotiva</option>
-                    <option>Galvanizado</option>
-                    <option>Sem pintura (cru)</option>
-                  </select>
-                </div>
-
-                <div className="grid gap-2">
-                  <label className={labelBase}>Instalação</label>
-                  <select value={instalacao} onChange={(e) => setInstalacao(e.target.value)} className={inputBase}>
-                    <option>Com instalação</option>
-                    <option>Sem instalação</option>
-                  </select>
                 </div>
 
                 <div className="grid gap-2 sm:col-span-2">
@@ -160,7 +142,7 @@ function OrcamentoContent() {
                 <div className="text-sm font-extrabold text-foreground/90">Enviar agora</div>
                 <p className="mt-1 text-sm text-muted-foreground">Abre o WhatsApp já com a mensagem pronta.</p>
 
-                <div className="mt-4 grid gap-3">
+                <div className="mt-4">
                   <a
                     href={waUrl}
                     target="_blank"
@@ -169,21 +151,8 @@ function OrcamentoContent() {
                   >
                     Enviar no WhatsApp
                   </a>
-
-                  <button
-                    type="button"
-                    onClick={() => navigator.clipboard.writeText(msg)}
-                    className="inline-flex justify-center items-center rounded-full border border-border bg-secondary px-6 py-3 text-sm font-extrabold text-secondary-foreground hover:bg-secondary/80"
-                  >
-                    Copiar mensagem
-                  </button>
                 </div>
               </div>
-
-              <details className="rounded-2xl border border-border/40 bg-black/25 p-5">
-                <summary className="cursor-pointer text-sm font-extrabold text-foreground/90">Ver mensagem que será enviada</summary>
-                <pre className="mt-4 whitespace-pre-wrap rounded-xl border border-border bg-black/35 p-4 text-sm text-foreground/85">{msg}</pre>
-              </details>
             </aside>
           </div>
         </div>
@@ -199,3 +168,4 @@ export default function OrcamentoBody() {
     </Suspense>
   );
 }
+

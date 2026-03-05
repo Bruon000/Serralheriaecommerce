@@ -1,0 +1,292 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+
+type TunerState = {
+  heroH: number;
+  heroX: number;
+  heroY: number;
+  heroRot: number;
+
+  headerLogoH: number;
+
+  colsGap: number;     // px
+  colsBase: number;    // 1..4
+  colsLg: number;      // 1..4
+  colsXl: number;      // 1..6
+
+  prodPad: number;     // px
+  prodTitle: number;   // px
+};
+
+const DEFAULTS: TunerState = {
+  heroH: 320,
+  heroX: 0,
+  heroY: -10,
+  heroRot: -12,
+
+  headerLogoH: 40,
+
+  colsGap: 16,
+  colsBase: 1,
+  colsLg: 2,
+  colsXl: 2,
+
+  prodPad: 16,
+  prodTitle: 30, // ~text-3xl
+};
+
+function setCssVar(name: string, value: string) {
+  document.documentElement.style.setProperty(name, value);
+}
+
+function clearCssVar(name: string) {
+  document.documentElement.style.removeProperty(name);
+}
+
+export default function DevTunerPanel() {
+  const sp = useSearchParams();
+
+  const enabled = useMemo(() => {
+    if (process.env.NODE_ENV === "production") return false;
+    const v = sp.get("tune");
+    return v === "1" || v === "true" || v === "on";
+  }, [sp]);
+
+  const [s, setS] = useState<TunerState>(DEFAULTS);
+
+  // aplica/remove modo dev tune
+  useEffect(() => {
+    if (!enabled) {
+      document.documentElement.removeAttribute("data-dev-tune");
+      // limpa vars
+      [
+        "--heroLogoH",
+        "--heroLogoX",
+        "--heroLogoY",
+        "--heroLogoRot",
+        "--headerLogoH",
+        "--devColsGap",
+        "--devColsBase",
+        "--devColsLg",
+        "--devColsXl",
+        "--devProductHeaderPad",
+        "--devProductTitleSize",
+      ].forEach(clearCssVar);
+      return;
+    }
+
+    document.documentElement.setAttribute("data-dev-tune", "1");
+  }, [enabled]);
+
+  // escreve vars quando estado muda
+  useEffect(() => {
+    if (!enabled) return;
+
+    setCssVar("--heroLogoH", `${s.heroH}px`);
+    setCssVar("--heroLogoX", `${s.heroX}px`);
+    setCssVar("--heroLogoY", `${s.heroY}px`);
+    setCssVar("--heroLogoRot", `${s.heroRot}deg`);
+
+    setCssVar("--headerLogoH", `${s.headerLogoH}px`);
+
+    setCssVar("--devColsGap", `${s.colsGap}px`);
+    setCssVar("--devColsBase", `${s.colsBase}`);
+    setCssVar("--devColsLg", `${s.colsLg}`);
+    setCssVar("--devColsXl", `${s.colsXl}`);
+
+    setCssVar("--devProductHeaderPad", `${s.prodPad}px`);
+    setCssVar("--devProductTitleSize", `${s.prodTitle}px`);
+  }, [enabled, s]);
+
+  if (!enabled) return null;
+
+  const copy = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      // fallback: nada (evita quebrar)
+    }
+  };
+
+  const heroSnippet = `// HeroSection.tsx (logo)
+height: ${s.heroH},
+transform: "translateX(${s.heroX}px) translateY(${s.heroY}px) rotate(${s.heroRot}deg)",`;
+
+  const headerSnippet = `// SiteHeader.tsx (logo)
+style={{ height: ${s.headerLogoH} }} // px`;
+
+  const colsSnippet = `// Columns (vars DEV -> copie os valores que quiser fixar)
+gap(px): ${s.colsGap}
+base: ${s.colsBase} | lg: ${s.colsLg} | xl: ${s.colsXl}`;
+
+  const prodSnippet = `// ProductHeaderCard.tsx (DEV tune)
+padding(px): ${s.prodPad}
+title(px): ${s.prodTitle}`;
+
+  const Row = (p: { label: string; children: React.ReactNode }) => (
+    <div className="flex items-center justify-between gap-3 py-1.5">
+      <div className="text-xs font-bold text-foreground/80">{p.label}</div>
+      <div className="flex items-center gap-2">{p.children}</div>
+    </div>
+  );
+
+  const Num = (p: { value: number; min: number; max: number; step?: number; onChange: (v: number) => void }) => (
+    <input
+      className="w-20 rounded-md border border-border bg-black/40 px-2 py-1 text-xs"
+      type="number"
+      value={p.value}
+      min={p.min}
+      max={p.max}
+      step={p.step ?? 1}
+      onChange={(e) => p.onChange(Number(e.target.value))}
+    />
+  );
+
+  const Range = (p: { value: number; min: number; max: number; step?: number; onChange: (v: number) => void }) => (
+    <input
+      className="w-40"
+      type="range"
+      value={p.value}
+      min={p.min}
+      max={p.max}
+      step={p.step ?? 1}
+      onChange={(e) => p.onChange(Number(e.target.value))}
+    />
+  );
+
+  return (
+    <div className="fixed bottom-4 right-4 z-[9999] w-[360px] max-w-[92vw] rounded-xl border border-border/60 bg-black/80 p-3 shadow-[0_30px_90px_rgba(0,0,0,0.45)] backdrop-blur">
+      <div className="flex items-center justify-between gap-3">
+        <div className="text-sm font-extrabold">DEV • Layout Tuner</div>
+        <button
+          className="rounded-md border border-border bg-black/30 px-2 py-1 text-xs font-bold hover:bg-black/50"
+          onClick={() => setS(DEFAULTS)}
+        >
+          Reset
+        </button>
+      </div>
+
+      <div className="mt-3 space-y-3">
+        <div className="rounded-lg border border-border/50 bg-black/30 p-2">
+          <div className="text-xs font-extrabold mb-1">Hero • Logo</div>
+          <Row label="Altura">
+            <Range value={s.heroH} min={160} max={520} step={2} onChange={(v) => setS((x) => ({ ...x, heroH: v }))} />
+            <Num value={s.heroH} min={160} max={520} step={2} onChange={(v) => setS((x) => ({ ...x, heroH: v }))} />
+          </Row>
+          <Row label="X (px)">
+            <Range value={s.heroX} min={-400} max={400} onChange={(v) => setS((x) => ({ ...x, heroX: v }))} />
+            <Num value={s.heroX} min={-400} max={400} onChange={(v) => setS((x) => ({ ...x, heroX: v }))} />
+          </Row>
+          <Row label="Y (px)">
+            <Range value={s.heroY} min={-400} max={400} onChange={(v) => setS((x) => ({ ...x, heroY: v }))} />
+            <Num value={s.heroY} min={-400} max={400} onChange={(v) => setS((x) => ({ ...x, heroY: v }))} />
+          </Row>
+          <Row label="Rot (deg)">
+            <Range value={s.heroRot} min={-45} max={45} onChange={(v) => setS((x) => ({ ...x, heroRot: v }))} />
+            <Num value={s.heroRot} min={-45} max={45} onChange={(v) => setS((x) => ({ ...x, heroRot: v }))} />
+          </Row>
+
+          <div className="mt-2 flex items-center gap-2">
+            <button
+              className="rounded-md border border-border bg-black/30 px-2 py-1 text-xs font-bold hover:bg-black/50"
+              onClick={() => copy(heroSnippet)}
+            >
+              Copy
+            </button>
+            <pre className="max-h-16 flex-1 overflow-auto rounded-md bg-black/40 p-2 text-[10px] leading-snug text-foreground/80">
+{heroSnippet}
+            </pre>
+          </div>
+        </div>
+
+        <div className="rounded-lg border border-border/50 bg-black/30 p-2">
+          <div className="text-xs font-extrabold mb-1">Header • Logo</div>
+          <Row label="Altura (px)">
+            <Range value={s.headerLogoH} min={24} max={72} onChange={(v) => setS((x) => ({ ...x, headerLogoH: v }))} />
+            <Num value={s.headerLogoH} min={24} max={72} onChange={(v) => setS((x) => ({ ...x, headerLogoH: v }))} />
+          </Row>
+
+          <div className="mt-2 flex items-center gap-2">
+            <button
+              className="rounded-md border border-border bg-black/30 px-2 py-1 text-xs font-bold hover:bg-black/50"
+              onClick={() => copy(headerSnippet)}
+            >
+              Copy
+            </button>
+            <pre className="max-h-16 flex-1 overflow-auto rounded-md bg-black/40 p-2 text-[10px] leading-snug text-foreground/80">
+{headerSnippet}
+            </pre>
+          </div>
+        </div>
+
+        <div className="rounded-lg border border-border/50 bg-black/30 p-2">
+          <div className="text-xs font-extrabold mb-1">Grid • ColumnsLayout</div>
+
+          <Row label="Gap (px)">
+            <Range value={s.colsGap} min={0} max={64} onChange={(v) => setS((x) => ({ ...x, colsGap: v }))} />
+            <Num value={s.colsGap} min={0} max={64} onChange={(v) => setS((x) => ({ ...x, colsGap: v }))} />
+          </Row>
+
+          <Row label="Cols base">
+            <Range value={s.colsBase} min={1} max={4} onChange={(v) => setS((x) => ({ ...x, colsBase: v }))} />
+            <Num value={s.colsBase} min={1} max={4} onChange={(v) => setS((x) => ({ ...x, colsBase: v }))} />
+          </Row>
+
+          <Row label="Cols lg">
+            <Range value={s.colsLg} min={1} max={4} onChange={(v) => setS((x) => ({ ...x, colsLg: v }))} />
+            <Num value={s.colsLg} min={1} max={4} onChange={(v) => setS((x) => ({ ...x, colsLg: v }))} />
+          </Row>
+
+          <Row label="Cols xl">
+            <Range value={s.colsXl} min={1} max={6} onChange={(v) => setS((x) => ({ ...x, colsXl: v }))} />
+            <Num value={s.colsXl} min={1} max={6} onChange={(v) => setS((x) => ({ ...x, colsXl: v }))} />
+          </Row>
+
+          <div className="mt-2 flex items-center gap-2">
+            <button
+              className="rounded-md border border-border bg-black/30 px-2 py-1 text-xs font-bold hover:bg-black/50"
+              onClick={() => copy(colsSnippet)}
+            >
+              Copy
+            </button>
+            <pre className="max-h-16 flex-1 overflow-auto rounded-md bg-black/40 p-2 text-[10px] leading-snug text-foreground/80">
+{colsSnippet}
+            </pre>
+          </div>
+        </div>
+
+        <div className="rounded-lg border border-border/50 bg-black/30 p-2">
+          <div className="text-xs font-extrabold mb-1">Produto • HeaderCard</div>
+
+          <Row label="Padding (px)">
+            <Range value={s.prodPad} min={8} max={48} onChange={(v) => setS((x) => ({ ...x, prodPad: v }))} />
+            <Num value={s.prodPad} min={8} max={48} onChange={(v) => setS((x) => ({ ...x, prodPad: v }))} />
+          </Row>
+
+          <Row label="Título (px)">
+            <Range value={s.prodTitle} min={18} max={46} onChange={(v) => setS((x) => ({ ...x, prodTitle: v }))} />
+            <Num value={s.prodTitle} min={18} max={46} onChange={(v) => setS((x) => ({ ...x, prodTitle: v }))} />
+          </Row>
+
+          <div className="mt-2 flex items-center gap-2">
+            <button
+              className="rounded-md border border-border bg-black/30 px-2 py-1 text-xs font-bold hover:bg-black/50"
+              onClick={() => copy(prodSnippet)}
+            >
+              Copy
+            </button>
+            <pre className="max-h-16 flex-1 overflow-auto rounded-md bg-black/40 p-2 text-[10px] leading-snug text-foreground/80">
+{prodSnippet}
+            </pre>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-3 text-[10px] text-foreground/60">
+        Ative com <span className="font-bold">?tune=1</span> • Não persiste • Só DEV
+      </div>
+    </div>
+  );
+}
