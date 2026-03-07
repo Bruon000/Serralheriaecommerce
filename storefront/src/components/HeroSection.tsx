@@ -1,5 +1,5 @@
 import Link from "next/link";
-import WhatsAppIcon from "@/components/WhatsAppIcon";
+import { ArrowRight, MessageCircle } from "lucide-react";
 
 export default function HeroSection() {
   return (
@@ -34,20 +34,6 @@ export default function HeroSection() {
             />
           </div>
 
-          <div className="inline-flex items-center gap-2 rounded-full border border-border/30 bg-black/35 px-3 py-1.5 text-xs font-semibold text-foreground/90">
-            <span aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" stroke="rgba(245,158,11,0.95)" strokeWidth="2"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.2-2-3.4-2.3.9a7 7 0 0 0-1.7-1L14.6 3h-5.2L9.1 6.3a7 7 0 0 0-1.7 1L5.1 6.4l-2 3.4 2 1.2a7 7 0 0 0 0 2l-2 1.2 2 3.4 2.3-.9a7 7 0 0 0 1.7 1L9.4 21h5.2l.3-3.3a7 7 0 0 0 1.7-1l2.3.9 2-3.4-2-1.2c.07-.33.1-.66.1-1z" stroke="rgba(245,158,11,0.45)" strokeWidth="1.6" strokeLinejoin="round"/></svg></span>
-            <span>Portões, grades e estruturas sob medida</span>
-          </div>
-          <div className="mt-4 w-full sm:w-fit">
-            <div className="inline-flex items-center gap-3 rounded-full border border-[rgba(245,158,11,0.28)] bg-black/40 px-4 py-2 text-sm backdrop-blur">
-              <span className="inline-flex items-center rounded-full bg-[rgba(245,158,11,0.14)] border border-[rgba(245,158,11,0.35)] px-3 py-1 text-[11px] font-extrabold tracking-widest text-[rgba(245,158,11,0.92)]">
-                EXTRA • NOVIDADES
-              </span>
-              <span className="text-foreground/80 font-semibold">
-                Em breve mais novidades e ofertas especiais.
-              </span>
-            </div>
-          </div>
 <h1 className="mt-6 font-display text-5xl md:text-6xl font-extrabold leading-[1.05]">
             Portões, grades e estruturas metálicas sob medida com orçamento rápido no WhatsApp.
           </h1>
@@ -67,10 +53,13 @@ export default function HeroSection() {
             </Link>
             <a
               href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "5585999999999"}`}
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-6 py-3 text-sm font-extrabold text-secondary-foreground hover:bg-secondary/80"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-6 py-3 text-sm font-extrabold hover:bg-secondary/80"
             >
-              <WhatsAppIcon size={18} />
-              <span>📱 Pedir orçamento no WhatsApp</span>
+              <MessageCircle className="h-4 w-4 text-green-600" />
+              <span>Pedir orçamento agora</span>
+              <ArrowRight className="h-4 w-4" />
             </a>
           </div>
 
@@ -93,6 +82,7 @@ export default function HeroSection() {
     </section>
   );
 }
+
 
 
 

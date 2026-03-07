@@ -18,13 +18,21 @@ function medusaHeaders(extra?: Record<string, string>) {
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const doc = searchParams.get("doc") || "";
+  const email = searchParams.get("email") || "";
 
-  if (!doc.trim()) {
-    return NextResponse.json({ ok: false, message: "doc obrigatório" }, { status: 400 });
+  if (!doc.trim() && !email.trim()) {
+    return NextResponse.json(
+      { ok: false, message: "doc ou email obrigatório" },
+      { status: 400 }
+    );
   }
 
+  const qs = new URLSearchParams();
+  if (doc.trim()) qs.set("doc", doc.trim());
+  if (email.trim()) qs.set("email", email.trim());
+
   const res = await fetch(
-    `${MEDUSA_BACKEND_URL}/store/custom/b2b?doc=${encodeURIComponent(doc)}`,
+    `${MEDUSA_BACKEND_URL}/store/custom/b2b?${qs.toString()}`,
     {
       headers: medusaHeaders(),
       cache: "no-store",

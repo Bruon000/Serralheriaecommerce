@@ -165,25 +165,44 @@ export default async function CatalogoPage({
         <div className="mt-8">
           {list.length === 0 ? (
             <div className="steel-card p-8">
-              <h3 className="font-display text-2xl font-extrabold">Não encontramos modelos com esse filtro.</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Você pode limpar os filtros ou falar com a Delima no WhatsApp para receber opções sob medida.
+              <div className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[11px] font-extrabold tracking-widest text-primary">
+                FILTROS ATIVOS
+              </div>
+
+              <h3 className="mt-4 font-display text-2xl font-extrabold tracking-tight md:text-3xl">
+                Nenhum modelo encontrado com esses filtros
+              </h3>
+
+              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">
+                Não achamos resultados para essa combinação no momento. Você pode ajustar ou limpar os filtros
+                para ver mais opções do catálogo.
               </p>
+
+              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                Se preferir, fale com a Delima no WhatsApp e receba sugestões sob medida para seu projeto,
+                orçamento e tipo de instalação.
+              </p>
+
               <div className="mt-5 flex flex-col sm:flex-row gap-3">
+                <a
+                  href="/catalogo"
+                  className="rounded-full bg-primary px-6 py-3 text-sm font-extrabold text-primary-foreground hover:brightness-110"
+                >
+                  Limpar filtros
+                </a>
+
                 <a
                   href="https://wa.me/5584987940211"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-full bg-primary px-6 py-3 text-sm font-extrabold text-primary-foreground hover:brightness-110"
-                >
-                  Pedir opções no WhatsApp
-                </a>
-                <a
-                  href="/catalogo"
                   className="rounded-full border border-border bg-secondary px-6 py-3 text-sm font-extrabold hover:bg-secondary/80"
                 >
-                  Limpar filtros
+                  Falar no WhatsApp
                 </a>
+              </div>
+
+              <div className="mt-6 text-xs text-muted-foreground">
+                Dica: tente buscar por menos palavras ou remover categoria, coleção e IPO para ampliar os resultados.
               </div>
             </div>
           ) : (
@@ -222,7 +241,7 @@ export default async function CatalogoPage({
                       <CatalogPrice product={p as any} />
                     </div>
 
-                    <div className="mt-4 text-sm font-extrabold">📱 Ver modelo e pedir orçamento</div>
+                    <div className="mt-4 text-sm font-extrabold">Ver modelo e pedir orçamento</div>
                   </a>
                 );
               })}

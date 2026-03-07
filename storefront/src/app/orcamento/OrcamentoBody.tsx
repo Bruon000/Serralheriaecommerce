@@ -84,7 +84,7 @@ function OrcamentoContent() {
             Orçamento <span className="text-gradient-gold">rápido</span>
           </h1>
           <p className="mt-2 text-muted-foreground">
-            Preencha as informações e receba seu orçamento em minutos pelo WhatsApp!
+            Preencha as informações e envie seu pedido para a Delima no WhatsApp com nome, medidas e observações do projeto.
           </p>
         </div>
 
@@ -146,7 +146,9 @@ function OrcamentoContent() {
             <aside className="grid gap-4">
               <div className="rounded-2xl border border-border/40 bg-black/25 p-5">
                 <div className="text-sm font-extrabold text-foreground/90">Enviar agora</div>
-                <p className="mt-1 text-sm text-muted-foreground">Abre o WhatsApp já com a mensagem pronta.</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Abre o WhatsApp com a mensagem pronta para você receber valor estimado e prazo.
+                </p>
 
                 <div className="mt-4">
                   <a
@@ -155,7 +157,7 @@ function OrcamentoContent() {
                     rel="noreferrer"
                     className="inline-flex justify-center items-center rounded-full bg-primary px-6 py-3 text-sm font-extrabold text-primary-foreground hover:brightness-110 hover:shadow-[0_10px_30px_rgba(245,158,11,0.18)]"
                   >
-                    Enviar no WhatsApp
+                    Pedir orçamento no WhatsApp
                   </a>
                 </div>
               </div>

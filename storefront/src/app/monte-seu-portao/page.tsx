@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { MessageCircle } from "lucide-react";
 import { calculateGateEstimate, GateType, GateModel } from "@/lib/gateCalculator";
 
 export default function MonteSeuPortao() {
@@ -31,14 +32,20 @@ Material: ${typeLabel[type]}
 Largura: ${width}m
 Altura: ${height}m
 Área: ${result.area}m²
-Cidade: ${city || "—"}`.trim()
+Estimativa inicial do site: R$ ${result.min} – R$ ${result.max}
+Cidade: ${city || "—"}
+
+Sei que essa faixa é uma estimativa inicial. Pode me passar o valor final e o prazo?`.trim()
   );
 
   const whatsappUrl = `https://wa.me/5584987940211?text=${message}`;
 
   return (
     <div className="container pt-32 pb-16 max-w-xl">
-      <h1 className="text-3xl font-bold mb-6">Monte seu portão</h1>
+      <h1 className="text-3xl font-bold mb-2">Monte seu portão</h1>
+      <p className="mb-6 text-sm text-muted-foreground">
+        Escolha o modelo, informe as medidas e veja uma estimativa inicial antes de falar com a Delima no WhatsApp.
+      </p>
 
       <div className="space-y-4">
         <div>
@@ -111,15 +118,19 @@ Cidade: ${city || "—"}`.trim()
               R$ {result.min} – R$ {result.max}
             </b>
           </p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Essa faixa é apenas uma estimativa inicial. O valor final depende do modelo, material, acabamento e detalhes do projeto.
+          </p>
         </div>
 
         <a
           href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="block text-center bg-yellow-400 text-black font-bold py-3 rounded"
+          className="flex items-center justify-center gap-2 bg-yellow-400 text-black font-bold py-3 rounded"
         >
-          📱 Orçar no WhatsApp
+          <MessageCircle className="h-4 w-4 text-green-600" />
+          <span>Pedir orçamento no WhatsApp</span>
         </a>
       </div>
     </div>

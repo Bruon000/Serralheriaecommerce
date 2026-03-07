@@ -120,7 +120,7 @@ export default function ConstructorNudge({ enabled = true }: Props) {
                 </Link>
 
                 <Link
-                  href="/construtor/ofertas"
+                  href="/construtor/cadastro"
                   style={{
                     pointerEvents: "auto",
                     textDecoration: "none",

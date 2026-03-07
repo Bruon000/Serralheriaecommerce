@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { listProducts } from "../../../lib/medusa";
 
 type AnyProduct = {
@@ -10,48 +11,113 @@ type AnyProduct = {
 
 export const dynamic = "force-dynamic";
 
-export default async function OfertasConstrutorPage() {
-  const products = (await listProducts()) as AnyProduct[];
+export default async function OfertasConstrutorPage(props: {
+  searchParams?: Promise<{ liberado?: string }>;
+}) {
+  const searchParams = (await props.searchParams) || {};
+  const liberado = String(searchParams.liberado || "") === "1";
 
+  if (!liberado) {
+    return (
+      <main className="min-h-screen bg-background pt-24 pb-12">
+        <div className="container max-w-5xl">
+          <Link href="/construtor" className="text-sm text-muted-foreground hover:text-foreground">
+            ← Voltar
+          </Link>
+
+          <h1 className="mt-4 font-display text-4xl font-extrabold tracking-tight">
+            Ofertas para construtores
+          </h1>
+
+          <div className="mt-8 rounded-2xl border border-border bg-secondary p-6">
+            <div className="inline-flex items-center rounded-full border border-yellow-500/30 bg-yellow-500/10 px-3 py-1 text-[11px] font-extrabold tracking-widest text-yellow-400">
+              ACESSO EM ANÁLISE
+            </div>
+
+            <div className="mt-4 text-2xl font-bold">Seu acesso às ofertas ainda não foi liberado</div>
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+              Seu cadastro está em análise. Assim que for aprovado, esta área exibirá automaticamente
+              as ofertas exclusivas para construtores e obras.
+            </p>
+
+            <div className="mt-6 flex flex-wrap gap-3 items-center">
+              <Link
+                href="/construtor/status"
+                className="rounded-full bg-primary px-6 py-3 text-sm font-extrabold text-primary-foreground"
+              >
+                Ver meu status
+              </Link>
+              <Link
+                href="/construtor/login"
+                className="rounded-full border border-border bg-background px-6 py-3 text-sm font-extrabold"
+              >
+                Entrar novamente
+              </Link>
+
+              <span className="text-sm text-muted-foreground">
+                Status atual: <strong className="text-foreground">pendente</strong>
+              </span>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  const products = (await listProducts()) as AnyProduct[];
   const ofertas = (products || []).filter((p) => p?.metadata?.oferta === "construtor");
 
   return (
-    <main style={{ padding: 16 }}>
-      <a href="/">← Home</a>
-      <h1>Ofertas para construtores (B2B)</h1>
+    <main className="min-h-screen bg-background pt-24 pb-12">
+      <div className="container max-w-5xl">
+        <Link href="/construtor/status" className="text-sm text-muted-foreground hover:text-foreground">
+          ← Voltar
+        </Link>
 
-      <p style={{ marginTop: 8 }}>
-        Aqui aparecem apenas produtos com <code>metadata.oferta = "construtor"</code>.
-      </p>
+        <h1 className="mt-4 font-display text-4xl font-extrabold tracking-tight">
+          Ofertas para construtores
+        </h1>
 
-      <div style={{ padding: 12, border: "1px solid #ddd", borderRadius: 8, marginTop: 12 }}>
-        <b>Como ativar no Admin:</b>
-        <ol style={{ marginTop: 8 }}>
-          <li>Abrir o produto no Medusa Admin</li>
-          <li>Ir em <b>Metadata</b></li>
-          <li>Adicionar <code>oferta</code> = <code>construtor</code></li>
-        </ol>
-        <div style={{ marginTop: 8 }}>
-          Alternativa (em lote): <code>tools\ofertas-construtor.ps1</code>
-        </div>
-      </div>
-
-      {ofertas.length === 0 ? (
-        <p style={{ marginTop: 16 }}>
-          Nenhuma oferta marcada ainda. Marque no Admin (metadata) ou use o script.
+        <p className="mt-3 text-muted-foreground">
+          Aqui aparecem os produtos com condição especial para construtores e obras.
         </p>
-      ) : (
-        <ul style={{ marginTop: 16 }}>
-          {ofertas.map((p) => (
-            <li key={p.id} style={{ marginBottom: 8 }}>
-              <a href={`/produto/${p.handle}`}>{p.title}</a>{" "}
-              <span style={{ fontSize: 12, padding: "2px 6px", border: "1px solid #ddd", borderRadius: 999 }}>
-                B2B
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
+
+        {ofertas.length === 0 ? (
+          <div className="mt-8 rounded-2xl border border-border bg-secondary p-6">
+            <div className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[11px] font-extrabold tracking-widest text-primary">
+              B2B • OFERTAS
+            </div>
+
+            <h2 className="mt-4 font-display text-2xl font-extrabold tracking-tight">
+              Ainda não há ofertas liberadas para construtores
+            </h2>
+
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+              No momento não encontramos produtos com condição especial marcados para esta área.
+              Você pode voltar mais tarde ou falar com a Delima para solicitar atendimento comercial.
+            </p>
+
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link href="/construtor/status" className="rounded-full bg-primary px-6 py-3 text-sm font-extrabold text-primary-foreground">
+                Ver meu status
+              </Link>
+              <Link href="/contato" className="rounded-full border border-border bg-background px-6 py-3 text-sm font-extrabold">
+                Falar com a equipe
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <ul className="mt-8 grid gap-4">
+            {ofertas.map((p) => (
+              <li key={p.id} className="rounded-2xl border border-border bg-secondary p-5">
+                <Link href={`/produto/${p.handle}`} className="text-lg font-bold hover:text-primary">
+                  {p.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </main>
   );
 }

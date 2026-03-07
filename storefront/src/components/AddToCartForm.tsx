@@ -43,7 +43,7 @@ export default function AddToCartForm({
   labelAltura = "Altura (metros)",
   labelObs = "Observações (opcional)",
   btnAddText = "Adicionar ao carrinho",
-  btnOrcamentoText = "📱 Orçar no WhatsApp",
+  btnOrcamentoText = "Orçar no WhatsApp",
   btnCarrinhoText = "Ir para o carrinho",
   outerClassName = "",
 }: Props) {

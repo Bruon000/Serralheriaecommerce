@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { MessageCircle } from "lucide-react";
 import {
   getInitialMessage,
   processMessage,
@@ -343,9 +344,10 @@ export default function ChatVendedor() {
             <button
               type="button"
               onClick={handleFalarWhatsApp}
-              className="w-full py-2 rounded-lg bg-green-600 hover:bg-green-500 text-white font-semibold text-sm transition shadow"
+              className="w-full py-2 rounded-lg bg-green-600 hover:bg-green-500 text-white font-semibold text-sm transition shadow flex items-center justify-center gap-2"
             >
-              📱 Falar no WhatsApp
+              <MessageCircle className="h-4 w-4 text-green-600" />
+              <span>Falar no WhatsApp</span>
             </button>
           </div>
         )}
@@ -370,9 +372,10 @@ export default function ChatVendedor() {
             <button
               type="button"
               onClick={handleFalarWhatsApp}
-              className="block text-center bg-green-600 hover:bg-green-500 text-white py-2 rounded font-semibold"
+              className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-500 text-white py-2 rounded font-semibold"
             >
-              📱 Falar com serralheiro
+              <MessageCircle className="h-4 w-4 text-green-600" />
+              <span>Falar com serralheiro</span>
             </button>
           </div>
         )}

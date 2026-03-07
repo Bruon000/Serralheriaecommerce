@@ -1,5 +1,4 @@
-import { MessageCircle, ArrowRight } from "lucide-react";
-import WhatsAppIcon from "@/components/WhatsAppIcon";
+import { ArrowRight, MessageCircle } from "lucide-react";
 
 export default function CTASection() {
   return (
@@ -26,11 +25,11 @@ export default function CTASection() {
               href="https://wa.me/5584987940211"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-[#F59E0B] px-6 py-3 text-sm font-extrabold text-black hover:brightness-110"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-extrabold text-primary-foreground hover:brightness-110"
             >
-              <WhatsAppIcon size={18} symbolColor="white" />
-              <span>📱 Pedir orçamento agora</span>
-              <ArrowRight className="h-5 w-5 shrink-0" />
+              <MessageCircle className="h-4 w-4 text-green-600" />
+              <span>Pedir orçamento agora</span>
+              <ArrowRight className="h-4 w-4" />
             </a>
 
             <p className="mt-6 text-sm text-muted-foreground">WhatsApp: (84) 98794-0211</p>

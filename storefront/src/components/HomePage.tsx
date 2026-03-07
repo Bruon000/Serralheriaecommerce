@@ -177,9 +177,9 @@ export default async function HomePage() {
               </div>
               <div className="mt-4 flex gap-3">
                 <Link href="/construtor" className="rounded-full bg-primary px-6 py-3 text-sm font-extrabold text-primary-foreground">
-                  Meu status
+                  Área construtor
                 </Link>
-                <Link href="/catalogo?b2b=1" className="rounded-full border border-border bg-secondary px-6 py-3 text-sm font-extrabold">
+                <Link href="/construtor/cadastro" className="rounded-full border border-border bg-secondary px-6 py-3 text-sm font-extrabold">
                   Ver ofertas
                 </Link>
               </div>

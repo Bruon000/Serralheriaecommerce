@@ -7,7 +7,7 @@ import { Building2 } from "lucide-react";
 export default function FloatingConstrutor() {
   return (
     <Link
-      href="/construtor"
+      href="/construtor/cadastro"
       aria-label="Área Construtor"
       title="Área Construtor — Condições especiais para profissionais"
       className={[

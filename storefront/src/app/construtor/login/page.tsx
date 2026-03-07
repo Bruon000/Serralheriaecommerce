@@ -17,28 +17,28 @@ export default function LoginConstrutor() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setMsg("");
+
     if (!email.trim() || !senha.trim()) {
       setMsg("Preencha e-mail e senha.");
       return;
     }
+
     setLoading(true);
     try {
       const storedEmail = typeof window !== "undefined" ? localStorage.getItem(STORAGE_EMAIL) : null;
       const storedSenha = typeof window !== "undefined" ? localStorage.getItem(STORAGE_SENHA) : null;
+      const storedDoc = typeof window !== "undefined" ? localStorage.getItem(STORAGE_DOC) || "" : "";
 
       if (storedEmail === email.trim() && storedSenha === senha) {
-        const doc = typeof window !== "undefined" ? localStorage.getItem(STORAGE_DOC) || "" : "";
-        if (doc.trim()) {
-          const res = await b2bStatus(doc.trim());
-          if (res.status === "aprovado") {
-            localStorage.setItem("construtor_cadastrado_v1", "1");
-          } else {
-            localStorage.removeItem("construtor_cadastrado_v1");
-          }
+        const res = await b2bStatus(storedDoc.trim(), email.trim());
+
+        if (res.status === "aprovado") {
+          localStorage.setItem("construtor_cadastrado_v1", "1");
         } else {
           localStorage.removeItem("construtor_cadastrado_v1");
         }
-        setMsg("Login feito! Redirecionando…");
+
+        setMsg("Login feito! Redirecionando...");
         setTimeout(() => {
           window.location.href = "/construtor/status";
         }, 800);
@@ -55,12 +55,14 @@ export default function LoginConstrutor() {
   return (
     <div className="min-h-screen bg-background pt-24 pb-12">
       <main className="container max-w-md">
-        <Link href="/" className="text-muted-foreground hover:text-foreground text-sm mb-6 inline-block">
+        <Link href="/construtor" className="text-muted-foreground hover:text-foreground text-sm mb-6 inline-block">
           ← Voltar
         </Link>
+
         <h1 className="font-display text-3xl font-bold tracking-tight mb-2">
           Entrar — Área <span className="text-gradient-gold">Construtor</span>
         </h1>
+
         <p className="text-muted-foreground mb-8">
           Use o e-mail e a senha do seu cadastro.
         </p>
@@ -74,6 +76,7 @@ export default function LoginConstrutor() {
             className="w-full rounded-lg border border-border bg-secondary px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             required
           />
+
           <input
             type="password"
             placeholder="Senha"
@@ -82,12 +85,13 @@ export default function LoginConstrutor() {
             className="w-full rounded-lg border border-border bg-secondary px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             required
           />
+
           <button
             type="submit"
             disabled={loading}
             className="w-full rounded-full bg-primary py-3.5 text-base font-bold text-primary-foreground hover:brightness-110 disabled:opacity-50"
           >
-            {loading ? "Entrando…" : "Entrar"}
+            {loading ? "Entrando..." : "Entrar"}
           </button>
         </form>
 
@@ -107,5 +111,3 @@ export default function LoginConstrutor() {
     </div>
   );
 }
-
-

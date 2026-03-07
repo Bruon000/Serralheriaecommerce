@@ -1,6 +1,5 @@
-import { listAll, setStatus } from "../../../../lib/b2b-store";
+import { listAll, setStatusByLookup } from "../../../../lib/b2b-store";
 
-// Medusa custom admin route: /admin/custom/b2b
 export async function GET(req: any, res: any) {
   try {
     return res.json({ ok: true, items: listAll() });
@@ -13,14 +12,20 @@ export async function POST(req: any, res: any) {
   try {
     const body = req.body || {};
     const doc = String(body.doc || "").trim();
-    const status = String(body.status || "").trim(); // pendente/aprovado/rejeitado
-    if (!doc) return res.status(400).json({ message: "doc obrigatório" });
-    if (!["pendente","aprovado","rejeitado"].includes(status)) return res.status(400).json({ message: "status inválido" });
+    const email = String(body.email || "").trim().toLowerCase();
+    const status = String(body.status || "").trim();
 
-    const updated = setStatus(doc, status as any);
+    if (!doc && !email) {
+      return res.status(400).json({ message: "doc ou email obrigatório" });
+    }
+
+    if (!["pendente", "aprovado", "rejeitado"].includes(status)) {
+      return res.status(400).json({ message: "status inválido" });
+    }
+
+    const updated = setStatusByLookup({ doc, email }, status as any);
     return res.json({ ok: true, request: updated });
   } catch (e: any) {
     return res.status(500).json({ ok: false, message: e?.message || String(e) });
   }
 }
-

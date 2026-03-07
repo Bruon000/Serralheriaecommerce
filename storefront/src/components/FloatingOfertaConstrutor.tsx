@@ -40,7 +40,7 @@ export default function FloatingOfertaConstrutor() {
           </p>
 
           <a
-            href="/ofertas"
+            href="/construtor/cadastro"
             className="
               block
               mt-3
@@ -52,7 +52,7 @@ export default function FloatingOfertaConstrutor() {
               font-semibold
             "
           >
-            Ver ofertas
+            Quero acessar ofertas
           </a>
         </div>
       )}

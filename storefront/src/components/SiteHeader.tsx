@@ -11,7 +11,7 @@ const navLinks = [
   { href: "/promocoes", label: "Promoções" },
   { href: "/depoimentos", label: "Depoimentos" },
   { href: "/contato", label: "Contato" },
-  { href: "/Área Construtor/status", label: "Área Área Construtor" },
+  { href: "/construtor", label: "Área Construtor" },
 ];
 
 export default function SiteHeader() {
@@ -54,7 +54,7 @@ export default function SiteHeader() {
         {/* Ações */}
         <div className="ml-auto flex items-center gap-3 shrink-0 whitespace-nowrap">
           <Link
-            href="/Área Construtor/status"
+            href="/construtor"
            
            className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-extrabold text-primary-foreground hover:brightness-110 shadow-[0_12px_35px_rgba(245,158,11,0.25)] border border-primary/30">Área Construtor</Link>
 
@@ -100,6 +100,7 @@ export default function SiteHeader() {
     </header>
   );
 }
+
 
 
 
