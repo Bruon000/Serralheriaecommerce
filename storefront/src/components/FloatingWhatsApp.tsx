@@ -14,7 +14,7 @@ export default function FloatingWhatsApp() {
       aria-label="WhatsApp - Orçamento grátis"
       className={[
         "fixed z-[85]",
-        "right-6 bottom-32",
+        "right-4 bottom-32 sm:right-6 sm:bottom-36",
         "inline-flex items-center justify-center h-[52px] w-[52px] rounded-full overflow-hidden",
         "bg-[#25D366]",
         "ring-2 ring-white/20",

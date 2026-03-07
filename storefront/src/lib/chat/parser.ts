@@ -5,19 +5,29 @@
 
 export type GateType = "deslizante" | "social" | "duas_folhas";
 
+function normalizeText(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+}
+
 /** Sinônimos que mapeiam para deslizante: correr, portão de correr, portao de correr */
 export function parseGateType(text: string): GateType | null {
-  const t = text.toLowerCase().trim();
-  if (
-    t.includes("correr") ||
-    t.includes("portão de correr") ||
-    t.includes("portao de correr")
-  ) {
+  const t = normalizeText(text);
+  if (t.includes("correr") || t.includes("portao de correr")) {
     return "deslizante";
   }
   if (t.includes("deslizante")) return "deslizante";
   if (t.includes("social")) return "social";
-  if (t.includes("2 folhas") || t.includes("duas folhas")) return "duas_folhas";
+  if (
+    t.includes("2 folhas") ||
+    t.includes("duas folhas") ||
+    t.includes("duasfolhas")
+  ) {
+    return "duas_folhas";
+  }
   return null;
 }
 
@@ -29,7 +39,11 @@ export type Measurements = { largura: number; altura: number };
  * Converte vírgula para ponto.
  */
 export function parseMeasurements(text: string): Measurements | null {
-  const match = text.match(/(\d+[.,]?\d*)\s*x\s*(\d+[.,]?\d*)/i);
+  const normalized = normalizeText(text)
+    .replace(/\bpor\b/g, "x")
+    .replace(/\s+/g, " ");
+
+  const match = normalized.match(/(\d+[.,]?\d*)\s*x\s*(\d+[.,]?\d*)/i);
   if (!match) return null;
   const largura = parseFloat(match[1].replace(",", "."));
   const altura = parseFloat(match[2].replace(",", "."));

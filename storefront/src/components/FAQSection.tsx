@@ -19,7 +19,7 @@ const faqs = [
 
 export default function FAQSection() {
   return (
-    <section id="faq" className="py-24">
+    <section id="faq" className="mt-24 py-20">
       <div className="container max-w-3xl">
         <div className="text-center mb-14">
           <h2 className="font-display text-4xl font-bold tracking-tight">

@@ -18,23 +18,24 @@ export default function FloatingOfertaConstrutor() {
   if (!show) return null;
 
   return (
-    <div className="fixed right-6 bottom-28 z-[80]">
+    <div className="fixed right-4 bottom-48 z-[78] sm:right-6 sm:bottom-52">
       {expanded && (
         <div
           className="
             mb-3
-            w-[260px]
-            bg-zinc-900
+            w-[210px] sm:w-[240px]
+            bg-zinc-900/95
             text-white
-            p-4
-            rounded-xl
-            shadow-xl
-            border border-zinc-700
+            p-3.5
+            rounded-2xl
+            shadow-[0_16px_40px_rgba(0,0,0,0.45)]
+            border border-zinc-700/90
+            backdrop-blur
           "
         >
           <p className="text-sm font-semibold">👷 Ofertas para construtores</p>
 
-          <p className="text-xs text-zinc-400 mt-1">
+          <p className="text-xs leading-5 text-zinc-400 mt-1">
             Temos condições especiais para obras e construtores.
           </p>
 
@@ -47,7 +48,7 @@ export default function FloatingOfertaConstrutor() {
               text-black
               text-center
               py-2
-              rounded
+              rounded-lg
               font-semibold
             "
           >

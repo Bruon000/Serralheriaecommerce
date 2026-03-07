@@ -44,7 +44,7 @@ function Card({
       </div>
 
       <div className="mt-5 text-sm font-extrabold">
-        {comingSoon ? "Disponível em breve" : "Ver no catálogo →"}
+        {comingSoon ? "Disponível em breve" : "Ver modelos e orçar →"}
       </div>
     </div>
   );
@@ -83,7 +83,7 @@ export default async function CategoryStrip() {
             Categorias
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Escolha uma categoria para abrir o catálogo filtrado.
+            Escolha uma categoria para ver modelos e pedir seu orçamento mais rápido.
           </p>
         </div>
 

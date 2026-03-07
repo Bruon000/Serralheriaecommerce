@@ -100,7 +100,7 @@ export default async function CatalogoPage({
         </h1>
 
         <p className="mt-3 text-sm text-muted-foreground">
-          Use os filtros para encontrar seu produto ideal.
+          Veja os modelos disponíveis e peça seu orçamento pelo WhatsApp.
         </p>
 
         <div className="mt-6 steel-card p-6">
@@ -165,8 +165,26 @@ export default async function CatalogoPage({
         <div className="mt-8">
           {list.length === 0 ? (
             <div className="steel-card p-8">
-              <h3 className="font-display text-2xl font-extrabold">Nenhum produto encontrado.</h3>
-              <p className="mt-2 text-sm text-muted-foreground">Tente limpar os filtros ou buscar por outro termo.</p>
+              <h3 className="font-display text-2xl font-extrabold">Não encontramos modelos com esse filtro.</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Você pode limpar os filtros ou falar com a Delima no WhatsApp para receber opções sob medida.
+              </p>
+              <div className="mt-5 flex flex-col sm:flex-row gap-3">
+                <a
+                  href="https://wa.me/5584987940211"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full bg-primary px-6 py-3 text-sm font-extrabold text-primary-foreground hover:brightness-110"
+                >
+                  Pedir opções no WhatsApp
+                </a>
+                <a
+                  href="/catalogo"
+                  className="rounded-full border border-border bg-secondary px-6 py-3 text-sm font-extrabold hover:bg-secondary/80"
+                >
+                  Limpar filtros
+                </a>
+              </div>
             </div>
           ) : (
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -204,7 +222,7 @@ export default async function CatalogoPage({
                       <CatalogPrice product={p as any} />
                     </div>
 
-                    <div className="mt-4 text-sm font-extrabold">📱 Orçar este modelo</div>
+                    <div className="mt-4 text-sm font-extrabold">📱 Ver modelo e pedir orçamento</div>
                   </a>
                 );
               })}

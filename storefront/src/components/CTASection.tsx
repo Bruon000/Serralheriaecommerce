@@ -14,8 +14,12 @@ export default function CTASection() {
               <span>Pronto para iniciar seu projeto?</span>
             </div>
 
-            <p className="text-muted-foreground text-lg max-w-lg mx-auto mb-10">
-              Fale conosco pelo WhatsApp e receba um orçamento personalizado em minutos.
+            <p className="mt-6 text-muted-foreground text-lg max-w-2xl mx-auto mb-6">
+              Fale conosco pelo WhatsApp e receba um orçamento personalizado com atendimento rápido da Delima.
+            </p>
+
+            <p className="mb-10 text-sm font-semibold text-foreground/80">
+              Mais de 3.000 projetos entregues com qualidade, prazo e acabamento profissional.
             </p>
 
             <a
@@ -25,11 +29,11 @@ export default function CTASection() {
               className="inline-flex items-center gap-2 rounded-full bg-[#F59E0B] px-6 py-3 text-sm font-extrabold text-black hover:brightness-110"
             >
               <WhatsAppIcon size={18} symbolColor="white" />
-              <span>📱 Orçamento Grátis no WhatsApp</span>
+              <span>📱 Pedir orçamento agora</span>
               <ArrowRight className="h-5 w-5 shrink-0" />
             </a>
 
-            <p className="mt-6 text-sm text-muted-foreground">(84) 98794-0211</p>
+            <p className="mt-6 text-sm text-muted-foreground">WhatsApp: (84) 98794-0211</p>
           </div>
         </div>
       </div>

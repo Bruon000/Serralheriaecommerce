@@ -49,28 +49,28 @@ export default function HeroSection() {
             </div>
           </div>
 <h1 className="mt-6 font-display text-5xl md:text-6xl font-extrabold leading-[1.05]">
-            Seu projeto em metal feito certo e na hora certa.
+            Portões, grades e estruturas metálicas sob medida com orçamento rápido no WhatsApp.
           </h1>
 
-          <p className="mt-5 text-sm md:text-base text-muted-foreground leading-relaxed max-w-xl">
-  <span className="text-foreground font-extrabold">Preço justo e resposta rápida.</span>{" "}
-  Faça seu orçamento em minutos no WhatsApp. Produção sob medida com materiais de primeira e entrega no prazo.
-  Transparência do início ao fim, sem surpresa no valor.
-</p>
+          <p className="mt-5 text-sm md:text-base text-muted-foreground leading-relaxed max-w-2xl">
+            <span className="text-foreground font-extrabold">Preço justo, produção sob medida e atendimento rápido.</span>{" "}
+            Receba sua estimativa, veja modelos e fale direto com a Serralheria Delima pelo WhatsApp.
+            Atendemos portões, grades, corrimãos e estruturas metálicas com acabamento profissional.
+          </p>
 
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
               href="/catalogo"
               className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-extrabold text-primary-foreground hover:brightness-110"
             >
-              Ver catálogo
+              Ver modelos
             </Link>
             <a
               href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "5585999999999"}`}
               className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-6 py-3 text-sm font-extrabold text-secondary-foreground hover:bg-secondary/80"
             >
               <WhatsAppIcon size={18} />
-              <span>📱 Orçamento Grátis no WhatsApp</span>
+              <span>📱 Pedir orçamento no WhatsApp</span>
             </a>
           </div>
 
@@ -82,6 +82,10 @@ export default function HeroSection() {
             <div>
               <div className="text-primary font-extrabold text-lg">100%</div>
               <div className="text-muted-foreground text-xs">Sob medida</div>
+            </div>
+            <div>
+              <div className="text-primary font-extrabold text-lg">WhatsApp</div>
+              <div className="text-muted-foreground text-xs">Resposta rápida para orçamento</div>
             </div>
           </div>
         </div>

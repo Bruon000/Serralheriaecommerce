@@ -68,7 +68,7 @@ function ProductCard({ p, badge }: { p: ClassifiableProduct; badge?: string }) {
           href={`/produto/${p.handle}`}
           className="w-full sm:w-auto inline-flex items-center justify-center min-w-[132px] rounded-full bg-primary px-5 py-2.5 text-sm font-extrabold text-primary-foreground hover:brightness-110"
         >
-          Ver detalhes
+          Ver modelo e orçar
         </Link>
       </div>
     </div>
@@ -100,15 +100,15 @@ export default async function HomePage() {
 
       <section className="container pt-10 pb-4">
         <div className="steel-card p-6 text-center">
-          <h2 className="font-display text-2xl font-extrabold tracking-tight mb-2">Monte seu portão</h2>
+          <h2 className="font-display text-2xl font-extrabold tracking-tight mb-2">Monte seu portão e receba uma estimativa</h2>
           <p className="text-sm text-muted-foreground mb-4">
-            Escolha modelo, material e medidas. Veja a estimativa e envie o orçamento pelo WhatsApp.
+            Escolha modelo, material e medidas. Veja uma estimativa inicial e envie seu pedido direto para o WhatsApp da Delima.
           </p>
           <Link
             href="/monte-seu-portao"
             className="inline-flex items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-extrabold text-primary-foreground hover:brightness-110 hover:scale-[1.02] transition duration-200"
           >
-            Calcular orçamento
+            Calcular estimativa agora
           </Link>
         </div>
       </section>
@@ -194,7 +194,7 @@ export default async function HomePage() {
           <div>
             <h2 className="font-display text-3xl font-extrabold tracking-tight">Nosso Catálogo</h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Portões em destaque + itens sob medida.
+              Modelos em destaque para te ajudar a escolher mais rápido.
             </p>
           </div>
           <Link href="/catalogo" className="rounded-full border border-border bg-black/20 px-6 py-3 text-sm font-extrabold hover:bg-black/30">
@@ -205,23 +205,23 @@ export default async function HomePage() {
         <div className="mt-6">
           {destaques.length === 0 ? (
             <div className="steel-card p-8">
-              <h3 className="font-display text-2xl font-extrabold">Catálogo em atualização</h3>
+              <h3 className="font-display text-2xl font-extrabold">Modelos sob medida em atualização</h3>
               <p className="mt-2 text-sm text-muted-foreground">
-                Ainda não há produtos cadastrados. Enquanto isso, veja promoções ou peça orçamento no WhatsApp.
+                Ainda estamos atualizando os modelos do catálogo. Enquanto isso, fale com a Delima no WhatsApp e receba opções para o seu projeto.
               </p>
 
               <div className="mt-5 flex flex-col sm:flex-row gap-3">
-                <Link href="/catalogo?promo=1" className="rounded-full bg-primary px-6 py-3 text-sm font-extrabold text-primary-foreground">
-                  Ver promoções
-                </Link>
                 <a
                   href={`https://wa.me/${WA_NUMBER}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-full border border-border bg-secondary px-6 py-3 text-sm font-extrabold hover:bg-secondary/80"
+                  className="rounded-full bg-primary px-6 py-3 text-sm font-extrabold text-primary-foreground hover:brightness-110"
                 >
-                  Falar no WhatsApp
+                  Pedir opções no WhatsApp
                 </a>
+                <Link href="/monte-seu-portao" className="rounded-full border border-border bg-secondary px-6 py-3 text-sm font-extrabold hover:bg-secondary/80">
+                  Calcular estimativa
+                </Link>
               </div>
             </div>
           ) : (

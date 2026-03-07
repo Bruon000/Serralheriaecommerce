@@ -728,3 +728,25 @@ body {
 .btn-next:hover {
   filter: brightness(1.1);
 }
+
+/* Chat vendedor premium */
+.chat-body {
+  scroll-behavior: smooth;
+}
+
+.chat-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chat-body::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.04);
+}
+
+.chat-body::-webkit-scrollbar-thumb {
+  background: rgba(250, 204, 21, 0.22);
+  border-radius: 999px;
+}
+
+.chat-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(250, 204, 21, 0.34);
+}

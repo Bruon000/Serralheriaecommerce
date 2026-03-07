@@ -4,7 +4,8 @@
  */
 
 import type { GateType } from "./parser";
-import { estimateGatePrice } from "./calculator";
+import { calcularPortao, estimateGatePrice } from "./calculator";
+import { normalizeChatText } from "./intent";
 
 export type ChatState =
   | "idle"
@@ -58,13 +59,28 @@ export function processInput(
   parsed: ParsedInput,
   rawMessage: string
 ): EngineResponse {
-  const text = rawMessage.toLowerCase().trim();
+  const text = normalizeChatText(rawMessage);
 
   console.log("[chat-intent]", text);
 
   // =========================
   // INTENÇÕES GLOBAIS
   // =========================
+
+  if (
+    text.includes("oi") ||
+    text.includes("ola") ||
+    text.includes("bom dia") ||
+    text.includes("boa tarde") ||
+    text.includes("boa noite")
+  ) {
+    return {
+      nextState: state,
+      context,
+      message:
+        "Olá! Posso ajudar a calcular seu portão, mostrar modelos ou te encaminhar para o WhatsApp.",
+    };
+  }
 
   if (
     text.includes("modelo") ||
@@ -128,16 +144,14 @@ export function processInput(
     // se detectou medidas nesta mensagem
     if (parsed.medidas) {
       const { largura, altura } = parsed.medidas;
-      const area = largura * altura;
-      const priceMin = area * 180;
-      const priceMax = area * 240;
+      const { area, min, max } = calcularPortao(largura, altura);
       const nextContext: ChatContext = { ...context, largura, altura, area };
       return {
         nextState: "calculado",
         context: nextContext,
-        message: `Área: ${area.toFixed(2)} m²\n\nEstimativa inicial:\nR$${priceMin.toFixed(0)} — R$${priceMax.toFixed(0)}\n\nQuer ver alguns modelos desse tipo?`,
+        message: `Área: ${area.toFixed(2)} m²\n\nEstimativa inicial:\nR$${min.toFixed(0)} — R$${max.toFixed(0)}\n\nQuer ver alguns modelos desse tipo?`,
         showActionButtons: true,
-        estimate: { min: Math.round(priceMin), max: Math.round(priceMax) },
+        estimate: { min: Math.round(min), max: Math.round(max) },
       };
     }
 

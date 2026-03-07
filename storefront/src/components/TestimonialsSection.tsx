@@ -44,7 +44,7 @@ export default function TestimonialsSection() {
           O que dizem nossos clientes
         </h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          Mais de 3.000 projetos entregues com satisfação garantida.
+          Mais de 3.000 projetos entregues com qualidade, prazo e atendimento direto.
         </p>
       </div>
 
