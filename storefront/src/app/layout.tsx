@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import ChatVendedor from "@/components/ChatVendedor";
-import AIChatVendedor from "@/components/AIChatVendedor";
 import { Space_Grotesk, Inter } from "next/font/google";
 
 import "./globals.css";
@@ -56,7 +55,6 @@ export default async function RootLayout({
 
           {showConstructorNudge && <ConstructorNudge />}
           <ChatVendedor />
-          <AIChatVendedor />
           <FloatingWhatsApp />
           <FloatingOfertaConstrutor />
           {showFloatingCart && <FloatingCartButton />}
