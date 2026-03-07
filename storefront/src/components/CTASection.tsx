@@ -1,4 +1,5 @@
 import { MessageCircle, ArrowRight } from "lucide-react";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
 
 export default function CTASection() {
   return (
@@ -8,9 +9,9 @@ export default function CTASection() {
           <div className="absolute inset-0 bg-gold-glow pointer-events-none" />
 
           <div className="relative z-10">
-            <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 border border-primary/20 px-4 py-2 text-sm font-medium text-primary mb-6">
-              <MessageCircle className="h-4 w-4" />
-              Pronto para iniciar seu projeto?
+            <div className="inline-flex items-center gap-2 rounded-full bg-[#F59E0B] px-6 py-3 text-sm font-extrabold text-black hover:brightness-110">
+              <MessageCircle className="h-4 w-4 shrink-0" />
+              <span>Pronto para iniciar seu projeto?</span>
             </div>
 
             <p className="text-muted-foreground text-lg max-w-lg mx-auto mb-10">
@@ -21,10 +22,11 @@ export default function CTASection() {
               href="https://wa.me/5584987940211"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 rounded-full bg-primary px-10 py-5 text-lg font-bold text-primary-foreground transition-all hover:brightness-110 hover:scale-105 glow-gold"
+              className="inline-flex items-center gap-2 rounded-full bg-[#F59E0B] px-6 py-3 text-sm font-extrabold text-black hover:brightness-110"
             >
-              Chamar no WhatsApp Agora
-              <ArrowRight className="h-5 w-5" />
+              <WhatsAppIcon size={18} symbolColor="white" />
+              <span>📱 Orçamento Grátis no WhatsApp</span>
+              <ArrowRight className="h-5 w-5 shrink-0" />
             </a>
 
             <p className="mt-6 text-sm text-muted-foreground">(84) 98794-0211</p>
@@ -34,6 +36,12 @@ export default function CTASection() {
     </section>
   );
 }
+
+
+
+
+
+
 
 
 

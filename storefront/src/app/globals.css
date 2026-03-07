@@ -639,3 +639,92 @@ body {
 }
 /* =================================== */
 
+
+@layer utilities {
+  /* Espaçamento padrão entre seções */
+  .section-pad {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+  @media (min-width: 1024px) {
+    .section-pad {
+      padding-top: 80px;
+      padding-bottom: 80px;
+    }
+  }
+
+  /* Pulse suave a cada 10s (só no WhatsApp) */
+  @keyframes delima-wa-pulse {
+    0%, 88% { transform: scale(1); }
+    90% { transform: scale(1.04); }
+    92% { transform: scale(1); }
+    94% { transform: scale(1.04); }
+    96% { transform: scale(1); }
+    100% { transform: scale(1); }
+  }
+  .wa-pulse-10s {
+    animation: delima-wa-pulse 10s ease-in-out infinite;
+  }
+
+  /* Hover sutil elevando card */
+  .hover-lift {
+    transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+  }
+  .hover-lift:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 35px rgba(0,0,0,.35);
+    filter: brightness(1.06);
+  }
+}
+
+/* Suaviza cards (sem mudar o design) + hover leve */
+.steel-card {
+  border-radius: 12px !important;
+  transition: transform 0.2s ease;
+}
+.steel-card:hover {
+  transform: scale(1.02);
+}
+
+/* Chat Vendedor */
+.btn-chat {
+  background: #1f2937;
+  padding: 8px;
+  border-radius: 8px;
+  transition: 0.2s;
+  color: inherit;
+  text-align: left;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+}
+.btn-chat:hover {
+  background: #374151;
+}
+.input-chat {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  background: #1f2937;
+  margin-bottom: 10px;
+  border: 1px solid #374151;
+  color: #fff;
+  font: inherit;
+}
+.input-chat::placeholder {
+  color: #9ca3af;
+}
+.btn-next {
+  width: 100%;
+  background: #facc15;
+  color: #000;
+  padding: 8px;
+  border-radius: 8px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+}
+.btn-next:hover {
+  filter: brightness(1.1);
+}

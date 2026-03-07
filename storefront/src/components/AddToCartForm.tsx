@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { CartItem, loadCart, saveCart } from "../lib/cart";
 import { getPriceValueBRL } from "../lib/pricing";
+import { getProductType } from "@/lib/productType";
 
 type Props = {
   product: {
@@ -38,15 +39,15 @@ export default function AddToCartForm({
   showObs = true,
   labelQty = "Quantidade",
   labelColor = "",
-  labelLargura = "Largura (cm)",
-  labelAltura = "Altura (cm)",
+  labelLargura = "Largura (metros)",
+  labelAltura = "Altura (metros)",
   labelObs = "Observações (opcional)",
   btnAddText = "Adicionar ao carrinho",
-  btnOrcamentoText = "Pedir orçamento deste modelo",
+  btnOrcamentoText = "📱 Orçar no WhatsApp",
   btnCarrinhoText = "Ir para o carrinho",
   outerClassName = "",
 }: Props) {
-  const tipo = String(product.metadata?.tipo ?? "") || (product.handle?.startsWith("portao-") ? "portao" : "");
+  const tipo = getProductType(product);
   const ipo = String(product.metadata?.ipo ?? "");
 
   const [qty, setQty] = useState<number>(1);
@@ -137,11 +138,11 @@ export default function AddToCartForm({
           <>
             <div className="grid gap-2">
               <label className={labelBase}>{labelLargura}</label>
-              <input value={largura} onChange={(e) => setLargura(e.target.value)} className={inputBase} placeholder="Ex.: 300" />
+              <input value={largura} onChange={(e) => setLargura(e.target.value)} className={inputBase} placeholder="Ex.: 3.00" />
             </div>
             <div className="grid gap-2">
               <label className={labelBase}>{labelAltura}</label>
-              <input value={altura} onChange={(e) => setAltura(e.target.value)} className={inputBase} placeholder="Ex.: 200" />
+              <input value={altura} onChange={(e) => setAltura(e.target.value)} className={inputBase} placeholder="Ex.: 2.00" />
             </div>
           </>
         )}
@@ -174,13 +175,6 @@ export default function AddToCartForm({
           className="inline-flex justify-center items-center rounded-full border border-border bg-secondary px-6 py-3 text-sm font-extrabold text-secondary-foreground hover:bg-secondary/80"
         >
           {btnOrcamentoText}
-        </a>
-
-        <a
-          href="/carrinho"
-          className="inline-flex justify-center items-center rounded-full border border-border/60 bg-black/25 px-6 py-3 text-sm font-extrabold text-foreground hover:bg-black/35"
-        >
-          {btnCarrinhoText}
         </a>
       </div>
 

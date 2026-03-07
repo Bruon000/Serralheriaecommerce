@@ -28,8 +28,8 @@ Você é minha IA assistente de dev. Continue o projeto **Serralheria Ecommerce*
 - Home com Promoção da Semana (metadata.promocao='semana')
 
 ## Onde paramos / próximo passo
-1) Ajustes de conteúdo e UX: header com fundo sólido (sem barra roxa), só nome "Serralheria Delima" (sem logo); hero com texto foco em portões, confiança, entrega garantida e "Em breve: móveis industriais"; cards da home com textos melhores e sem menção B2B (Área Construtor); depoimentos com avatar/rosto (iniciais ou foto); cadastro construtor com e-mail/senha e CNPJ opcional; login construtor com e-mail/senha; nova página /cadastro para cliente (nome, e-mail, telefone); links Cadastre-se e Área Construtor no header.
-2) Próximo: galeria de imagens na página do produto; fotos reais nos depoimentos (colocar em public/depoimentos e preencher avatar); autenticação real do construtor no backend (opcional).
+1) Refatoração dos flutuantes concluída: mantidos apenas Chat Vendedor (esquerda, left-6 bottom-36), WhatsApp (direita, right-6 bottom-32), Carrinho (direita, right-6 bottom-20), Área Construtor (direita, right-6 bottom-44). Removidos FloatingWelderChat e FloatingOrcamento. ChatVendedor premium com fluxo tipo → medidas → estimativa → WhatsApp.
+2) Próximo: ajustes de conteúdo e UX (header, hero, depoimentos, cadastro); galeria na página do produto; SEO básico.
 
 ## Fonte da verdade
 CHECKLIST.md = lista de tarefas. AGENTS.md = como a IA deve trabalhar e onde atualizar.

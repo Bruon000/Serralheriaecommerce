@@ -1,6 +1,6 @@
 "use client";
 
-function clamp(v, min, max) {
+function clamp(v: number, min: number, max: number): number {
   if (Number.isNaN(v)) return min;
   return Math.max(min, Math.min(max, v));
 }

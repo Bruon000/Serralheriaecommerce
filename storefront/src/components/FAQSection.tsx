@@ -4,8 +4,8 @@ const faqs = [
     a: "Você adiciona itens ao carrinho e clica em \"Finalizar no WhatsApp\". A mensagem já vai formatada com itens, medidas e total.",
   },
   {
-    q: "Vocês entregam e instalam?",
-    a: "Sim! Fazemos entrega e instalação conforme disponibilidade da equipe. O prazo varia conforme o projeto — geralmente de 7 a 15 dias úteis.",
+    q: "Vocês entregam?",
+    a: "Sim! Fazemos a entrega conforme disponibilidade da equipe. O prazo varia conforme o projeto — geralmente de 7 a 15 dias úteis. A colocação no local é por conta do cliente.",
   },
   {
     q: "Posso personalizar medidas e cores?",
@@ -42,6 +42,7 @@ export default function FAQSection() {
     </section>
   );
 }
+
 
 
 

@@ -7,6 +7,7 @@ import { getProductByHandle } from "../../../lib/medusa";
 import AddToCartForm from "../../../components/AddToCartForm";
 import PriceBlock from "../../../components/PriceBlock";
 import DetailsCard from "../../../components/DetailsCard";
+import { getProductType, getProductTypeLabel } from "@/lib/productType";
 import { BUILDER_API_KEY, getSiteSettings } from "@/lib/builder";
 
 type Props = {
@@ -114,7 +115,7 @@ export default async function ProdutoPage({ params, searchParams }: Props) {
               }
               showMetaIpoTipo
               ipo={String((product as any).metadata?.ipo ?? "-")}
-              tipo={String((product as any).metadata?.tipo ?? "-")}
+              tipo={getProductTypeLabel(getProductType(product as any))}
             />
           </div>
 

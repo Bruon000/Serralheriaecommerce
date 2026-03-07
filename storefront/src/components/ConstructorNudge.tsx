@@ -39,14 +39,23 @@ export default function ConstructorNudge({ enabled = true }: Props) {
   useEffect(() => {
     setMounted(true);
   }, []);
-if (!enabled || !mounted || !canShow || !visible) return null;
+
+  // Mostrar popup após 3s (qualquer visita) para a mensagem ser visível
+  useEffect(() => {
+    if (!mounted || !enabled) return;
+    const t = window.setTimeout(() => setOpen(true), 3000);
+    return () => window.clearTimeout(t);
+  }, [mounted, enabled]);
+
+  if (!enabled || !mounted || !canShow || !visible) return null;
 
   return (
         <div
       style={{
         position: "fixed",
         right: 24,
-        bottom: 92,        zIndex: 60,
+        bottom: 108,
+        zIndex: 9998,
         display: "flex",
         flexDirection: "column",
         gap: 10,

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
 
 export default function HeroSection() {
   return (
@@ -68,18 +69,15 @@ export default function HeroSection() {
               href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "5585999999999"}`}
               className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-6 py-3 text-sm font-extrabold text-secondary-foreground hover:bg-secondary/80"
             >
-              Orçamento Grátis no WhatsApp
+              <WhatsAppIcon size={18} />
+              <span>📱 Orçamento Grátis no WhatsApp</span>
             </a>
           </div>
 
           <div className="mt-10 flex flex-wrap gap-10 text-sm">
             <div>
-              <div className="text-primary font-extrabold text-lg">10.000+</div>
+              <div className="text-primary font-extrabold text-lg">3.000+</div>
               <div className="text-muted-foreground text-xs">Projetos entregues</div>
-            </div>
-            <div>
-              <div className="text-primary font-extrabold text-lg">Prazo</div>
-              <div className="text-muted-foreground text-xs">Entrega garantida</div>
             </div>
             <div>
               <div className="text-primary font-extrabold text-lg">100%</div>
@@ -91,6 +89,11 @@ export default function HeroSection() {
     </section>
   );
 }
+
+
+
+
+
 
 
 

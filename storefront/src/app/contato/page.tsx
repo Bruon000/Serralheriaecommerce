@@ -3,7 +3,7 @@ export default function ContatoPage() {
   const phone = "(84) 98794-0211";
   const address = "Rua Rosa Fernandes da Silva, 778 — Parnamirim/RN";
   const area = "Natal e Região Metropolitana";
-  const lead = "até 15 dias úteis (média)";
+  const lead = "7 a 15 dias úteis";
 
   return (
     <div className="min-h-screen bg-background pt-24 pb-16 overflow-x-hidden">
@@ -71,8 +71,8 @@ export default function ContatoPage() {
           </div>
 
           <div className="steel-card p-6">
-            <div className="text-lg font-extrabold mb-2">⏱️ Prazo médio</div>
-            <p className="text-sm text-muted-foreground">Produção sob medida com prazo médio de até 15 dias úteis. (Pode variar por modelo e fila.)</p>
+            <div className="text-lg font-extrabold mb-2">⏱️ Produção Rápida</div>
+            <p className="text-sm text-muted-foreground">Seu pedido pronto em até 15 dias úteis. Cumprimos o prazo combinado!</p>
           </div>
         </div>
 
@@ -81,7 +81,8 @@ export default function ContatoPage() {
           <ul className="list-disc pl-5 text-sm text-muted-foreground space-y-1">
             <li>Tipo do produto (portão, grade, corrimão, cobertura…)</li>
             <li>Largura e altura (se já tiver)</li>
-            <li>Foto/referência do modelo</li>
+            <li>Melhor horário para atendimento</li>
+            <li>Foto ou referência do modelo (se tiver)</li>
             <li>Seu bairro/cidade para calcular</li> 
             <li>Observações (motor, portinhola, reforço, etc.)</li>
           </ul>

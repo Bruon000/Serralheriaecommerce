@@ -21,7 +21,7 @@ export default function DetailsCard({
   const defaultBullets = [
     "Fabricação sob medida",
     "Acabamento e pintura conforme escolha",
-    "Entrega e instalação sob consulta",
+    "Entrega sob consulta - Orçamento grátis",
     "Ajustes por observações",
   ];
   const list =

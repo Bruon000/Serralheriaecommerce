@@ -31,6 +31,7 @@ function OrcamentoContent() {
   const qpAltura = searchParams.get("altura") || "";
 
   const [nomeCliente, setNomeCliente] = useState<string>("");
+  const [telefone, setTelefone] = useState<string>("");
   const [modelo, setModelo] = useState<Modelo>("Portão de correr");
   const [largura, setLargura] = useState<string>("3.00");
   const [altura, setAltura] = useState<string>("2.00");
@@ -60,6 +61,7 @@ function OrcamentoContent() {
 
     parts.push("");
     if (nomeCliente.trim()) parts.push(`Nome: ${nomeCliente.trim()}`);
+    if (telefone.trim()) parts.push(`Telefone/WhatsApp: ${telefone.trim()}`);
     parts.push(`Modelo: ${modelo}`);
     parts.push(`Medidas: ${largura} m (L) x ${altura} m (A)`);
     if (cidade.trim()) parts.push(`Cidade/Bairro: ${cidade.trim()}`);
@@ -67,7 +69,7 @@ function OrcamentoContent() {
     parts.push("");
     parts.push("Pode me passar uma estimativa e prazo?");
     return parts.join("\n");
-  }, [produtoNome, produtoHandle, nomeCliente, modelo, largura, altura, cidade, observacoes]);
+  }, [produtoNome, produtoHandle, nomeCliente, telefone, modelo, largura, altura, cidade, observacoes]);
 
   const waUrl = useMemo(() => {
     const encoded = encodeURIComponent(msg);
@@ -82,7 +84,7 @@ function OrcamentoContent() {
             Orçamento <span className="text-gradient-gold">rápido</span>
           </h1>
           <p className="mt-2 text-muted-foreground">
-            Escolha o modelo e informe as medidas. Abrimos o WhatsApp com a mensagem pronta.
+            Preencha as informações e receba seu orçamento em minutos pelo WhatsApp!
           </p>
         </div>
 
@@ -95,7 +97,11 @@ function OrcamentoContent() {
               <div className="grid gap-5 sm:grid-cols-2">
                 <div className="grid gap-2 sm:col-span-2">
                   <label className={labelBase}>Nome</label>
-                  <input value={nomeCliente} onChange={(e) => setNomeCliente(e.target.value)} placeholder="Seu nome" className={inputBase} />
+                  <input value={nomeCliente} onChange={(e) => setNomeCliente(e.target.value)} placeholder="Digite seu nome completo" className={inputBase} />
+                </div>
+                <div className="grid gap-2 sm:col-span-2">
+                  <label className={labelBase}>Telefone/WhatsApp</label>
+                  <input value={telefone} onChange={(e) => setTelefone(e.target.value)} placeholder="(DDD) 9XXXX-XXXX" required className={inputBase} />
                 </div>
                 <div className="grid gap-2 sm:col-span-2">
                   <label className={labelBase}>Modelo</label>
@@ -121,7 +127,7 @@ function OrcamentoContent() {
 
                 <div className="grid gap-2 sm:col-span-2">
                   <label className={labelBase}>Cidade/Bairro (opcional)</label>
-                  <input value={cidade} onChange={(e) => setCidade(e.target.value)} placeholder="Ex.: Natal/RN — Zona Norte" className={inputBase} />
+                  <input value={cidade} onChange={(e) => setCidade(e.target.value)} placeholder="Digite sua cidade e bairro" className={inputBase} />
                 </div>
 
                 <div className="grid gap-2 sm:col-span-2">

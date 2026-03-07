@@ -590488,6 +590488,7 @@
 
 
 
+- [x] Refatorar elementos flutuantes: apenas Chat Vendedor (esq), WhatsApp, Carrinho, Área Construtor (dir); remover FloatingWelderChat e FloatingOrcamento; posições e UX premium
 - [ ] SEO básico (title/description/og)
 
 ## Estado atual (atualizado automaticamente)

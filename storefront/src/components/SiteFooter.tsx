@@ -32,6 +32,16 @@ export default function SiteFooter() {
             </p>
           </div>
 
+          {/* Selos de confiança */}
+          <div className="rounded-2xl border border-border/60 bg-black/20 p-5">
+            <div className="text-sm font-extrabold">Selos de confiança</div>
+            <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+              <li>✓ Orçamento em até 2 horas</li>
+              <li>✓ Garantia de 90 dias</li>
+              <li>✓ 3.000+ clientes atendidos</li>
+            </ul>
+          </div>
+
           {/* Contato */}
           <div>
             <h3 className="font-display font-bold text-foreground mb-4">Contato</h3>

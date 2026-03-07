@@ -100,14 +100,10 @@ export default function CarrinhoBody() {
                 <div key={idx} className="tune-cart steel-card flex flex-col sm:flex-row items-stretch sm:items-center gap-4 p-4">
                   <div className="tune-cart flex-1 min-w-0">
                     <h3 className="tune-cart font-display font-bold truncate">{it.title}</h3>
-                    <p className="tune-cart text-sm text-muted-foreground mt-1">
-                      ipo: {String((it as any).ipo ?? "-")} · tipo: {String((it as any).tipo ?? "-")}
-                    </p>
                     <div className="tune-cart mt-2 text-sm text-muted-foreground">
                       {((it as any).largura || (it as any).altura) && (
                         <div>Medidas: {(it as any).largura || "?"} × {(it as any).altura || "?"}</div>
                       )}
-                      {(it as any).cor && <div>Cor: {(it as any).cor}</div>}
                       {(it as any).obs && <div>Obs.: {(it as any).obs}</div>}
                     </div>
                     <p className="tune-cart text-sm font-bold text-gradient-gold mt-1">
@@ -171,7 +167,7 @@ export default function CarrinhoBody() {
                   href="/catalogo"
                   className="tune-cart inline-flex items-center justify-center gap-2 rounded-full border border-border bg-secondary px-6 py-4 text-sm font-bold text-muted-foreground hover:text-foreground"
                 >
-                  Continuar comprando
+                  Voltar ao catálogo
                 </a>
               </div>
               {!canWhatsapp && (

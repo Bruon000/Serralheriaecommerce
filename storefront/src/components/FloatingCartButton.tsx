@@ -24,7 +24,7 @@ export default function FloatingCartButton() {
   return (
     <Link
       href="/carrinho"
-      className="fixed bottom-6 right-6 sm:bottom-6 sm:right-6 z-[90] inline-flex items-center gap-3 rounded-full bg-primary px-5 py-3.5 text-sm font-bold text-primary-foreground shadow-lg transition-all hover:brightness-110 hover:scale-105 glow-gold"
+      className="fixed right-6 bottom-20 z-[80] inline-flex items-center gap-3 rounded-full bg-primary px-5 py-3.5 text-sm font-bold text-primary-foreground shadow-lg transition-all hover:brightness-110 hover:scale-105 glow-gold"
     >
       <ShoppingCart className="h-5 w-5" />
       <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-foreground/20 text-xs font-bold">

@@ -1,7 +1,13 @@
-import { listProducts } from "../../lib/medusa";
+import { listProducts, listCategories, listCollections } from "../../lib/medusa";
 import CatalogPrice from "../../components/CatalogPrice";
-import { BUILDER_API_KEY, getPageSectionContent, getSiteSettings } from "../../lib/builder";
-import BuilderContentBlock from "../../components/BuilderContentBlock";
+import { getProductType } from "../../lib/productType";
+import {
+  ClassifiableProduct,
+  getCategoryLabel,
+  getCollectionLabel,
+  getCategorySlug,
+  getCollectionSlug,
+} from "../../lib/productClassifier";
 
 export const dynamic = "force-dynamic";
 
@@ -10,10 +16,11 @@ type AnyProduct = {
   title: string;
   handle: string;
   thumbnail?: string | null;
+  images?: { url: string }[];
   metadata?: Record<string, any> | null;
-};
+} & ClassifiableProduct;
 
-function buildQuery(base: Record<string, string | undefined>) {
+function buildQuery(base: Record<string, any>) {
   const sp = new URLSearchParams();
   for (const [k, v] of Object.entries(base)) {
     if (v && String(v).trim().length) sp.set(k, String(v));
@@ -25,231 +32,187 @@ function buildQuery(base: Record<string, string | undefined>) {
 export default async function CatalogoPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ ipo?: string; q?: string; tipo?: string; promo?: string; b2b?: string; seminovo?: string }>;
+  searchParams?: Promise<{ ipo?: string; q?: string; tipo?: string; category?: string; collection?: string; promo?: string; b2b?: string }>;
 }) {
   const sp = (await searchParams) || {};
   const ipo = (sp.ipo || "").trim();
   const q = (sp.q || "").trim().toLowerCase();
   const tipo = (sp.tipo || "").trim().toLowerCase();
+  const category = (sp.category || "").trim().toLowerCase();
+  const collection = (sp.collection || "").trim().toLowerCase();
   const promoOn = String(sp.promo || "") === "1";
   const b2bOn = String(sp.b2b || "") === "1";
-  const seminovoOn = String((sp as any).seminovo || "") === "1";
 
-  const products = (await listProducts()) as AnyProduct[];
+  const [products, categories, collections] = await Promise.all([
+    listProducts() as Promise<AnyProduct[]>,
+    listCategories(),
+    listCollections(),
+  ]);
+
   let list = products || [];
+  list = list.filter((p) => Boolean(p?.thumbnail || p?.images?.[0]?.url));
 
   if (ipo) list = list.filter((p) => String(p?.metadata?.ipo || "").toLowerCase() === ipo.toLowerCase());
-  if (tipo) list = list.filter((p) => String(p?.metadata?.tipo || "").toLowerCase() === tipo);
+  if (tipo) list = list.filter((p) => getProductType(p) === tipo);
+  if (category) {
+    list = list.filter((p) => (getCategorySlug(p) || "").toLowerCase() === category);
+  }
+  if (collection) {
+    list = list.filter((p) => (getCollectionSlug(p) || "").toLowerCase() === collection);
+  }
+
   if (promoOn) list = list.filter((p) => String(p?.metadata?.promocao || "") === "semana");
   if (b2bOn) list = list.filter((p) => String(p?.metadata?.oferta || "") === "construtor");
-  
-  if (seminovoOn) {
-    list = list.filter((p) => {
-      const md = (p?.metadata || {}) as any;
-      const v1 = String(md?.seminovo ?? "").toLowerCase();
-      const v2 = String(md?.condicao ?? "").toLowerCase();
-      const v3 = String(md?.estado ?? "").toLowerCase();
-      const v4 = String(md?.categoria ?? "").toLowerCase();
-      // aceita: seminovo=1/true/sim/yes ou condicao/estado/categoria == "seminovo"
-      const ok =
-        v1 === "1" || v1 === "true" || v1 === "sim" || v1 === "yes" ||
-        v2 === "seminovo" || v3 === "seminovo" || v4 === "seminovo";
-      return ok;
-    });
+
+  if (q) {
+    list = list.filter(
+      (p) =>
+        String(p?.title || "").toLowerCase().includes(q) ||
+        String(p?.handle || "").toLowerCase().includes(q)
+    );
   }
-if (q) list = list.filter((p) =>
-    String(p?.title || "").toLowerCase().includes(q) ||
-    String(p?.handle || "").toLowerCase().includes(q)
-  );
 
-  const tipos = Array.from(new Set((products || []).map((p) => String(p?.metadata?.tipo || "")).filter(Boolean))).sort();
   const ipos = Array.from(new Set((products || []).map((p) => String(p?.metadata?.ipo || "")).filter(Boolean))).sort();
+  const categoryOptions = categories.map((c) => ({
+    value: (c.handle && c.handle.trim()) ? c.handle.trim().toLowerCase() : c.name.trim().toLowerCase(),
+    label: c.name,
+  }));
+  const collectionOptions = collections.map((c) => ({
+    value: (c.handle && c.handle.trim()) ? c.handle.trim().toLowerCase() : c.title.trim().toLowerCase(),
+    label: c.title,
+  }));
 
-  const baseQuery = { q: q || undefined, ipo: ipo || undefined, tipo: tipo || undefined, promo: promoOn ? "1" : undefined, b2b: b2bOn ? "1" : undefined, seminovo: seminovoOn ? "1" : undefined, };
-
-  const [sectionTop, sectionBottom, siteSettings] = BUILDER_API_KEY
-    ? await Promise.all([
-        getPageSectionContent("/catalogo", "top"),
-        getPageSectionContent("/catalogo", "bottom"),
-        getSiteSettings(),
-      ])
-    : [null, null, null];
-  const data = { urlPath: "/catalogo", ...siteSettings };
+  const baseQuery = {
+    q: q || undefined,
+    ipo: ipo || undefined,
+    tipo: tipo || undefined,
+    category: category || undefined,
+    collection: collection || undefined,
+    promo: promoOn ? "1" : undefined,
+    b2b: b2bOn ? "1" : undefined,
+  };
 
   return (
-    <div className="tune-catalog min-h-screen bg-background pt-24 pb-12">
-      <main className="tune-catalog container">
-        {sectionTop && BUILDER_API_KEY && (
-          <div className="tune-catalog mb-8">
-            <BuilderContentBlock content={sectionTop} model="page-section" apiKey={BUILDER_API_KEY} data={data} />
-          </div>
-        )}
-        <h1 className="tune-catalog font-display text-4xl font-bold tracking-tight mb-2">
-          Nosso <span className="tune-catalog text-gradient-gold">Catálogo</span>
+    <div className="min-h-screen bg-background pt-24 pb-16 overflow-x-hidden">
+      <main className="container">
+        <h1 className="font-display text-4xl md:text-5xl font-extrabold tracking-tight">
+          Nosso Catálogo
         </h1>
-        <p className="tune-catalog text-muted-foreground mb-6">Use os chips para filtrar (PROMO / B2B / Tipo / IPO).</p>
 
-        <div className="tune-catalog flex flex-wrap justify-center gap-3 mb-8">
-          <a
-            className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-all ${
-              promoOn ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground border border-border hover:bg-secondary/80"
-            }`}
-            href={"/catalogo" + buildQuery({ ...baseQuery, promo: promoOn ? undefined : "1" })}
-          >
-            PROMO
-          </a>
-          <a
-            className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-all ${
-              b2bOn ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground border border-border hover:bg-secondary/80"
-            }`}
-            href={"/catalogo" + buildQuery({ ...baseQuery, b2b: b2bOn ? undefined : "1" })}
-          >
-            B2B
-          </a>          <a
-            className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-all ${
-              seminovoOn ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground border border-border hover:bg-secondary/80"
-            }`}
-            href={"/catalogo" + buildQuery({ ...baseQuery, seminovo: seminovoOn ? undefined : "1" })}
-          >
-            SEMINOVOS
-          </a>
+        <p className="mt-3 text-sm text-muted-foreground">
+          Use os filtros para encontrar seu produto ideal.
+        </p>
 
+        <div className="mt-6 steel-card p-6">
+          <div className="flex flex-wrap gap-3 items-center">
+            <a className="rounded-full border border-border bg-black/20 px-5 py-2 text-sm font-extrabold hover:bg-black/30" href={`/catalogo${buildQuery({ ...baseQuery, promo: promoOn ? undefined : "1" })}`}>
+              PROMO
+            </a>
+            <a className="rounded-full border border-border bg-black/20 px-5 py-2 text-sm font-extrabold hover:bg-black/30" href={`/catalogo${buildQuery({ ...baseQuery, b2b: b2bOn ? undefined : "1" })}`}>
+              B2B
+            </a>
+            <a className="rounded-full border border-border bg-secondary px-5 py-2 text-sm font-extrabold hover:bg-secondary/80" href="/catalogo">
+              Limpar
+            </a>
 
-          <a
-            className="tune-catalog rounded-full px-5 py-2.5 text-sm font-semibold border border-border bg-secondary text-secondary-foreground hover:bg-secondary/80"
-            href="/catalogo"
-          >
-            Limpar
-          </a>
+            <div className="ml-auto flex flex-wrap gap-3 items-center">
+              <form className="flex flex-wrap gap-3 items-center" action="/catalogo">
+                <input type="hidden" name="promo" value={promoOn ? "1" : ""} />
+                <input type="hidden" name="b2b" value={b2bOn ? "1" : ""} />
+
+                <input
+                  name="q"
+                  defaultValue={q}
+                  placeholder="Buscar..."
+                  className="h-11 rounded-xl border border-border/50 bg-black/35 px-4 text-sm outline-none focus:ring-2 focus:ring-primary/30"
+                />
+
+                <select name="ipo" defaultValue={ipo} className="h-11 rounded-xl border border-border/50 bg-black/35 px-4 text-sm">
+                  <option value="">IPO (todos)</option>
+                  {ipos.map((x) => (
+                    <option key={x} value={x}>
+                      {x}
+                    </option>
+                  ))}
+                </select>
+
+                <select name="category" defaultValue={category} className="h-11 rounded-xl border border-border/50 bg-black/35 px-4 text-sm">
+                  <option value="">Categoria (todas)</option>
+                  {categoryOptions.map((c) => (
+                    <option key={c.value} value={c.value}>
+                      {c.label}
+                    </option>
+                  ))}
+                </select>
+
+                <select name="collection" defaultValue={collection} className="h-11 rounded-xl border border-border/50 bg-black/35 px-4 text-sm">
+                  <option value="">Coleção (todas)</option>
+                  {collectionOptions.map((c) => (
+                    <option key={c.value} value={c.value}>
+                      {c.label}
+                    </option>
+                  ))}
+                </select>
+
+                <button className="h-11 rounded-full bg-primary px-6 text-sm font-extrabold text-primary-foreground hover:brightness-110" type="submit">
+                  Filtrar
+                </button>
+              </form>
+            </div>
+          </div>
         </div>
 
-        <form className="tune-catalog flex flex-wrap gap-3 mb-10" action="/catalogo" method="get">
-          <input
-            name="q"
-            defaultValue={q}
-            placeholder="Buscar..."
-            className="tune-catalog rounded-lg border border-border bg-secondary px-4 py-2.5 text-foreground min-w-[200px] focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-          <select
-            name="ipo"
-            defaultValue={ipo}
-            className="tune-catalog rounded-lg border border-border bg-secondary px-4 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-          >
-            <option value="">IPO (todos)</option>
-            {ipos.map((x) => (
-              <option key={x} value={x}>{x}</option>
-            ))}
-          </select>
-          <select
-            name="tipo"
-            defaultValue={tipo}
-            className="tune-catalog rounded-lg border border-border bg-secondary px-4 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-          >
-            <option value="">Tipo (todos)</option>
-            {tipos.map((x) => (
-              <option key={x} value={x.toLowerCase()}>{x}</option>
-            ))}
-          </select>
-          {promoOn && <input type="hidden" name="promo" value="1" />}
-          {b2bOn && <input type="hidden" name="b2b" value="1" />}
-          {seminovoOn && <input type="hidden" name="seminovo" value="1" />}
-          <button
-            type="submit"
-            className="tune-catalog rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground hover:brightness-110"
-          >
-            Filtrar
-          </button>
-        </form>
+        <div className="mt-8">
+          {list.length === 0 ? (
+            <div className="steel-card p-8">
+              <h3 className="font-display text-2xl font-extrabold">Nenhum produto encontrado.</h3>
+              <p className="mt-2 text-sm text-muted-foreground">Tente limpar os filtros ou buscar por outro termo.</p>
+            </div>
+          ) : (
+            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {list.map((p) => {
+                const promo = String(p?.metadata?.promocao || "") === "semana";
+                const b2b = String(p?.metadata?.oferta || "") === "construtor";
+                const img = p.thumbnail || p.images?.[0]?.url || "";
 
-        {list.length === 0 ? (
-          <div className="tune-catalog steel-card p-12 text-center text-muted-foreground">
-            Nenhum produto encontrado.
-          </div>
-        ) : (
-          <div className="tune-catalog grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {list.map((p) => {
-              const promo = String(p?.metadata?.promocao || "") === "semana";
-              const b2b = String(p?.metadata?.oferta || "") === "construtor";
-              return (
-                <div
-                  key={p.id}
-                  className="tune-catalog steel-card steel-card-hover group overflow-hidden"
-                >
-                  <a href={`/produto/${p.handle}`} className="tune-catalog block">
-                    <div className="tune-catalog aspect-square overflow-hidden rounded-t-lg -m-[1px] mb-0">
-                      {p.thumbnail ? (
+                return (
+                  <a key={p.id} href={`/produto/${p.handle}`} className="steel-card p-6 hover:brightness-110 transition">
+                    <div className="flex items-center gap-2 text-[11px] font-extrabold tracking-widest text-primary/90">
+                      <span>{getCategoryLabel(p)}</span>
+                      {getCollectionLabel(p) && (
+                        <span className="rounded-full border border-border/60 bg-black/20 px-3 py-1 text-[9px] font-extrabold tracking-widest">
+                          {getCollectionLabel(p)}
+                        </span>
+                      )}
+                      {promo && <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[9px] font-extrabold text-primary">PROMO</span>}
+                      {b2b && <span className="rounded-full border border-border/60 bg-black/20 px-3 py-1 text-[9px] font-extrabold">B2B</span>}
+                    </div>
+
+                    <div className="mt-3">
+                      {img ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={p.thumbnail}
-                          alt={p.title}
-                          className="tune-catalog h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                        />
+                        <img src={img} alt={p.title} className="h-56 w-full rounded-2xl object-cover" />
                       ) : (
-                        <div className="tune-catalog h-full w-full bg-muted flex items-center justify-center text-muted-foreground text-sm">
+                        <div className="h-56 w-full rounded-2xl bg-black/20 border border-border/60 flex items-center justify-center text-sm text-muted-foreground">
                           sem imagem
                         </div>
                       )}
                     </div>
-                  </a>
-                  <div className="tune-catalog p-5">
-                    <div className="tune-catalog flex items-center justify-between mb-2">
-                      <span className="tune-catalog text-xs font-semibold uppercase tracking-wider text-primary">
-                        {String(p?.metadata?.tipo ?? "Produto")}
-                      </span>
-                      <div className="tune-catalog flex gap-1">
-                        {promo && <span className="tune-catalog text-xs rounded-full border border-border px-2 py-0.5">PROMO</span>}
-                        {b2b && <span className="tune-catalog text-xs rounded-full border border-border px-2 py-0.5">B2B</span>}
-                      </div>
-                    </div>
 
-                    <a href={`/produto/${p.handle}`} className="tune-catalog block">
-                      <h3 className="tune-catalog font-display text-lg font-bold">{p.title}</h3>
-                    </a>
-
-                    <div className="tune-catalog mt-2">
+                    <h3 className="mt-4 font-display text-xl font-extrabold tracking-tight">{p.title}</h3>
+                    <div className="mt-2">
                       <CatalogPrice product={p as any} />
                     </div>
-                    <div className="tune-catalog mt-2 text-sm text-muted-foreground">
-                      ipo: {String(p.metadata?.ipo ?? "-")} | tipo: {String(p.metadata?.tipo ?? "-")}
-                    </div>
 
-                    {(() => {
-                      const quoteHref = `/orcamento?produto=${encodeURIComponent(p.handle)}&nome=${encodeURIComponent(p.title)}`;
-                      return (
-                        <div className="tune-catalog mt-4 flex flex-wrap gap-3">
-                          <a
-                            href={`/produto/${p.handle}`}
-                            className="tune-catalog inline-flex items-center justify-center rounded-full border border-border bg-secondary px-4 py-2 text-xs font-extrabold text-secondary-foreground hover:bg-secondary/80"
-                          >
-                            Ver detalhes
-                          </a>
-                          <a
-                            href={quoteHref}
-                            className="tune-catalog inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 text-xs font-extrabold text-primary-foreground hover:brightness-110 hover:shadow-[0_10px_28px_rgba(245,158,11,0.14)]"
-                          >
-                            Orçar este modelo
-                          </a>
-                        </div>
-                      );
-                    })()}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-        {sectionBottom && BUILDER_API_KEY && (
-          <div className="tune-catalog mt-12">
-            <BuilderContentBlock content={sectionBottom} model="page-section" apiKey={BUILDER_API_KEY} data={data} />
-          </div>
-        )}
+                    <div className="mt-4 text-sm font-extrabold">📱 Orçar este modelo</div>
+                  </a>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </main>
     </div>
   );
 }
-
-
-
-
-
 

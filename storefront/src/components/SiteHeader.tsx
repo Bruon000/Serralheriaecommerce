@@ -7,6 +7,7 @@ import { Menu, X, ShoppingCart } from "lucide-react";
 const navLinks = [
   { href: "/", label: "Início" },
   { href: "/catalogo", label: "Catálogo" },
+  { href: "/monte-seu-portao", label: "Monte seu portão" },
   { href: "/promocoes", label: "Promoções" },
   { href: "/depoimentos", label: "Depoimentos" },
   { href: "/contato", label: "Contato" },
@@ -39,7 +40,7 @@ export default function SiteHeader() {
 
 {/* Nav desktop */}
         <nav className="hidden lg:flex flex-1 items-center justify-center gap-6 whitespace-nowrap">
-          {navLinks.slice(0, 5).map((link) => (
+          {navLinks.slice(0, 6).map((link) => (
             <Link
               key={link.href}
               href={link.href}

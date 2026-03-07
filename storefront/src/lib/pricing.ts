@@ -83,7 +83,7 @@ export function getDisplayPriceBRL(product: MedusaProduct, isB2B: boolean) {
 
   const cents = getBasePriceCents(product);
   if (cents === null) {
-    return { text: "Preço sob consulta", isB2BPrice: false };
+    return { text: "Orçamento grátis no WhatsApp", isB2BPrice: false };
   }
 
   return { text: formatBRLFromCents(cents), isB2BPrice: false };
